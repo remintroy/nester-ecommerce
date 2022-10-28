@@ -1,0 +1,47 @@
+<div class="search-cont">
+    <input type="text" onkeyup="search(this)" placeholder="search user">
+    <button>search</button>
+    <button onclick="addUser()">+ Add user</button>
+</div>
+
+<table class="table" id="tabe_of_users">
+    <tr>
+        <th class="col">#</th>
+        <th class="col">Name</th>
+        <th class="col">Email</th>
+        <th class="col">UID</th>
+        <th class="col">Created</th>
+        <th class="col">LastLogin</th>
+        <th class="col">-</th>
+        <th class="col">-</th>
+    </tr>
+
+    <% if(locals.users){users.forEach((user,index,array)=>{ %>
+
+        <tr>
+            <td>
+                <%= index + 1 %>
+            </td>
+            <td>
+                <%= user.name %>
+            </td>
+            <td>
+                <%= user.email %>
+            </td>
+            <td>
+                <%= user.UID %>
+            </td>
+            <td>
+                <%= user.creationTime %>
+            </td>
+            <td>
+                <%= user.lastLoginTime %>
+            </td>
+            <td><img src="/res/edit-user.svg" alt="Edit" onclick="updatePopUp(1,this,true)" id="btn_of_the_button_UID"
+                    identifier="<%=user.UID%>"></td>
+            <td><img onclick="deletePopup(1,this.parentElement.parentElement)" src="/res/delete.svg" alt="delete"></td>
+        </tr>
+
+        <% });}; %>
+
+</table>

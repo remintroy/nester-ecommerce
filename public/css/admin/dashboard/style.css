@@ -1,0 +1,353 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Roboto:wght@400;700&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  outline: 0;
+}
+
+:root {
+  --bg: #222222;
+  --primary: #222222;
+  --secondary: #333436;
+  --theme-a: #e78e28;
+  --theme-b: #ffac4e;
+  --border: #6e6e6e;
+  --btn: #404246;
+  --color: white;
+  --hover: #727272;
+  --on: #474eb1;
+}
+
+body {
+  position: relative;
+  background-color: var(--bg);
+  color: var(--color);
+  font-family: "Poppins", sans-serif;
+}
+
+.title-admin {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background-color: var(--primary);
+  box-sizing: border-box;
+  padding: 5px 15px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+}
+.title-admin h5 {
+  padding: 0;
+  margin: 0;
+  text-transform: capitalize;
+}
+.title-admin button {
+  padding: 5px 15px;
+  border: none;
+  background-color: var(--btn);
+  color: var(--color);
+  border-radius: 5px;
+  position: absolute;
+  right: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.title-admin button:hover {
+  background-color: var(--hover);
+}
+
+.spacer {
+  width: 100%;
+  position: relative;
+  top: 50px;
+  height: 10px;
+}
+
+.content-selector {
+  width: 100%;
+  margin-top: 100px;
+}
+.content-selector h2 {
+  text-transform: capitalize;
+}
+.content-selector .action {
+  width: 100%;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0;
+  margin: 0;
+  margin-top: 30px;
+}
+.content-selector .action li {
+  padding: 8px 20px;
+  padding-bottom: 5px;
+  background-color: var(--btn);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  font-family: "Roboto", sans-serif;
+  cursor: pointer;
+  text-transform: capitalize;
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+  color: var(--color);
+  box-shadow: 0 0 25px 5px rgba(0, 0, 0, 0.062);
+}
+.content-selector .action li.on {
+  background-color: var(--on);
+}
+.content-selector .action li:hover {
+  background-color: var(--hover);
+}
+
+.page-contents {
+  margin: 20px 0 50px 0;
+  width: 100%;
+}
+.page-contents .container .contents-in-cont {
+  box-shadow: 0 0 20px 10px rgba(10, 10, 10, 0.041);
+  border: 1px solid var(--border);
+  box-sizing: border-box;
+  border-radius: 5px;
+  padding: 15px 25px;
+  background-color: var(--secondary);
+  width: 100%;
+}
+.page-contents .search-cont {
+  width: 100%;
+  margin: 10px 0 20px 0;
+  display: grid;
+  grid-template-columns: auto 100px 100px;
+  gap: 20px;
+}
+.page-contents .search-cont input {
+  width: 100%;
+  border: 1px solid var(--border);
+  box-sizing: border-box;
+  padding: 8px 15px;
+  border-radius: 5px;
+  color: var(--color);
+  background-color: var(--secondary);
+}
+.page-contents .search-cont button {
+  border: none;
+  color: var(--color);
+  background-color: var(--btn);
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: small;
+  border: 1px solid var(--border);
+}
+.page-contents table {
+  font-size: small;
+  color: var(--color);
+  border-color: var(--border);
+}
+.page-contents table .col {
+  font-weight: 100 !important;
+}
+.page-contents table td {
+  font-family: "Roboto", sans-serif;
+}
+.page-contents table td img {
+  height: 15px;
+  cursor: pointer;
+}
+
+.update-user-form {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.update-user-form .canceler {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(10, 10, 10, 0.295);
+  -webkit-backdrop-filter: blur(2px);
+          backdrop-filter: blur(2px);
+}
+.update-user-form .edit-form {
+  position: relative;
+  display: unset;
+  width: 400px;
+  padding: 20px;
+  background-color: var(--primary);
+  border-radius: 5px;
+  box-shadow: 0 0 25px 10px rgba(0, 0, 0, 0.137);
+}
+.update-user-form .edit-form .disp-error {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  background-color: #ffd2d2;
+  border-radius: 5px;
+  font-size: small;
+}
+.update-user-form .edit-form p {
+  font-size: small;
+}
+.update-user-form .edit-form input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 15px;
+  border: 1px solid var(--border);
+  background-color: var(--bg);
+  margin: 5px 0 15px 0;
+  border-radius: 5px;
+  font-size: small;
+}
+.update-user-form .edit-form .btn-cont {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+.update-user-form .edit-form label {
+  font-size: small;
+  width: 100%;
+}
+.update-user-form .edit-form label .err-disp {
+  float: right;
+  color: #bb3333;
+}
+.update-user-form .edit-form button.d {
+  width: 100%;
+}
+.update-user-form .edit-form button.d.s {
+  background-color: #7a4141;
+}
+.update-user-form .edit-form button.d.s:hover {
+  background-color: #794848;
+}
+.update-user-form .edit-form button {
+  border: none;
+  padding: 10px 15px;
+  background-color: var(--btn);
+  color: var(--primary);
+  border-radius: 5px;
+  font-size: small;
+  transition: all 0.2s;
+}
+.update-user-form .edit-form button:hover {
+  background-color: rgb(92, 92, 92);
+}
+
+.products-table tr {
+  font-size: small;
+}
+.products-table tr td img.img-thump {
+  height: 50px;
+  width: 50px;
+  -o-object-fit: scale-down;
+     object-fit: scale-down;
+}
+
+.products-add-products-popup {
+  position: absolute;
+  top: -50px;
+  padding: 0;
+  box-sizing: border-box;
+  width: 100%;
+  background-color: var(--primary);
+  padding-bottom: 100px;
+}
+.products-add-products-popup .form-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 25px;
+}
+.products-add-products-popup .form-container .list-pd {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.products-add-products-popup .form-container .list-pd label {
+  font-size: small;
+}
+.products-add-products-popup .form-container .list-pd label span {
+  float: right;
+  color: rgb(201, 47, 47);
+}
+.products-add-products-popup .form-container .list-pd input,
+.products-add-products-popup .form-container .list-pd textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 15px;
+  border: 1px solid rgb(219, 219, 219);
+  background-color: var(--bg);
+  border-radius: 5px;
+  font-size: small;
+}
+.products-add-products-popup .form-container .list-pd textarea {
+  height: 150px;
+  resize: none;
+}
+.products-add-products-popup .form-container .list-pd-2 {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.products-add-products-popup .form-container .img-field {
+  box-sizing: border-box;
+  padding: 10px;
+  width: 100%;
+  height: 150px;
+  border: 1px dashed gray;
+  border-radius: 5px;
+  display: grid;
+  grid-template-columns: 200px 200px;
+  justify-content: space-between;
+  overflow: hidden;
+}
+.products-add-products-popup .form-container .img-field .pro-img-d {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.products-add-products-popup .form-container .img-field .pro-img-d img {
+  height: 100%;
+  width: 100%;
+  -o-object-fit: scale-down;
+     object-fit: scale-down;
+  padding: 0px;
+}
+.products-add-products-popup .form-container .img-field .choose {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg);
+  border-radius: 5px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+}
+.products-add-products-popup .form-container .btn-list {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.products-add-products-popup .form-container .btn-list button {
+  padding: 10px 20px;
+  border: none;
+  background-color: var(--btn);
+  color: white;
+  border-radius: 5px;
+  font-size: small;
+}/*# sourceMappingURL=style.css.map */

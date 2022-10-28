@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin-Loign</title>
+    <link rel="stylesheet" href="/css/admin/login/style.css">
+</head>
+
+<body>
+
+    <!-- main containter -->
+    <div class="login-container">
+        <h2>Admin Login</h2>
+        <div class="input-cont">
+            <div class="disp-state" style="display: none;" id="disp_state">error occured</div>
+            <div class="sub-input">
+                <input type="email" name="email" id="emaliInput" placeholder="Email">
+            </div>
+            <div class="sub-input">
+                <span id="show" onclick="viewPassword(1)">Show</span>
+                <span id="hide" onclick="viewPassword()" style="display: none;">Hide</span>
+                <input type="password" name="password" id="passwordInput" placeholder="Password">
+            </div>
+        </div>
+        <button onclick="validator()">submit</button>
+    </div>
+
+    <script>
+        function viewPassword(showPassword) {
+            let input = document.getElementById("passwordInput");
+            let show = document.getElementById("show");
+            let hide = document.getElementById("hide");
+
+            input.setAttribute('type', showPassword ? 'text' : 'password');
+            show.style.display = showPassword ? 'none' : 'flex';
+            hide.style.display = showPassword ? 'flex' : 'none';
+        };
+
+        function validator(btn) {
+            let email = document.getElementById("emaliInput").value.trim();
+            let password = document.getElementById("passwordInput").value.trim();
+            let disp_state = document.getElementById("disp_state");
+
+            const disp = ({ message, isGood, returnVal }) => {
+                disp_state.style.backgroundColor = isGood ? '#4972498f' : '#7249498f';
+                disp_state.style.display = message || returnVal == false ? 'flex' : 'none';
+                disp_state.innerText = message ? message : disp_state.innerText;
+                return isGood || message == '' ? true : returnVal;
+            };
+
+            disp({});
+
+            let thereIsNoError = true;
+
+            thereIsNoError = password.length < 6 ?
+                disp({ message: 'Enter a valid password', returnVal: false }) :
+                disp({ returnVal: thereIsNoError });
+
+            thereIsNoError = email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) ?
+                disp({ returnVal: thereIsNoError }) :
+                disp({ message: 'Enter a valid email', returnVal: false });
+
+            thereIsNoError = email.length == 0 ?
+                disp({ message: 'Email cannot be empty', returnVal: false }) :
+                disp({ returnVal: thereIsNoError });
+
+            if (thereIsNoError) {
+                disp({ message: 'Loading...', isGood: true });
+
+                fetch("/admin/login", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password
+                    })
+                })
+                    .then(res => res.json())
+                    .then((res) => {
+                        console.log(res)
+                        disp({
+                            message: res.message,
+                            isGood: res.status == 'error' ? false : true
+                        });
+                        if (res.status == 'good') {
+                            window.location.href = res.action;
+                        };
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        disp({ message: err });
+                    });
+            };
+
+        };
+    </script>
+</body>
+
+</html>

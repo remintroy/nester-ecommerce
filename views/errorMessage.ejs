@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--  this page is a simple custom 404 error page -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%if(locals.code){%><%=code%><%}else{%>Info<%}%></title>
+    
+</head>
+
+<body>
+
+    <!-- some basic stiles -->
+    <style>
+        /* importing poppins font */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+        *{
+            padding: 0;
+            margin: 0;
+            outline: 0;
+        }
+        html {
+            height: 100%;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgb(72, 72, 72);
+        }
+    </style>
+    
+    <!-- error message text -->
+    <h1><%= message %> </h1>
+    
+</body>
+
+</html>

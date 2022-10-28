@@ -1,0 +1,146 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Roboto:wght@400;700&display=swap");
+* {
+  padding: 0;
+  margin: 0;
+  outline: 0;
+  font-family: "Poppins", sans-serif;
+}
+
+:root {
+  --border-color: #666666;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+  background-color: #222222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+body .login-container {
+  width: 450px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 30px;
+  padding: 50px 20px;
+  box-sizing: border-box;
+}
+body .login-container h2 {
+  font-size: xx-large;
+}
+body .login-container .input-cont {
+  width: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+}
+body .login-container .input-cont .disp-state {
+  padding: 10px 20px;
+  box-sizing: border-box;
+  width: 100%;
+  border-radius: 5px;
+  background-color: rgba(73, 114, 73, 0.5607843137);
+}
+body .login-container .input-cont .sub-input {
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+body .login-container .input-cont .sub-input img {
+  position: absolute;
+  right: 10px;
+  filter: invert(100%);
+  width: 20px;
+}
+body .login-container .input-cont .sub-input span {
+  position: absolute;
+  right: 15px;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  cursor: pointer;
+}
+body .login-container .input-cont input {
+  width: calc(100% - 30px);
+  padding: 15px 25px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background-color: transparent;
+  color: white;
+}
+body .login-container .or-container {
+  width: 90%;
+  display: grid;
+  grid-template-columns: auto -webkit-min-content auto;
+  grid-template-columns: auto min-content auto;
+  gap: 20px;
+  align-items: center;
+}
+body .login-container .or-container .dash {
+  background-color: var(--border-color);
+  width: 100%;
+  height: 1px;
+}
+body .login-container .ext-action {
+  display: flex;
+  align-items: center;
+  width: 90%;
+  gap: 20px;
+}
+body .login-container button {
+  padding: 15px 40px;
+  border: 1px solid var(--border-color);
+  color: rgb(255, 255, 255);
+  background-color: #383838;
+  border-radius: 5px;
+  cursor: pointer;
+  text-transform: uppercase;
+  width: 90%;
+  transition: all 0.2s;
+}
+body .login-container button:hover {
+  background-color: #464646;
+}
+@media screen and (max-width: 525px) {
+  body .login-container {
+    width: 100%;
+    height: 100%;
+    border: none;
+    padding: 0;
+  }
+  body .login-container .input-cont {
+    gap: 15px;
+    width: 90%;
+  }
+  body .login-container .input-cont .disp-state {
+    padding: 15px 20px;
+  }
+  body .login-container .input-cont input {
+    padding: 18px 15px;
+  }
+  body .login-container .input-cont .sub-input {
+    width: 100%;
+  }
+  body .login-container .input-cont .sub-input img {
+    width: 25px;
+  }
+  body .login-container button {
+    width: 90%;
+    padding: 18px;
+    text-transform: uppercase;
+  }
+}/*# sourceMappingURL=style.css.map */

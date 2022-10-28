@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%if(locals.title){%>
+            <%=title%>
+                <%}else{%>Admin-Console<%}%>
+    </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/admin/dashboard/style.css">
+</head>
+
+<body>
+
+    <!-- main title -->
+    <div class="title-admin">
+        <h5>Admin Dashboard</h5>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <!-- dummy spacer to give margin top -->
+    <div class="spacer"></div>
+
+    <!-- content page selecor -->
+    <section class="content-selector">
+        <div class="container">
+
+            <h2>
+                <%if(locals.user){%>
+                    <%= user.name %>'s control panel
+                        <%}else{%>
+                            Admin control panel
+                            <%}%>
+            </h2>
+
+            <ul class="action">
+                <li class="<%=locals.currentPage=='users'?'on':'off'%>"
+                    onclick="window.location.href='/admin/dashboard'">
+                    Users</li>
+                <li class="<%=locals.currentPage=='products'?'on':'off'%>"
+                    onclick="window.location.href='/admin/products'">Products</li>
+                <li class="<%=locals.currentPage=='settings'?'on':'off'%> "
+                    onclick="window.location.href='/admin/settings'">settings</li>
+            </ul>
+
+        </div>
+    </section>
+
+    <!-- page contents -->
+    <section class="page-contents">
+        <div class="container">
+
+            <div class="contents-in-cont">
+                <%-body%>
+            </div>
+
+        </div>
+
+        <script>
+
+            function logout() {
+
+                fetch('/logout', {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    method: "POST",
+                    body: JSON.stringify({ message: 'log me out' })
+                }).then((res) => {
+                    window.location.reload();
+                }).catch((err) => {
+                    console.error(err);
+                });
+
+            };
+
+        </script>
+
+    </section>
+
+
+</body>
+
+</html>
