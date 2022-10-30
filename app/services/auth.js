@@ -1,7 +1,7 @@
 import * as db from './schema.js';
 import { randomId } from './util.js';
 import bCrypt from 'bcryptjs';
-import * as firebase from '../firebase/auth.js';
+import * as firebase from './firebase.js';
 
 /**
  * this function runs as the first level middleware
@@ -47,7 +47,7 @@ export const mustLoginAsAdmin = (req, res, next) => {
         next();
     } else {
         res.status(401);
-        res.redirect('/admin/login');
+        res.redirect('/admin_login');
     };
 };
 
@@ -65,7 +65,7 @@ export const mustLogoutAsAdmin = (req, res, next) => {
         next();
     } else {
         res.status(403);
-        res.redirect('/admin/');
+        res.redirect('/admin_panel/');
     };
 };
 
@@ -319,7 +319,16 @@ export const adminLogin = ({ email, password }) => {
     });
 };
 
+export const adminLogout = (req,res) => {
+    req.session.admin = null;
+    res.send({status:'error',message:"Logout success"});
+};
 
+
+
+export const signInWithGoogle = ({ idToken, accessToken, typeOfLogin }) => {
+    firebase.signInWithGoogleSDK({ idToken: idToken })
+};
 
 
 

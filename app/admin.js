@@ -2,41 +2,18 @@ import * as auth from './services/auth.js';
 import { randomId } from './services/util.js';
 import * as db from './services/schema.js';
 
+const layout = `admin_layout`
 
 export const dashboard = async (req, res, next) => {
     try {
 
-        let userData = await db.users.find();
-
-        let data = {
-            layout: 'admin/layout',
-            title: `Admin-panel`,
-            user: req.admin,
-            users:[]
+        const data = {
+            layout:layout
         };
 
-        for (let i = 0; i < userData.length; i++) {
-
-            let dd = userData[i].creationTime.getDate();
-            let mm = userData[i].creationTime.getMonth() + 1;
-            let yyyy = userData[i].creationTime.getFullYear();
-
-            let ddu = userData[i].lastLogin.getDate();
-            let mmu = userData[i].lastLogin.getMonth() + 1;
-            let yyyyu = userData[i].lastLogin.getFullYear();
-
-            let dataOFUser = {
-                name: userData[i].name,
-                email: userData[i].email,
-                orders: userData[i].orders,
-                UID: userData[i].UID,
-                creationTime: `${dd}-${mm}-${yyyy}`,
-                lastLoginTime: `${ddu}-${mmu}-${yyyyu}`
-            };
-
-            data.users.push(dataOFUser);
-
-        };
+        data.title = `Admin-panel`;
+        data.user = req.admin
+        data.currentPage = 'dashboard';
 
         res.render('admin/dashboard', data);
 
@@ -45,16 +22,18 @@ export const dashboard = async (req, res, next) => {
     };
 };
 
-
+export const users = (req, res, next) => {
+    res.render('admin/users',{
+        layout:layout
+    });
+};
 
 export const login = (req, res, next) => {
-    res.render('admin/login');
+    res.render('admin/login', {
+        layout: 'admin_auth_layout'
+    });
 };
-/**
- * @param {Request} req 
- * @param {Response} res 
- * @param {import('express').NextFunction} next 
- */
+
 export const loginApi = async (req, res) => {
     try {
         let userData = await auth.adminLogin(req.body);

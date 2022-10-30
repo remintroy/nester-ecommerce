@@ -1,0 +1,55 @@
+<!-- main containter -->
+<div class="login-container">
+    <h2>Login</h2>
+    <div class="input-cont">
+        <div class="err_disp" id="err_disp" style="display: none;">-</div>
+        <div class="disp-state" style="display: none;" id="disp_state">error occured</div>
+        <div class="sub-input">
+            <input type="email" name="email" id="emaliInput" placeholder="Email">
+        </div>
+        <div class="sub-input">
+            <span id="show" onclick="viewPassword(1)">Show</span>
+            <span id="hide" onclick="viewPassword()" style="display: none;">Hide</span>
+            <input type="password" name="password" id="passwordInput" placeholder="Password">
+        </div>
+
+    </div>
+    <div class="all_actions">
+        <button onclick="validator()">submit</button>
+        <p>don't have an account <b>Signup</b></p>
+        <div class="or-container">
+            <div class="dash"></div>
+            <span>OR</span>
+            <div class="dash"></div>
+        </div>
+        <div class="ext-action">
+            <button id="googleLoginBtn"><img src="/icn/google.svg" alt=""> Google</button>
+            <button><img src="/icn/phone.svg" alt=""> Phone</button>
+        </div>
+    </div>
+</div>
+
+<script src="/js/login/auth.js" type="module"></script>
+<script type="module">
+    import { loginWithEmail } from '/js/login/auth.js';
+    window.loginWithEmail = loginWithEmail;
+</script>
+<script>
+
+    function validator() {
+
+        const email = document.getElementById('emaliInput').value;
+        const password = document.getElementById("passwordInput").value;
+        const err_disp = document.getElementById('err_disp');
+
+        if (email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) {
+
+        } else {
+            err_disp.style.display = 'initial';
+            err_disp.innerText = 'Enter a valid email';
+
+        };
+
+    };
+
+</script>

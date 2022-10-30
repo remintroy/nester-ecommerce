@@ -7,7 +7,7 @@
 }
 
 :root {
-  --border-color: #666666;
+  --border-color: #c7c7c7;
 }
 
 html {
@@ -17,7 +17,7 @@ html {
 body {
   height: 100%;
   width: 100%;
-  background-color: #222222;
+  background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -26,17 +26,24 @@ body .login-container {
   width: 450px;
   border: 1px solid var(--border-color);
   border-radius: 5px;
-  color: white;
+  color: rgb(0, 0, 0);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  gap: 30px;
+  gap: 25px;
   padding: 50px 20px;
   box-sizing: border-box;
 }
 body .login-container h2 {
   font-size: xx-large;
+}
+body .login-container .all_actions {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 30px;
 }
 body .login-container .input-cont {
   width: 90%;
@@ -44,7 +51,15 @@ body .login-container .input-cont {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
+}
+body .login-container .input-cont .err_disp {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 15px;
+  background-color: rgb(255, 190, 190);
+  border-radius: 5px;
+  font-size: small;
 }
 body .login-container .input-cont .disp-state {
   padding: 10px 20px;
@@ -80,7 +95,26 @@ body .login-container .input-cont input {
   border: 1px solid var(--border-color);
   border-radius: 5px;
   background-color: transparent;
+  color: rgb(0, 0, 0);
+}
+body .login-container p {
+  font-size: small;
+}
+body .login-container p b {
+  cursor: pointer;
+  background-color: #6d6d6d;
+  padding: 3px 7px;
+  border-radius: 5px;
   color: white;
+  font-weight: 100;
+  transition: all 0.2s;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+body .login-container p b:hover {
+  background-color: #464646;
 }
 body .login-container .or-container {
   width: 90%;
@@ -102,25 +136,35 @@ body .login-container .ext-action {
   gap: 20px;
 }
 body .login-container button {
-  padding: 15px 40px;
+  padding: 12px 40px;
   border: 1px solid var(--border-color);
   color: rgb(255, 255, 255);
-  background-color: #383838;
+  background-color: #4d4d4d;
   border-radius: 5px;
   cursor: pointer;
   text-transform: uppercase;
   width: 90%;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+body .login-container button img {
+  width: 18px;
+  filter: invert(100);
 }
 body .login-container button:hover {
-  background-color: #464646;
+  background-color: #636363;
 }
 @media screen and (max-width: 525px) {
   body .login-container {
     width: 100%;
     height: 100%;
     border: none;
-    padding: 0;
+    padding: 30px 0;
+    box-sizing: border-box;
+    justify-content: space-between;
   }
   body .login-container .input-cont {
     gap: 15px;

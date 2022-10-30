@@ -9,7 +9,7 @@
 }
 
 :root {
-    --border-color: #666666;
+    --border-color: #c7c7c7;
 }
 
 html {
@@ -19,7 +19,7 @@ html {
 body {
     height: 100%;
     width: 100%;
-    background-color: #222222;
+    background-color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -28,18 +28,27 @@ body {
         width: 450px;
         border: 1px solid var(--border-color);
         border-radius: 5px;
-        color: white;
+        color: rgb(0, 0, 0);
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        gap: 30px;
+        gap: 25px;
         padding: 50px 20px;
         box-sizing: border-box;
 
-        h2{
+        h2 {
             font-size: xx-large;
         }
+
+        .all_actions{
+            width: 100%;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            gap: 30px;
+        }
+
 
         .input-cont {
             width: 90%;
@@ -47,7 +56,16 @@ body {
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
+
+            .err_disp{
+                width: 100%;
+                box-sizing: border-box;
+                padding: 10px 15px;
+                background-color: rgb(255, 190, 190);
+                border-radius: 5px;
+                font-size: small;
+            }
 
             .disp-state {
                 padding: 10px 20px;
@@ -86,24 +104,43 @@ body {
                 border: 1px solid var(--border-color);
                 border-radius: 5px;
                 background-color: transparent;
-                color: white;
+                color: rgb(0, 0, 0);
             }
         }
 
-        .or-container{
+        p {
+            font-size: small;
+            b {
+                cursor: pointer;
+                background-color: #6d6d6d;
+                padding: 3px 7px;
+                border-radius: 5px;
+                color: white;
+                font-weight: 100;
+                transition: all .2s;
+                user-select: none;
+            }
+
+            b:hover{
+                background-color: #464646;
+            }
+        }
+
+        .or-container {
             width: 90%;
             display: grid;
             grid-template-columns: auto min-content auto;
             gap: 20px;
             align-items: center;
-            .dash{
-                background-color:  var(--border-color);
+
+            .dash {
+                background-color: var(--border-color);
                 width: 100%;
                 height: 1px;
             }
         }
 
-        .ext-action{
+        .ext-action {
             display: flex;
             align-items: center;
             width: 90%;
@@ -111,31 +148,37 @@ body {
         }
 
         button {
-            padding: 15px 40px;
+            padding: 12px 40px;
             border: 1px solid var(--border-color);
             color: rgb(255, 255, 255);
-            background-color: #383838;
+            background-color: #4d4d4d;
             border-radius: 5px;
             cursor: pointer;
             text-transform: uppercase;
             width: 90%;
             transition: all .2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            img {
+                width: 18px;
+                filter: invert(100);
+            }
         }
-        button:hover{
-            background-color: #464646;
+
+        button:hover {
+            background-color: #636363;
         }
 
         @media screen and (max-width:525px) {
             width: 100%;
             height: 100%;
             border: none;
-            padding: 0;
-
-            // h2 {
-            //     position: absolute;
-            //     top: 100px;
-            //     font-size: 30px;
-            // }
+            padding: 30px 0;
+            box-sizing: border-box;
+            justify-content: space-between;
 
             .input-cont {
                 gap: 15px;

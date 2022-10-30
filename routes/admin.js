@@ -4,13 +4,14 @@ import * as auth from '../app/services/auth.js';
 
 const adminApp = express.Router();
 
-// login routes
-adminApp.get("/login", auth.mustLogoutAsAdmin, admin.login);
-adminApp.post('/login', auth.mustLogoutAsAdminAPI, admin.loginApi);
 
 // dashboard routes
-adminApp.get(["/","/dashboard"], auth.mustLoginAsAdmin, admin.dashboard);
+adminApp.get(["/", "/dashboard"], auth.mustLoginAsAdmin, admin.dashboard);
 
+adminApp.get('/user_management',auth.mustLoginAsAdmin, admin.users);
 
+adminApp.use((req, res) => {
+    res.render('admin/404', { layout:'admin_layout', message: 'admin error' })
+})
 
 export default adminApp;
