@@ -50,84 +50,6 @@ export const initAuth = async (req, res, next) => {
     next();
 };
 
-
-
-export const mustLoginAsAdmin = (req, res, next) => {
-    if (req.isLoggedIn && req.admin) {
-        next();
-    } else {
-        res.status(401);
-        res.redirect('/admin_login');
-    };
-};
-
-export const mustLoginAsAdminAPI = (req, res, next) => {
-    if (req.isLoggedIn && req.admin) {
-        next();
-    } else {
-        res.status(401);
-        res.send({ status: "error", message: 'Unauthorized action' });
-    };
-};
-
-export const mustLogoutAsAdmin = (req, res, next) => {
-    if (!req.admin) {
-        next();
-    } else {
-        res.status(403);
-        res.redirect('/admin_panel/');
-    };
-};
-
-export const mustLogoutAsAdminAPI = (req, res, next) => {
-    if (!req.admin) {
-        next();
-    } else {
-        res.status(403);
-        res.send({ status: 'error', message: "Permission denied" });
-    };
-};
-
-
-
-export const mustLoginAsUser = (req, res, next) => {
-    if (req.isLoggedIn && req.user) {
-        next();
-    } else {
-        res.status(401);
-        res.redirect('/user_signin');
-    };
-};
-
-export const mustLoginAsUserAPI = (req, res, next) => {
-    if (req.isLoggedIn && req.user) {
-        next();
-    } else {
-        res.status(401);
-        res.send({ status: 'error', message: 'Unauthorized action' });
-    };
-};
-
-export const mustLogoutAsUser = (req, res, next) => {
-    if (!req.user) {
-        next();
-    } else {
-        res.status(401);
-        res.redirect('/');
-    };
-};
-
-export const mustLogoutAsUserAPI = (req, res, next) => {
-    if (!req.user) {
-        next();
-    } else {
-        res.status(403);
-        res.send({ status: 'error', message: 'Access denied' });
-    };
-};
-
-
-
 /**
  * this funciton is used to validate form data form client
  * @param {Object} data
@@ -499,13 +421,73 @@ export function validatior(data, requiredIn, typeOfValidation) {
     });
 };
 
-/**
- * 
- * @param {Object} requestBody 
- * @param {string} requestBody.email
- * @param {string} requestBody.password
- * @returns userdata if good, else errors
- */
+
+export const mustLoginAsAdmin = (req, res, next) => {
+    if (req.isLoggedIn && req.admin) {
+        next();
+    } else {
+        res.status(401);
+        res.redirect('/admin_login');
+    };
+};
+export const mustLoginAsAdminAPI = (req, res, next) => {
+    if (req.isLoggedIn && req.admin) {
+        next();
+    } else {
+        res.status(401);
+        res.send({ status: "error", message: 'Unauthorized action' });
+    };
+};
+export const mustLogoutAsAdmin = (req, res, next) => {
+    if (!req.admin) {
+        next();
+    } else {
+        res.status(403);
+        res.redirect('/admin_panel/');
+    };
+};
+export const mustLogoutAsAdminAPI = (req, res, next) => {
+    if (!req.admin) {
+        next();
+    } else {
+        res.status(403);
+        res.send({ status: 'error', message: "Permission denied" });
+    };
+};
+
+export const mustLoginAsUser = (req, res, next) => {
+    if (req.isLoggedIn && req.user) {
+        next();
+    } else {
+        res.status(401);
+        res.redirect('/user_signin');
+    };
+};
+export const mustLoginAsUserAPI = (req, res, next) => {
+    if (req.isLoggedIn && req.user) {
+        next();
+    } else {
+        res.status(401);
+        res.send({ status: 'error', message: 'Unauthorized action' });
+    };
+};
+export const mustLogoutAsUser = (req, res, next) => {
+    if (!req.user) {
+        next();
+    } else {
+        res.status(401);
+        res.redirect('/');
+    };
+};
+export const mustLogoutAsUserAPI = (req, res, next) => {
+    if (!req.user) {
+        next();
+    } else {
+        res.status(403);
+        res.send({ status: 'error', message: 'Access denied' });
+    };
+};
+
 export const adminLogin = ({ email, password }) => {
     return new Promise(async (resolve, reject) => {
 
@@ -536,7 +518,6 @@ export const adminLogin = ({ email, password }) => {
 
     });
 };
-
 export const adminLogout = (req, res) => {
     req.session.admin = null;
     res.send({ status: 'good', message: "Logout success" });
@@ -563,11 +544,11 @@ export const userLoginWithEmail = ({ email, password }) => {
                     let userdata = await db.users.findOne({ email: email }, { password: 0 });
                     let updateLastLoginTime = await db.users.updateOne(
                         {
-                            email:email,
+                            email: email,
                         },
                         {
-                            $set:{
-                                lastLogin:new Date()
+                            $set: {
+                                lastLogin: new Date()
                             }
                         }
                     );
@@ -584,7 +565,6 @@ export const userLoginWithEmail = ({ email, password }) => {
         };
     });
 };
-
 export const userSignupWithEmail = ({ email, name, password, phone }) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -624,7 +604,6 @@ export const userSignupWithEmail = ({ email, name, password, phone }) => {
         };
     });
 };
-
 export const userDataUpdate = ({ UID, email, password, name, phone, blocked }) => {
     return new Promise(async (resolve, reject) => {
 
@@ -758,3 +737,6 @@ export const signInWithGoogle = ({ idToken }) => {
     });
 };
 
+export const signInWithOtp = () => {
+   // TODO: otp login
+};
