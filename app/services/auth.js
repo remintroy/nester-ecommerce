@@ -737,6 +737,3 @@ export const signInWithGoogle = ({ idToken }) => {
     });
 };
 
-export const signInWithOtp = () => {
-   // TODO: otp login
-};

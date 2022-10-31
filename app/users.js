@@ -112,3 +112,8 @@ export const loginWithGoogleAPI = async (req, res) => {
         res.send({ status: 'error', message: error });
     };
 };
+export const loginWithOtp = (req, res) => {
+    res.render('users/auth/otp',{
+        layout:'users/auth/layout'
+    });
+};
