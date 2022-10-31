@@ -1,13 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Loign & Signup</title>
-        <link rel="stylesheet" href="/css/users/login/style.css">
-    </head>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loign & Signup</title>
+    <link rel="stylesheet" href="/css/users/login/style.css">
+</head>
+
 <body>
-    <%- body %> 
+    <%- body %>
+
+        <script src="/js/login/auth.js" type="module"></script>
+        <script>
+            function viewPassword(showPassword) {
+                let input = document.getElementById("passwordInput");
+                let show = document.getElementById("show");
+                let hide = document.getElementById("hide");
+
+                input.setAttribute('type', showPassword ? 'text' : 'password');
+                show.style.display = showPassword ? 'none' : 'flex';
+                hide.style.display = showPassword ? 'flex' : 'none';
+            };
+
+            function validator() {
+                let email = document.getElementById("emaliInput").value.trim();
+                let password = document.getElementById("passwordInput").value.trim();
+                let disp_state = document.getElementById("disp_state");
+
+                let nameInput = document.getElementById("nameInput");
+                let phoneInput = document.getElementById("phoneInput");
+                let confirmInput = document.getElementById("confirmPasswordInput");
+                let confirm_password;
+                let name_value;
+                let phone_value;
+
+                if (confirmInput) {
+                    confirm_password = confirmInput.value.trim();
+                    name_value = nameInput.value.trim();
+                    phone_value = phoneInput.value.trim();
+                };
+
+                const disp = ({ message, isGood, returnVal }) => {
+                    disp_state.style.backgroundColor = isGood ? 'rgb(205 255 196 / 56%)' : 'rgb(255 203 203 / 56%)';
+                    disp_state.style.display = message || returnVal == false ? 'flex' : 'none';
+                    disp_state.innerText = message ? message : disp_state.innerText;
+                    return isGood || message == '' ? true : returnVal;
+                };
+
+                disp({});
+
+                let thereIsNoError = true;
+
+                if (confirmInput) {
+                    thereIsNoError = password != confirm_password ?
+                        disp({ message: `Confirm password dosen't match`, returnVal: false }) :
+                        disp({ returnVal: thereIsNoError });
+                };
+
+                thereIsNoError = password.length < 6 ?
+                    disp({ message: 'Enter a valid password', returnVal: false }) :
+                    disp({ returnVal: thereIsNoError });
+
+                thereIsNoError = email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) ?
+                    disp({ returnVal: thereIsNoError }) :
+                    disp({ message: 'Enter a valid email', returnVal: false });
+
+                thereIsNoError = email.length == 0 ?
+                    disp({ message: 'Email cannot be empty', returnVal: false }) :
+                    disp({ returnVal: thereIsNoError });
+
+                if (confirmInput) {
+
+                    thereIsNoError = phone_value.match(/^\+?[1-9][0-9]{7,14}$/) ?
+                        disp({ returnVal: thereIsNoError }) :
+                        disp({ message: 'Enter a valid phone number', returnVal: false });
+
+                    thereIsNoError = phone_value.length == 0 ?
+                        disp({ message: 'Phone cannot be empty', returnVal: false }) :
+                        disp({ returnVal: thereIsNoError });
+
+                    thereIsNoError = name_value.match(/^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$/g) ?
+                        disp({ returnVal: thereIsNoError }) :
+                        disp({ message: 'Enter a valid name', returnVal: false });
+
+                    thereIsNoError = name_value.length == 0 ?
+                        disp({ message: 'Name cannot be empty', returnVal: false }) :
+                        disp({ returnVal: thereIsNoError });
+                };
+
+                if (thereIsNoError) {
+                    disp({ message: 'Loading...', isGood: true });
+
+                    fetch("<%=locals.currentPage=='login'?'/user_signin':'/user_registration'%>", {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email,
+                            password,
+                            name:name_value,
+                            phone:phone_value,
+
+                        })
+                    })
+                        .then(res => res.json())
+                        .then((res) => {
+                            disp({
+                                message: res.message,
+                                isGood: res.status == 'error' ? false : true
+                            });
+                            if (res.status == 'good') {
+                                window.location.href = res.action;
+                            };
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            disp({ message: err });
+                        });
+                };
+
+            };
+
+        </script>
+
+
+
 </body>
+
 </html>

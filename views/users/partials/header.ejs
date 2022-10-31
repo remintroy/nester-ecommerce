@@ -1,5 +1,5 @@
 <header class="header header-intro-clearance header-3">
-      
+
 
     <div class="header-middle">
         <div class="container">
@@ -8,7 +8,7 @@
                     <span class="sr-only">Toggle mobile menu</span>
                     <i class="icon-bars"></i>
                 </button>
-                
+
                 <a href="/" class="logo">
                     <img src="/assets/images/demos/demo-3/logo.png" alt="Molla Logo" width="105" height="25">
                 </a>
@@ -21,24 +21,17 @@
                         <div class="header-search-wrapper search-wrapper-wide">
                             <label for="q" class="sr-only">Search</label>
                             <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
-                            <input type="search" class="form-control" name="q" id="q" placeholder="Search product ..." required>
+                            <input type="search" class="form-control" name="q" id="q" placeholder="Search product ..."
+                                required>
                         </div><!-- End .header-search-wrapper -->
                     </form>
                 </div><!-- End .header-search -->
             </div>
 
-            <div class="header-right">
-
-                <!-- <div class="dropdown cart-dropdown">
-                    <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
-                        <div class="icon">
-                            <i class="icon-shopping-cart"></i>
-                            <span class="cart-count">5</span>
-                        </div>
-                        <p>Login</p>
-                    </a>
-                </div> -->
-
+            <div class="header-right" >
+                <% if(!locals.user){ %>
+                    <h6 class="text-white p-3 mb-0 bg-primary rounded" onclick="window.location.href='/user_signin'" style="cursor: pointer;">Login</h6>
+                <% }; %>  
             </div><!-- End .header-right -->
         </div><!-- End .container -->
     </div><!-- End .header-middle -->
@@ -47,7 +40,8 @@
         <div class="container">
             <div class="header-left">
                 <div class="dropdown category-dropdown">
-                    <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static" title="Browse Categories">
+                    <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false" data-display="static" title="Browse Categories">
                         Browse Categories <i class="icon-angle-down"></i>
                     </a>
 
@@ -83,12 +77,14 @@
                         <li class="<%=locals.currentPage=='product'?'active':'';%>">
                             <a href="/product">Product</a>
                         </li>
-                        <li class="<%=locals.currentPage=='cart'?'active':'';%>">
-                            <a href="/cart">Cart</a>
-                        </li>
-                        <li class="<%=locals.currentPage=='dashboard'?'active':'';%>">
-                            <a href="/dashboard">My Account</a>
-                        </li>
+                        <%if(locals.user){%>
+                            <li class="<%=locals.currentPage=='cart'?'active':'';%>">
+                                <a href="/cart">Cart</a>
+                            </li>
+                            <li class="<%=locals.currentPage=='dashboard'?'active':'';%>">
+                                <a href="/dashboard">My Account</a>
+                            </li>
+                        <%};%>
                     </ul><!-- End .menu -->
                 </nav><!-- End .main-nav -->
             </div><!-- End .header-center -->

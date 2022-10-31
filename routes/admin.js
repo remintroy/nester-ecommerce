@@ -6,12 +6,12 @@ const adminApp = express.Router();
 
 
 // dashboard routes
-adminApp.get(["/", "/dashboard"], auth.mustLoginAsAdmin, admin.dashboard);
+adminApp.get('/', auth.mustLoginAsAdmin, admin.dashboard);
 
 adminApp.get('/user_management',auth.mustLoginAsAdmin, admin.users);
 
 adminApp.use((req, res) => {
-    res.render('admin/404', { layout:'admin_layout', message: 'admin error' })
+    res.render('admin/404', { layout:'admin_layout', message: 'Page Not Found !' })
 })
 
 export default adminApp;

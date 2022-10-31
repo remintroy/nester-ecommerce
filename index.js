@@ -60,3 +60,29 @@ app.use((req,res)=>{
 app.listen(appConfig.port,()=>{
     console.log(`[-] Server started on port : ${appConfig.port}`);
 });
+
+// async function createSampleUser(){
+//     try {
+
+//         let output = await db.users({
+//             name:"Hacker",
+//             phone:"0000000000",
+//             email:"untrakable@hq.dev",
+//             UID:randomId(20),
+//             address:randomId(34),
+//             cart:randomId(34),
+//             wishList:randomId(34),
+//             loginProvider:'email',
+//             password:randomId(50),
+//             blocked:true
+//         });
+
+//         // output.save()
+
+//         console.log('DB => ',output);
+        
+//     } catch (error) {
+//         console.error('Error => ',error);
+//     }
+// }
+// createSampleUser();

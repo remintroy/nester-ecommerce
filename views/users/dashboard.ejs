@@ -41,7 +41,7 @@
                                     role="tab" aria-controls="tab-account" aria-selected="false">Account Details</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Sign Out</a>
+                                <a class="nav-link" onclick="logout()" href="#">Sign Out</a>
                             </li>
                         </ul>
                     </aside><!-- End .col-lg-3 -->
@@ -156,3 +156,36 @@
         </div><!-- End .dashboard -->
     </div><!-- End .page-content -->
 </main><!-- End .main -->
+
+
+<script>
+    function logout() {
+        
+        fetch('/user_logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: "log me out"
+            })
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.status == 'error') {
+                    disp({
+                        message:res.message,
+                        isGood:false
+                    })
+                } else {
+                    window.location.href = res.action;
+                };
+            })
+            .catch(error => {
+                disp({
+                    message:error,
+                    isGood:false
+                });
+            });
+    };
+</script>

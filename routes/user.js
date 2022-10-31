@@ -1,44 +1,40 @@
 import express from 'express';
 import * as users from '../app/users.js';
 import * as auth from '../app/services/auth.js';
-
 import * as admin from '../app/admin.js';
-
 
 const app = express.Router();
 
-
-app.get('/admin_login',auth.mustLogoutAsAdmin, admin.login);
+// admin auth routes
+app.get('/admin_login', auth.mustLogoutAsAdmin, admin.login);
 
 app.post('/admin_login', auth.mustLogoutAsAdminAPI, admin.loginApi);
 
-app.post('/admin_logout',auth.mustLoginAsAdminAPI, auth.adminLogout);
+app.post('/admin_logout', auth.mustLoginAsAdminAPI, auth.adminLogout);
 
+// user auth must routes
+app.get(['/cart', '/cart.html'], auth.mustLoginAsUser, users.cart);
 
-app.get(['/','/index.html'],users.home);
+app.get(['/wishlist', '/wishlist.html'], auth.mustLoginAsUser, users.wishlist);
 
-app.get(['/shop','/shop.html'],users.shop);
+app.get(['/dashboard', '/dashboard.html'], auth.mustLoginAsUser, users.dashboard);
 
-app.get(['/product','/product.html'],users.product);
+app.get('/user_signin', auth.mustLogoutAsUser, users.login);
 
-app.get(['/cart','/cart.html'],users.cart);
+app.post('/user_signin', auth.mustLogoutAsUserAPI, users.loginAPI);
 
-app.get(['/wishlist','/wishlist.html'],users.wishlist);
+app.post('/user_logout', auth.mustLoginAsUserAPI, users.logoutAPI);
 
-app.get(['/dashboard','/dashboard.html'],users.dashboard);
+app.get('/user_registration', auth.mustLogoutAsUser, users.signup);
 
-app.get('/login', users.login);
+app.post('/user_registration', auth.mustLogoutAsUser, users.signupAPI);
 
-app.post('/login', async (req, res) => {
-    try {
+// user public routes
+app.get(['/', '/index.html'], users.home);
 
-        auth.signInWithGoogle(req.body);
+app.get(['/shop', '/shop.html'], users.shop);
 
-    } catch (error) {
-        res.send({ status: 'error', message: message });
+app.get(['/product', '/product.html'], users.product);
 
-    }
-    res.send({ status: 'good', message: "got data" });
-});
 
 export default app;

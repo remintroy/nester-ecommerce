@@ -19,10 +19,26 @@ body {
   width: 100%;
   background-color: #ffffff;
   display: flex;
-  align-items: center;
+  align-items: start;
   justify-content: center;
+  padding-bottom: 100px;
+}
+body .login-container.signup {
+  width: 700px;
+}
+body .login-container.signup .multi-line {
+  width: 100%;
+  display: flex;
+  gap: 20px;
+}
+@media screen and (max-width: 780px) {
+  body .multi-line {
+    width: 100%;
+    flex-direction: column;
+  }
 }
 body .login-container {
+  margin-top: 50px;
   width: 450px;
   border: 1px solid var(--border-color);
   border-radius: 5px;
@@ -157,7 +173,7 @@ body .login-container button img {
 body .login-container button:hover {
   background-color: #636363;
 }
-@media screen and (max-width: 525px) {
+@media screen and (max-width: 780px) {
   body .login-container {
     width: 100%;
     height: 100%;

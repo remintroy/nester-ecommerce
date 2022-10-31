@@ -16,7 +16,7 @@
     </div>
     <div class="all_actions">
         <button onclick="validator()">submit</button>
-        <p>don't have an account <b>Signup</b></p>
+        <p>don't have an account <b onclick="window.location.href='/user_registration'">Signup</b></p>
         <div class="or-container">
             <div class="dash"></div>
             <span>OR</span>
@@ -28,28 +28,3 @@
         </div>
     </div>
 </div>
-
-<script src="/js/login/auth.js" type="module"></script>
-<script type="module">
-    import { loginWithEmail } from '/js/login/auth.js';
-    window.loginWithEmail = loginWithEmail;
-</script>
-<script>
-
-    function validator() {
-
-        const email = document.getElementById('emaliInput').value;
-        const password = document.getElementById("passwordInput").value;
-        const err_disp = document.getElementById('err_disp');
-
-        if (email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) {
-
-        } else {
-            err_disp.style.display = 'initial';
-            err_disp.innerText = 'Enter a valid email';
-
-        };
-
-    };
-
-</script>

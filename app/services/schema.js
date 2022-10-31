@@ -16,13 +16,20 @@ export const users = db.model("user", new mongoose.Schema({
     name: String,
     email: String,
     phone: Number,
+    phoneVerified: {
+        type: Boolean,
+        default: false
+    },
     password: String,
     UID: String,
     creationTime: {
         type: Date,
         default: new Date()
     },
-    lastLogin: Date,
+    lastLogin: {
+        type: Date,
+        default: new Date()
+    },
     loginProvider: String,
     blocked: Boolean,
     address: String,
@@ -33,7 +40,6 @@ export const users = db.model("user", new mongoose.Schema({
 }));
 
 export const address = db.model("address", new mongoose.Schema({
-    addressID: String,
     UID: String,
     address: [
         {
