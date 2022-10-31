@@ -19,9 +19,13 @@ app.get(['/wishlist', '/wishlist.html'], auth.mustLoginAsUser, users.wishlist);
 
 app.get(['/dashboard', '/dashboard.html'], auth.mustLoginAsUser, users.dashboard);
 
+app.get(['/checkout', '/checkout.html'], auth.mustLoginAsUser, users.checkout);
+
 app.get('/user_signin', auth.mustLogoutAsUser, users.login);
 
 app.post('/user_signin', auth.mustLogoutAsUserAPI, users.loginAPI);
+
+app.post('/user_signin_google', auth.mustLogoutAsUserAPI, users.loginWithGoogleAPI);
 
 app.post('/user_logout', auth.mustLoginAsUserAPI, users.logoutAPI);
 

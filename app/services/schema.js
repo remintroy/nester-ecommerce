@@ -20,6 +20,10 @@ export const users = db.model("user", new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    emailVerified: {
+        type: Boolean,
+        default: false
+    },
     password: String,
     UID: String,
     creationTime: {

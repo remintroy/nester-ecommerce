@@ -14,16 +14,20 @@ export const signInWithGoogleSDK = ({ idToken }) => {
                 const uid = decodedToken.uid;
                 getAuth()
                     .getUser(uid)
-                    .then(user=>{
-                        console.log('user data form google => ',user);
+                    .then(user => {
+                        resolve(user); // login success form google
                     })
-                    .catch(error=>console.log(error));
+                    .catch(error => {
+                        console.error('GoogleLogin_GettingUserData => ', error);
+                        reject("Error Fetching user data"); return 0;
+                    });
                 // ...
             })
             .catch((error) => {
                 // Handle error
-                console.log(error)
+                console.error('GoogleLogin_ValidatingIDTocken => ', error);
+                reject("Error verifying user"); return 0;
             });
-            
+
     });
 };

@@ -54,7 +54,16 @@ function loginWithGoogle() {
 
 function credentialsToServer(data) {
 
-    fetch('/login', {
+    let disp_state = document.getElementById("disp_state");
+
+    const disp = ({ message, isGood, returnVal }) => {
+        disp_state.style.backgroundColor = isGood ? 'rgb(205 255 196 / 56%)' : 'rgb(255 203 203 / 56%)';
+        disp_state.style.display = message || returnVal == false ? 'flex' : 'none';
+        disp_state.innerText = message ? message : disp_state.innerText;
+        return isGood || message == '' ? true : returnVal;
+    };
+
+    fetch('/user_signin_google', {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
@@ -63,15 +72,21 @@ function credentialsToServer(data) {
     })
         .then(res => res.json())
         .then(res => {
-            console.log('response from server => ', res);
+            if (res.status == 'error') {
+                disp({
+                    message: res.message
+                });
+            } else {
+                disp({
+                    message: res.message,
+                    isGood: true
+                });
+                window.location.href = res.action;
+            };
         })
         .catch(error => {
-            console.error('error while communicating to server => ', error);
+            console.error('Faild while connecting to server => ', error);
         })
-
-};
-
-export const loginWithEmail = ({email, password}) => {
 
 };
 

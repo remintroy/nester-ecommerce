@@ -194,6 +194,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
 
     const MIN_NAME_LENGTH = 2;
     const UID_LENGTH = 25;
+    const GOOGLE_UID_LENGTH = 28;
     const CARTID_LENGTH = 34;
     const ADDRESSID_LENGTH = 10;
     const ORDERID_LENGTH = 34;
@@ -218,18 +219,22 @@ export function validatior(data, requiredIn, typeOfValidation) {
                     return 0;
                 } else {
 
-                    if (UID.length == UID_LENGTH) {
+                    if (UID.length == typeOfValidation == 'google' ? GOOGLE_UID_LENGTH : UID_LENGTH) {
                         // good UID
 
-                        let UIDFromDB = typeOfValidation == 'adminLoign' ?
-                            await db.adminUser.find({ adminID: UID }) :
-                            await db.users.find({ UID: UID });
-
-                        if (UIDFromDB.length > 0) {
-                            // good UID
+                        if (typeOfValidation == 'google') {
+                            // UID from google
                         } else {
-                            reject("UID is not valid"); return 0;
-                        };
+                            let UIDFromDB = typeOfValidation == 'adminLoign' ?
+                                await db.adminUser.find({ adminID: UID }) :
+                                await db.users.find({ UID: UID });
+
+                            if (UIDFromDB.length > 0) {
+                                // good UID
+                            } else {
+                                reject("UID is not valid"); return 0;
+                            };
+                        }
                         output.UID = UID;
                     } else {
                         reject("Invalid UID"); return 0;
@@ -556,6 +561,16 @@ export const userLoginWithEmail = ({ email, password }) => {
                 try {
 
                     let userdata = await db.users.findOne({ email: email }, { password: 0 });
+                    let updateLastLoginTime = await db.users.updateOne(
+                        {
+                            email:email,
+                        },
+                        {
+                            $set:{
+                                lastLogin:new Date()
+                            }
+                        }
+                    );
                     resolve(userdata);
 
                 } catch (error) {
@@ -672,5 +687,74 @@ export const userDataUpdate = ({ UID, email, password, name, phone, blocked }) =
 
 
 export const signInWithGoogle = ({ idToken }) => {
-    firebase.signInWithGoogleSDK({ idToken: idToken })
+    return new Promise(async (resolve, reject) => {
+        try {
+            let userDataFromGoogle = await firebase.signInWithGoogleSDK({ idToken: idToken });
+
+            let output = await validatior(
+                {
+                    UID: userDataFromGoogle.uid,
+                    email: userDataFromGoogle.email,
+                    name: userDataFromGoogle.displayName,
+                    phone: userDataFromGoogle.phoneNumber,
+                },
+                {
+                    UIDRequired: true,
+                    emailRequired: true,
+                },
+                'google'
+            );
+
+            try {
+
+                let userDataFromDB = await db.users.find({ email: output.email });
+
+                if (userDataFromDB.length > 0) {
+                    if (userDataFromDB[0].loginProvider == 'google') {
+                        try {
+                            let userDataForLogin = db.users.updateOne(
+                                {
+                                    UID: output.UID
+                                },
+                                {
+                                    $set: {
+                                        lastLogin: new Date()
+                                    }
+                                }
+                            );
+                            resolve(userDataFromDB[0].UID);
+                        } catch (error) {
+                            console.log('LoginWithGoogle_AuthPG_userUpdate => ', error);
+                            reject('Error Login with google'); return 0;
+                        };
+                    } else {
+                        reject('Email already exist'); return 0;
+                    };
+                } else {
+                    try {
+                        let userDataForLogin = db.users({
+                            name: output.name,
+                            email: output.email,
+                            loginProvider: 'google',
+                            UID: output.UID,
+                            phone: output.phone,
+                            emailVerified: userDataFromGoogle.emailVerified,
+                        });
+                        userDataForLogin.save();
+                        resolve(userDataForLogin.UID);
+                    } catch (error) {
+                        console.log('LoginWithGoogle_AuthPG_userUpdate => ', error);
+                        reject('Error Login with google'); return 0;
+                    };
+                };
+
+            } catch (error) {
+                console.error("LoginWithGoogle_AuthPG_userCheck => ", error);
+                reject('Error Login with google'); return 0;
+            };
+        } catch (error) {
+            reject(error); return 0;
+        };
+    });
 };
+

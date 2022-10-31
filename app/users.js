@@ -42,6 +42,13 @@ export const dashboard = (req, res) => {
         user: req.user
     });
 };
+export const checkout = (req, res) => {
+    const currentPage = 'checkout';
+    res.render('users/checkout', {
+        currentPage,
+        user: req.user
+    });
+};
 export const login = (req, res) => {
     const currentPage = 'login';
     const layout = 'users/auth/layout';
@@ -91,6 +98,16 @@ export const logoutAPI = async (req, res) => {
 
         res.send({ status: 'good', message: "Logout success", action: '/' });
 
+    } catch (error) {
+        res.send({ status: 'error', message: error });
+    };
+};
+export const loginWithGoogleAPI = async (req, res) => {
+    try {
+        const idToken = req.body.idToken;
+        const output = await auth.signInWithGoogle({ idToken: idToken });
+        req.session.user = output;
+        res.send({ status: 'good', message: 'Login success', action: '/' });
     } catch (error) {
         res.send({ status: 'error', message: error });
     };
