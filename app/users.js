@@ -120,7 +120,9 @@ export const loginWithOtp = (req, res) => {
 export const loginWithOtpAPI = async (req, res) => {
     try {
 
-        let userDataFromOTP = await auth.signInWithOTP({ idToken: req.body.idToken });
+        const userDataFromOTP = await auth.signInWithOTP({ idToken: req.body.idToken });
+
+        req.session.user = userDataFromOTP;
 
         res.send({ status: 'good', message: 'added user', action: '/' });
 

@@ -17,6 +17,7 @@ export const initAuth = async (req, res, next) => {
         return false;
     };
 
+    // check admin account logged in or not
     if (req.session.admin) {
         try {
             let adminUser = await db.adminUser.find({ adminID: req.session.admin }, { password: 0 });
@@ -31,12 +32,20 @@ export const initAuth = async (req, res, next) => {
         req.admin = falseMaker();
     };
 
+    // check user account logged in or not
     if (req.session.user) {
         try {
+
             let user = await db.users.find({ UID: req.session.user }, { password: 0 });
+
+            function blockedChecker(userData) {
+                return userData?.blocked ? falseMaker() : userData;
+            };
+
             req.user = user.length != 0 ?
-                user[0] :
+                blockedChecker(user[0]) :
                 falseMaker();
+
         } catch (error) {
             console.error('InitAuth_USER => ', error);
             req.user = falseMaker();
@@ -111,7 +120,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
         cart: null,
         address: null,
         orders: null,
-        wishList: null
+        wishList: null,
     };
 
     const MIN_NAME_LENGTH = 2;
@@ -148,7 +157,11 @@ export function validatior(data, requiredIn, typeOfValidation) {
                             PHONE_UID_LENGTH :
                             UID_LENGTH;
 
-                    if (UID.length == lengthTOCheck) {
+                    if (
+                        UID.length == GOOGLE_UID_LENGTH ||
+                        UID.length == PHONE_UID_LENGTH ||
+                        UID.length == UID_LENGTH
+                    ) {
                         // good UID
 
                         if (typeOfValidation == 'google' || typeOfValidation == 'phone') {
@@ -540,33 +553,48 @@ export const userLoginWithEmail = ({ email, password }) => {
                 },
                 {
                     emailRequired: true,
-                    passwordRequired: true
+                    passwordRequired: true,
+                    blockedReqired: true,
                 },
                 'login'
             );
 
-            if (output.password == true) {
-                try {
+            try {
 
-                    let userdata = await db.users.findOne({ email: email }, { password: 0 });
-                    let updateLastLoginTime = await db.users.updateOne(
-                        {
-                            email: email,
-                        },
-                        {
-                            $set: {
-                                lastLogin: new Date()
+                const userdata = await db.users.findOne({ email: output.email })
+
+                if (userdata.blocked) {
+
+                    reject("You account is disabled"); return 0;
+
+                } else if (output.password == true) {
+
+                    try {
+
+                        let userdata = await db.users.findOne({ email: email }, { password: 0 });
+                        let updateLastLoginTime = await db.users.updateOne(
+                            {
+                                email: email,
+                            },
+                            {
+                                $set: {
+                                    lastLogin: new Date()
+                                }
                             }
-                        }
-                    );
-                    resolve(userdata);
+                        );
+                        resolve(userdata);
 
-                } catch (error) {
-                    console.error('UserLogin_DB err => ', error);
+                    } catch (error) {
+                        console.error('UserLogin_DB err => ', error);
+                    };
+                } else {
+                    reject('Incorrect password'); return 0;
                 };
-            } else {
-                reject('Incorrect password'); return 0;
+            } catch (error) {
+                console.log("Blocked_Lookup_Email_DB => ", error);
+                reject("Error fetching user data"); return 0;
             };
+
         } catch (error) {
             reject(error); return 0;
         };
@@ -611,12 +639,12 @@ export const userSignupWithEmail = ({ email, name, password, phone }) => {
         };
     });
 };
-export const userDataUpdate = ({ UID, email, password, name, phone, blocked }) => {
+export const userDataUpdate = ({ UID, email, password, name, phone, state }) => {
     return new Promise(async (resolve, reject) => {
 
         try {
 
-            // updatable: email, password, name, phone, blocked
+            // updatable: email, password, name, phone, state
             const output = await validatior(
                 {
                     UID: UID,
@@ -626,7 +654,7 @@ export const userDataUpdate = ({ UID, email, password, name, phone, blocked }) =
                     phone: phone,
                 },
                 {
-                    UIDRequired: true
+
                 },
                 'updateUser'
             );
@@ -640,8 +668,8 @@ export const userDataUpdate = ({ UID, email, password, name, phone, blocked }) =
                 };
             };
 
-            if (blocked) {
-                result.blocked = blocked == true ? true : false;
+            if (state) {
+                result.blocked = state == 'disabled' ? true : false;
             };
 
             if (Object.keys(result).length <= 0) {
@@ -657,6 +685,7 @@ export const userDataUpdate = ({ UID, email, password, name, phone, blocked }) =
                         $set: result
                     }
                 );
+                resolve('Updated Successfully');
                 // console.log('updated => ', updated);
                 // console.log('output => ', output);
                 // console.log('result => ', result);
@@ -694,24 +723,46 @@ export const signInWithGoogle = ({ idToken }) => {
 
                 let userDataFromDB = await db.users.find({ email: output.email });
 
+                // email exists
                 if (userDataFromDB.length > 0) {
+
+                    // confirms that the user is a google user
                     if (userDataFromDB[0].loginProvider == 'google') {
+
                         try {
-                            let userDataForLogin = db.users.updateOne(
-                                {
-                                    UID: output.UID
-                                },
-                                {
-                                    $set: {
-                                        lastLogin: new Date()
-                                    }
-                                }
-                            );
-                            resolve(userDataFromDB[0].UID);
+
+                            const userdata = await db.users.findOne({ UID: output.UID });
+
+                            if (userdata.blocked) {
+
+                                reject("You account is disabled"); return 0;
+
+                            } else {
+
+                                try {
+                                    let userDataForLogin = db.users.updateOne(
+                                        {
+                                            UID: output.UID
+                                        },
+                                        {
+                                            $set: {
+                                                lastLogin: new Date()
+                                            }
+                                        }
+                                    );
+                                    resolve(userDataFromDB[0].UID);
+                                } catch (error) {
+                                    console.log('LoginWithGoogle_AuthPG_userUpdate => ', error);
+                                    reject('Error Login with google'); return 0;
+                                };
+
+                            };
+
                         } catch (error) {
-                            console.log('LoginWithGoogle_AuthPG_userUpdate => ', error);
-                            reject('Error Login with google'); return 0;
+                            console.log("Blocked_Check_GOOGLE_DB => ", error);
+                            reject("Error fetching user data"); return 0;
                         };
+
                     } else {
                         reject('Email already exist'); return 0;
                     };
@@ -778,6 +829,11 @@ export const signInWithOTP = ({ idToken }) => {
 
                 if (userDataFromDB.length > 0) {
                     // update user
+
+                    if (userDataFromDB[0]?.blocked) {
+                        reject("You account is disabled"); return 0;
+                    };
+
                     try {
                         const updateUserData = await db.users.updateOne({ UID: output.UID }, {
                             $set: {
@@ -791,6 +847,7 @@ export const signInWithOTP = ({ idToken }) => {
                         console.error('AUTH_OTP_DB_UPDATE => ', error);
                         reject('Error updating user data');
                     };
+
                 } else {
                     // create user
                     try {
@@ -804,10 +861,10 @@ export const signInWithOTP = ({ idToken }) => {
                             try {
 
                                 const creatingNewUser = await db.users({
-                                    phone:output.phone,
-                                    email:output.email,
-                                    loginProvider:'phone',
-                                    UID:output.UID
+                                    phone: output.phone,
+                                    email: output.email,
+                                    loginProvider: 'phone',
+                                    UID: output.UID
                                 });
 
                                 creatingNewUser.save();

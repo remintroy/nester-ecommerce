@@ -31,14 +31,16 @@ const auth = getAuth();
 setPersistence(auth, browserSessionPersistence);
 
 // declaring and setting recaptcha to window object
-window.recaptchaVerifier = new RecaptchaVerifier('submit_for_send_otp', {
-    'size': 'invisible',
-    'callback': (response) => {
-        // reCAPTCHA solved, allow signInWithPhoneNumber.
-        // ...
-        onSignInSubmit();
-    }
-}, auth);
+export const setReCaptcha = () => {
+    window.recaptchaVerifier = new RecaptchaVerifier('submit_for_send_otp', {
+        'size': 'invisible',
+        'callback': (response) => {
+            // reCAPTCHA solved, allow signInWithPhoneNumber.
+            // ...
+            onSignInSubmit();
+        }
+    }, auth);
+};
 
 // to disp error in page
 const disp = ({ message, isGood, returnVal }) => {
@@ -137,5 +139,7 @@ if (googleLoginBtn) {
     googleLoginBtn.addEventListener('click', (e) => {
         loginWithGoogle();
     });
+}else{
+    setReCaptcha();
 };
 

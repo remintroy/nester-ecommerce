@@ -32,19 +32,19 @@
 
 
     <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item <%=locals.currentPage=='users'?'active':'';%>">
+    <li class="nav-item <%=locals.currentPageA=='users'?'active':'';%>">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
             aria-expanded="true" aria-controls="collapseTwo">
             <i class="fas fa-fw fa-table"></i>
             <span>Users</span>
         </a>
-        <div id="collapseTwo" class="collapse <%=locals.currentPage=='users'?'show':'';%>" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div id="collapseTwo" class="collapse <%=locals.currentPageA=='users'?'show':'';%>" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">User management</h6>
                 <a class="collapse-item <%=locals.currentPage=='users'?'active':'';%>" href="/admin_panel/user_management">All users</a>
-                <a class="collapse-item" href="/admin_panel/blocked_users">Blocked users</a>
+                <a class="collapse-item <%=locals.currentPage=='diabledUsers'?'active':'';%>" href="/admin_panel//user_management/disabled_users">Disabled users</a>
                 <h6 class="collapse-header">more action</h6>
-                <a class="collapse-item" href="/admin/user">Create user</a>
+                <a class="collapse-item" href="/admin_panel/user">Create user</a>
             </div>
         </div>
     </li>
@@ -93,11 +93,11 @@
     </div>
 
     <!-- Sidebar Message -->
-    <div class="sidebar-card d-none d-lg-flex">
+    <!-- <div class="sidebar-card d-none d-lg-flex">
         <img class="sidebar-card-illustration mb-2" src="/img/undraw_rocket.svg" alt="...">
         <p class="text-center mb-2"><strong>Reminz</strong> Admin console, Explore tools and services !</p>
         <a class="btn btn-success btn-sm" href="/admin_panel">Dashboard</a>
-    </div>
+    </div> -->
 
 </ul>
 <!-- End of Sidebar -->
