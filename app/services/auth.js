@@ -117,6 +117,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
     const MIN_NAME_LENGTH = 2;
     const UID_LENGTH = 25;
     const GOOGLE_UID_LENGTH = 28;
+    const PHONE_UID_LENGTH = 28;
     const CARTID_LENGTH = 34;
     const ADDRESSID_LENGTH = 10;
     const ORDERID_LENGTH = 34;
@@ -141,11 +142,17 @@ export function validatior(data, requiredIn, typeOfValidation) {
                     return 0;
                 } else {
 
-                    if (UID.length == typeOfValidation == 'google' ? GOOGLE_UID_LENGTH : UID_LENGTH) {
+                    const lengthTOCheck = typeOfValidation == 'google' ?
+                        GOOGLE_UID_LENGTH :
+                        typeOfValidation == 'phone' ?
+                            PHONE_UID_LENGTH :
+                            UID_LENGTH;
+
+                    if (UID.length == lengthTOCheck) {
                         // good UID
 
-                        if (typeOfValidation == 'google') {
-                            // UID from google
+                        if (typeOfValidation == 'google' || typeOfValidation == 'phone') {
+                            // UID from google or UID from phone } firebase;
                         } else {
                             let UIDFromDB = typeOfValidation == 'adminLoign' ?
                                 await db.adminUser.find({ adminID: UID }) :
@@ -294,7 +301,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
 
                 if (phone.match(/^\+?[1-9][0-9]{7,14}$/)) {
 
-                    if (typeOfValidation == "updateUser" || typeOfValidation == 'signup') {
+                    if (typeOfValidation == "updateUser" || typeOfValidation == 'signup' || typeOfValidation == 'google') {
                         try {
 
                             const phoneIn = await db.users.find({ phone: phone });
@@ -668,14 +675,13 @@ export const userDataUpdate = ({ UID, email, password, name, phone, blocked }) =
 export const signInWithGoogle = ({ idToken }) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let userDataFromGoogle = await firebase.signInWithGoogleSDK({ idToken: idToken });
+            const userDataFromGoogle = await firebase.signInWithGoogleSDK({ idToken: idToken });
 
-            let output = await validatior(
+            const output = await validatior(
                 {
                     UID: userDataFromGoogle.uid,
                     email: userDataFromGoogle.email,
                     name: userDataFromGoogle.displayName,
-                    phone: userDataFromGoogle.phoneNumber,
                 },
                 {
                     UIDRequired: true,
@@ -711,19 +717,29 @@ export const signInWithGoogle = ({ idToken }) => {
                     };
                 } else {
                     try {
+
+                        let phoneNumberAfterValidaton;
+
+                        try {
+                            phoneNumberAfterValidaton = await validatior({ phone: userDataFromGoogle.phoneNumber });
+                            phoneNumberAfterValidaton = phoneNumberAfterValidaton.phone;
+                        } catch (error) {
+                            reject(error); return 0;
+                        };
+
                         let userDataForLogin = db.users({
                             name: output.name,
                             email: output.email,
                             loginProvider: 'google',
                             UID: output.UID,
-                            phone: output.phone,
+                            phone: phoneNumberAfterValidaton,
                             emailVerified: userDataFromGoogle.emailVerified,
                         });
                         userDataForLogin.save();
                         resolve(userDataForLogin.UID);
                     } catch (error) {
                         console.log('LoginWithGoogle_AuthPG_userUpdate => ', error);
-                        reject('Error Login with google'); return 0;
+                        reject('Error creating account with google'); return 0;
                     };
                 };
 
@@ -737,3 +753,87 @@ export const signInWithGoogle = ({ idToken }) => {
     });
 };
 
+export const signInWithOTP = ({ idToken }) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            const userDataFromOTP = await firebase.signInWithOTPSDK({ idToken: idToken });
+
+            const phoneNumber = userDataFromOTP.phoneNumber.slice(3);
+
+            const output = await validatior(
+                {
+                    UID: userDataFromOTP.uid,
+                    phone: phoneNumber,
+                },
+                {
+                    UIDRequired: true
+                },
+                'phone'
+            );
+
+            try {
+
+                const userDataFromDB = await db.users.find({ UID: output.UID });
+
+                if (userDataFromDB.length > 0) {
+                    // update user
+                    try {
+                        const updateUserData = await db.users.updateOne({ UID: output.UID }, {
+                            $set: {
+                                lastLogin: new Date()
+                            }
+                        });
+
+                        resolve(userDataFromDB[0].UID); return 0; // 
+
+                    } catch (error) {
+                        console.error('AUTH_OTP_DB_UPDATE => ', error);
+                        reject('Error updating user data');
+                    };
+                } else {
+                    // create user
+                    try {
+
+                        const toFindExistingPhoneNumber = await db.users.find({ phone: output.phone });
+
+                        if (toFindExistingPhoneNumber.length > 0) {
+                            reject('Phone number already registerd');
+                        } else {
+
+                            try {
+
+                                const creatingNewUser = await db.users({
+                                    phone:output.phone,
+                                    email:output.email,
+                                    loginProvider:'phone',
+                                    UID:output.UID
+                                });
+
+                                creatingNewUser.save();
+
+                                resolve(creatingNewUser.UID); //
+
+                            } catch (error) {
+                                console.error('AUTH_OTP_DB_Number_Create => ', error);
+                                reject('Error user account');
+                            };
+                        };
+
+                    } catch (error) {
+                        console.error('AUTH_OTP_DB_Number_dup => ', error);
+                        reject('Error fetching user data');
+                    };
+                };
+
+            } catch (error) {
+                console.error('AUTH_OTP_DB => ', error);
+                reject('Error fectching user data'); return 0;
+            };
+
+
+        } catch (error) {
+            reject(error);
+        };
+    });
+};

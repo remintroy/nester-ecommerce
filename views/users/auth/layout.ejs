@@ -6,13 +6,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loign & Signup</title>
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/users/login/style.css">
 </head>
 
 <body>
     <%- body %>
 
-        <script src="/js/login/auth.js" type="module"></script> 
+        <script src="/js/login/auth.js" type="module"></script>
         <script>
             function viewPassword(showPassword) {
                 let input = document.getElementById("passwordInput");
@@ -101,8 +102,8 @@
                         body: JSON.stringify({
                             email,
                             password,
-                            name:name_value,
-                            phone:phone_value,
+                            name: name_value,
+                            phone: phone_value,
 
                         })
                     })

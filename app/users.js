@@ -85,7 +85,7 @@ export const loginAPI = async (req, res) => {
 
         req.session.user = result.UID;
 
-        res.send({ status: 'good', message: "Login success", action: '/user_signin' });
+        res.send({ status: 'good', message: "Login success", action: '/' });
 
     } catch (error) {
         res.send({ status: 'error', message: error });
@@ -96,7 +96,7 @@ export const logoutAPI = async (req, res) => {
 
         req.session.user = false;
 
-        res.send({ status: 'good', message: "Logout success", action: '/' });
+        res.send({ status: 'good', message: "Logout success", action: '/user_signin' });
 
     } catch (error) {
         res.send({ status: 'error', message: error });
@@ -113,7 +113,18 @@ export const loginWithGoogleAPI = async (req, res) => {
     };
 };
 export const loginWithOtp = (req, res) => {
-    res.render('users/auth/otp',{
-        layout:'users/auth/layout'
+    res.render('users/auth/otp', {
+        layout: 'users/auth/layout'
     });
+};
+export const loginWithOtpAPI = async (req, res) => {
+    try {
+
+        let userDataFromOTP = await auth.signInWithOTP({ idToken: req.body.idToken });
+
+        res.send({ status: 'good', message: 'added user', action: '/' });
+
+    } catch (error) {
+        res.send({ status: 'error', message: error });
+    };
 };

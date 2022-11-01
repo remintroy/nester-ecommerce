@@ -8,9 +8,9 @@
  */
 export function randomId(length) {
     var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'.split('');
-    var str = ''; 
+    var str = '';
 
-    if (!length) { 
+    if (!length) {
         length = 10;
     };
 
@@ -18,6 +18,17 @@ export function randomId(length) {
         str += chars[Math.floor(Math.random() * chars.length)];
     };
 
-    return str; 
+    return str;
 
+};
+
+export const dataToReadable = (date) => {
+
+    const date_ = new Date(date);
+
+    let dd = date_.getDate();
+    let mm = date_.getMonth() + 1;
+    let yyyy = date_.getFullYear();
+
+    return `${isNaN(dd) ? '00' : dd}-${isNaN(mm) ? '00' : mm}-${isNaN(yyyy) ? '0000' : yyyy}`;
 };

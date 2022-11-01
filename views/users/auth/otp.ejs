@@ -1,95 +1,183 @@
-<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-
 <!-- main containter -->
 <div class="login-container">
     <!-- <h2>Enter OTP</h2> -->
 
-    <div class="container d-flex justify-content-center align-items-center">
+    <div class="input-cont" id="inputPlace">
+        <h6 style="font-size: 20px; margin-bottom: 10px;">Enter your phone number</h6>
+        <div class="err_disp" id="err_disp" style="display: none;">-</div>
+        <div class="disp-state" style="display: none;" id="disp_state">error occured</div>
+        <br>
+        <div class="sub-input">
+            <input type="text" name="phone" id="phoneInput" placeholder="Phone">
+        </div>
+        <button class="sendOtp" onclick="sendOTP()" id="submit_for_send_otp">Send otp</button>
+    </div>
+
+    <div class="container justify-content-center align-items-center" style="display: none;" id="confirmPlace">
         <div class="position-relative">
             <div class="card p-2 text-center">
-                <h2>Enter OTP</h2><br>
-                <!-- <h6>Please enter the one time password <br> to verify your account</h6> -->
+                <!-- <h2>Enter OTP</h2><br> -->
+                <h6>Please enter the one time password <br> to verify your account</h6> <br>
                 <div> <span>A code has been sent to</span> <small>*******9897</small> </div> <br>
-                <div id="otp" class="inputs d-flex flex-row justify-content-center mt-2"> <input class="m-2 text-center form-control rounded" type="text" id="first" maxlength="1" /> <input class="m-2 text-center form-control rounded" type="text" id="second" maxlength="1" /> <input class="m-2 text-center form-control rounded" type="text" id="third" maxlength="1" /> <input class="m-2 text-center form-control rounded" type="text" id="fourth" maxlength="1" /> <input class="m-2 text-center form-control rounded" type="text" id="fifth" maxlength="1" /> <input class="m-2 text-center form-control rounded" type="text" id="sixth" maxlength="1" /> </div>
-                <div class="mt-4"> <button class="btn btn-danger px-4 validate">Validate</button> </div>
+                <div class="disp-state disp-state2" style="display: none;" id="disp_state">error occured</div>
+                <div id="otp" class="inputs d-flex flex-row justify-content-center mt-2">
+                    <input class="m-2 text-center form-control rounded" type="text" id="first" maxlength="1" />
+                    <input class="m-2 text-center form-control rounded" type="text" id="second" maxlength="1" />
+                    <input class="m-2 text-center form-control rounded" type="text" id="third" maxlength="1" />
+                    <input class="m-2 text-center form-control rounded" type="text" id="fourth" maxlength="1" />
+                    <input class="m-2 text-center form-control rounded" type="text" id="fifth" maxlength="1" />
+                    <input class="m-2 text-center form-control rounded" type="text" id="sixth" maxlength="1" />
+                </div>
+                <div class="mt-4">
+                    <button class="btn btn-danger px-4 validate" onclick="getConformCode()">Validate</button>
+                </div>
             </div>
         </div>
     </div>
-    
+
 </div>
 
 
-<style>
-    .height-100 {
-        height: 100vh
-    }
 
-    .card {
-        width: 400px;
-        border: none;
-        height: 300px;
-        z-index: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center
-    }
+<script type="module">
+    import { sendOtpToUser } from '/js/login/auth.js';
+    window.sendOtpToUser = sendOtpToUser;
+</script>
 
-    .card h6 {
-        color: rgb(0, 0, 0);
-        font-size: 20px
-    }
-
-    .inputs input {
-        width: 40px;
-        height: 40px
-    }
-
-    input[type=number]::-webkit-inner-spin-button,
-    input[type=number]::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-        margin: 0
-    }
-
-    .card-2 {
-        background-color: #fff;
-        padding: 10px;
-        width: 350px;
-        height: 100px;
-        bottom: -50px;
-        left: 20px;
-        position: absolute;
-        border-radius: 5px
-    }
-
-    .card-2 .content {
-        margin-top: 50px
-    }
-
-    .card-2 .content a {
-        color: rgb(0, 0, 0)
-    }
-
-    .form-control:focus {
-        box-shadow: none;
-        border: 2px solid rgb(0, 0, 0)
-    }
-
-    .validate {
-        border-radius: 20px;
-        height: 40px;
-        background-color: rgb(0, 0, 0);
-        border: 1px solid rgb(0, 0, 0);
-        width: 140px
-    }
-</style>
 <script>
+
+    // TODO : some code re-valuation and simplification along side UI beautyfication
+
+    const inputPlace = document.getElementById('inputPlace');
+    const confirmPlace = document.getElementById("confirmPlace");
+
+    const disp = ({ message, isGood, returnVal }) => {
+        let disp_state = document.getElementById("disp_state");
+        disp_state.style.backgroundColor = isGood ? 'rgb(205 255 196 / 56%)' : 'rgb(255 203 203 / 56%)';
+        disp_state.style.display = message || returnVal == false ? 'flex' : 'none';
+        disp_state.innerText = message ? message : disp_state.innerText;
+        return isGood || message == '' ? true : returnVal;
+    };
+
+    // submit form button 
+    const sendOTP = async () => {
+        try {
+
+            const phone = document.getElementById('phoneInput').value;
+
+            const output = await sendOtpToUser('+91' + phone);
+
+            inputPlace.style.display = 'none';
+            confirmPlace.style.display = 'flex';
+
+        } catch (error) {
+            console.error(error);
+            disp({
+                message: error
+            });
+        };
+    };
+
+    // collecting and submitting verification code user enterd
+    const getConformCode = () => {
+
+        const inputs = document.querySelectorAll('#otp > *[id]');
+        let output = '';
+        for (let i = 0; i < inputs.length; i++) {
+            output += inputs[i].value;
+        };
+
+        confirmOTP(output); // continue to send conformation code
+    };
+
+    // send collected conform code to firebase and after validation id tocken is sent to server
+    const confirmOTP = (code) => {
+
+        const disp = ({ message, isGood, returnVal }) => {
+            let disp_state = document.querySelector("div.disp-state2");
+            disp_state.style.backgroundColor = isGood ? 'rgb(205 255 196 / 56%)' : 'rgb(255 203 203 / 56%)';
+            disp_state.style.display = message || returnVal == false ? 'flex' : 'none';
+            disp_state.innerText = message ? message : disp_state.innerText;
+            return isGood || message == '' ? true : returnVal;
+        };
+
+        // confri otp with firebase function
+        confirmationResult.confirm(code).then((result) => {
+            // User signed in successfully.
+
+            const idToken = result._tokenResponse.idToken;
+
+            // sending id token to server
+            fetch('/user_signin_phone', {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                method: 'POST',
+                body: JSON.stringify({
+                    idToken: idToken
+                })
+            })
+                .then(res => res.json())
+                .then(res => {
+                    // response from server
+                    if (res.status == 'error') {
+                        disp({ message: res.message });
+                    } else {
+                        disp({ message: res.message, isGood: true });
+                        if (res.action) {
+                            window.location.href = res.action;
+                        };
+                    };
+                })
+                .catch(error => {
+                    // error occur during connection
+                    disp({
+                        message: `Can't connect to server`
+                    });
+                })
+            // ...
+        }).catch((error) => {
+            // error validating verification code
+            disp({
+                message: 'Incorrect OTP Or OTP not valid'
+            });
+        });
+    };
+
+</script>
+
+<script>
+    // for input field of otp submit
     document.addEventListener("DOMContentLoaded", function (event) {
 
         function OTPInput() {
             const inputs = document.querySelectorAll('#otp > *[id]');
-            for (let i = 0; i < inputs.length; i++) { inputs[i].addEventListener('keydown', function (event) { if (event.key === "Backspace") { inputs[i].value = ''; if (i !== 0) inputs[i - 1].focus(); } else { if (i === inputs.length - 1 && inputs[i].value !== '') { return true; } else if (event.keyCode > 47 && event.keyCode < 58) { inputs[i].value = event.key; if (i !== inputs.length - 1) inputs[i + 1].focus(); event.preventDefault(); } else if (event.keyCode > 64 && event.keyCode < 91) { inputs[i].value = String.fromCharCode(event.keyCode); if (i !== inputs.length - 1) inputs[i + 1].focus(); event.preventDefault(); } } }); }
-        } OTPInput();
+            for (let i = 0; i < inputs.length; i++) {
+
+                inputs[i].addEventListener('keydown', function (event) {
+
+                    if (event.key === "Backspace") {
+                        inputs[i].value = '';
+                        if (i !== 0) inputs[i - 1].focus();
+                    } else {
+                        if (i === inputs.length - 1 && inputs[i].value !== '') {
+                            return true;
+                        } else if (event.keyCode > 47 && event.keyCode < 58) {
+                            inputs[i].value = event.key;
+                            if (i !== inputs.length - 1) inputs[i + 1].focus();
+                            event.preventDefault();
+                        } else if (event.keyCode > 64 && event.keyCode < 91) {
+                            inputs[i].value = String.fromCharCode(event.keyCode);
+                            if (i !== inputs.length - 1) inputs[i + 1].focus();
+                            event.preventDefault();
+                        }
+                    }
+
+                });
+
+            };
+        };
+
+        OTPInput();
     });
 </script>

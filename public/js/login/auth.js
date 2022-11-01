@@ -1,12 +1,17 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-analytics.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-auth.js";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import {
+    getAuth,
+    signInWithPopup,
+    GoogleAuthProvider,
+    RecaptchaVerifier,
+    signInWithPhoneNumber,
+    setPersistence,
+    browserSessionPersistence
+} from "https://www.gstatic.com/firebasejs/9.13.0/firebase-auth.js";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// config files
 const firebaseConfig = {
     apiKey: "AIzaSyAwK0KSATNGpMxm8GkPVYOo1HaCHdx60AY",
     authDomain: "project-dev-h.firebaseapp.com",
@@ -20,11 +25,57 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
-
 const provider = new GoogleAuthProvider();
 const auth = getAuth();
 
-function loginWithGoogle() {
+setPersistence(auth, browserSessionPersistence);
+
+// declaring and setting recaptcha to window object
+window.recaptchaVerifier = new RecaptchaVerifier('submit_for_send_otp', {
+    'size': 'invisible',
+    'callback': (response) => {
+        // reCAPTCHA solved, allow signInWithPhoneNumber.
+        // ...
+        onSignInSubmit();
+    }
+}, auth);
+
+// to disp error in page
+const disp = ({ message, isGood, returnVal }) => {
+    const disp_state = document.getElementById("disp_state");
+    disp_state.style.backgroundColor = isGood ? 'rgb(205 255 196 / 56%)' : 'rgb(255 203 203 / 56%)';
+    disp_state.style.display = message || returnVal == false ? 'flex' : 'none';
+    disp_state.innerText = message ? message : disp_state.innerText;
+    return isGood || message == '' ? true : returnVal;
+};
+
+// to send otp to mobile number
+export const sendOtpToUser = (phoneNumber) => {
+    return new Promise((resolve, reject) => {
+
+        const appVerifier = window.recaptchaVerifier;
+
+        const auth = getAuth();
+        signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+            .then((confirmationResult) => {
+
+                window.confirmationResult = confirmationResult;
+                resolve('OTP SEND');
+
+            }).catch((error) => {
+                // Handle Errors here.
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                // ...
+                let finalErrorMessage = errorCode.split('/').pop().split('-').join(' ');
+
+                reject(finalErrorMessage);
+            });
+    });
+};
+
+// login with google main function
+const loginWithGoogle = () => {
 
     signInWithPopup(auth, provider)
         .then((result) => {
@@ -41,27 +92,18 @@ function loginWithGoogle() {
             // Handle Errors here.
             const errorCode = error.code;
             const errorMessage = error.message;
-            // The email of the user's account used.
-            const email = error.customData.email;
-            // The AuthCredential type that was used.
-            const credential = GoogleAuthProvider.credentialFromError(error);
             // ...
-            console.log(email)
-            console.log(errorMessage)
+            let finalErrorMessage = errorCode.split('/').pop().split('-').join(' ');
+
+            disp({
+                message: finalErrorMessage
+            })
         });
 
 };
 
-function credentialsToServer(data) {
-
-    let disp_state = document.getElementById("disp_state");
-
-    const disp = ({ message, isGood, returnVal }) => {
-        disp_state.style.backgroundColor = isGood ? 'rgb(205 255 196 / 56%)' : 'rgb(255 203 203 / 56%)';
-        disp_state.style.display = message || returnVal == false ? 'flex' : 'none';
-        disp_state.innerText = message ? message : disp_state.innerText;
-        return isGood || message == '' ? true : returnVal;
-    };
+// send idToken to server after successfully login with google
+const credentialsToServer = (data) => {
 
     fetch('/user_signin_google', {
         method: "POST",
@@ -86,11 +128,14 @@ function credentialsToServer(data) {
         })
         .catch(error => {
             console.error('Faild while connecting to server => ', error);
-        })
-
+        });
 };
 
-document.getElementById("googleLoginBtn").addEventListener('click', (e) => {
-    loginWithGoogle();
-});
+// event listener for login with google btn
+const googleLoginBtn = document.getElementById('googleLoginBtn');
+if (googleLoginBtn) {
+    googleLoginBtn.addEventListener('click', (e) => {
+        loginWithGoogle();
+    });
+};
 

@@ -23,11 +23,13 @@ app.get(['/checkout', '/checkout.html'], auth.mustLoginAsUser, users.checkout);
 
 app.get('/user_signin', auth.mustLogoutAsUser, users.login);
 
-app.get('/user_signin_phone', auth.mustLogoutAsUser, users.loginWithOtp);
-
 app.post('/user_signin', auth.mustLogoutAsUserAPI, users.loginAPI);
 
 app.post('/user_signin_google', auth.mustLogoutAsUserAPI, users.loginWithGoogleAPI);
+
+app.get('/user_signin_phone', auth.mustLogoutAsUser, users.loginWithOtp);
+
+app.post('/user_signin_phone', auth.mustLogoutAsUserAPI, users.loginWithOtpAPI);
 
 app.post('/user_logout', auth.mustLoginAsUserAPI, users.logoutAPI);
 

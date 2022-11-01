@@ -1,5 +1,5 @@
 import * as auth from './services/auth.js';
-import { randomId } from './services/util.js';
+import { randomId, dataToReadable } from './services/util.js';
 import * as db from './services/schema.js';
 
 const layout = `admin_layout`
@@ -32,17 +32,6 @@ export const users = async (req, res, next) => {
         let allUsers = await db.users.find({}, { password: 0 });
 
         const userData = [];
-
-        const dataToReadable = (date) =>{
-
-            const date_ = new Date(date);
-
-            let dd = date_.getDate();
-            let mm = date_.getMonth()+1;
-            let yyyy = date_.getFullYear();
-
-            return `${isNaN(dd)?'00':dd}-${isNaN(mm)?'00':mm}-${isNaN(yyyy)?'0000':yyyy}`;
-        }
 
         for(let i=0; i<allUsers.length; i++){
             
