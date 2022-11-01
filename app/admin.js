@@ -135,9 +135,7 @@ export const loginApi = async (req, res) => {
 export const editUser = async (req, res) => {
 
     try {
-
-        console.log(req.body)
-
+        
         const output = await auth.validatior({ UID: req.params.UID });
 
         try {
