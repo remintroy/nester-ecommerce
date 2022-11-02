@@ -1,0 +1,158 @@
+<!-- Custom styles for this page -->
+<link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">All Catogory's</h1>
+    <p class="mb-4">Edit and Update category's</p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">All users</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>ID</th>
+                            <th>Created</th>
+                            <th>status</th>
+                            <!-- <th style="cursor: pointer; text-align: center;">Disable / Enable</th> -->
+                            <th style="cursor: pointer; text-align: center;">Delete </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% categorys.forEach((category,index,array)=>{ %>
+                            <tr>
+                                <td>
+                                    <%=index+1%>
+                                </td>
+                                <td style="text-transform:capitalize; padding: 0; position: relative; min-width: 100px;"
+                                    onclick="categoryName('<%=category._id%>',this)">
+                                    <input class="input_editable" type="text" data-id="<%=category._id%>"
+                                        style="width:100%; position: absolute; outline: none; padding: 5px 15px; height: 100%;"
+                                        disabled value="<%=category.category%>">
+                                </td>
+                                <td>
+                                    <%=category._id%>
+                                </td>
+                                <td>
+                                    <%=category.creationTime%>
+                                </td>
+                                <td style="text-transform:capitalize;">
+                                    <%if(category.status){%>
+                                        &nbsp;<i class="fas fa-exclamation-circle"></i> disabled
+                                        <%}else{%>
+                                            &nbsp;<i class="fas fa-check-circle"></i> active
+                                            <%};%>
+                                </td>
+                                <!-- <td style="cursor: pointer; text-align: center;"
+                                    onclick="window.location.href='/admin_panel/products/<%=category.UID%>'">
+                                    <i class="fas fa-minus-circle"></i>&nbsp;&nbsp;Disable
+                                </td> -->
+
+                                <td style="cursor: pointer; text-align: center;"
+                                    onclick="deleteCategory('<%=category._id%>')">
+                                    <i class="fas fa-trash-alt"></i>&nbsp;&nbsp;Delete
+                                </td>
+                            </tr>
+                            <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+
+<script>
+
+    function categoryName(ID, td) {
+        const categoryInput = td.querySelector('input');
+        categoryInput.removeAttribute('disabled');
+        categoryInput.focus();
+    };
+
+    const inputCollection = document.querySelectorAll('input.input_editable');
+
+    inputCollection.forEach(element => {
+        element.addEventListener('keyup', e => {
+            if (e.keyCode == 13) {
+                const value = e.target.value;
+                const ID = e.target.getAttribute('data-id');
+                const input = e.target;
+                saveCurrentValue(ID, value, input);
+            };
+        });
+        element.addEventListener('focusout', e => {
+            const value = e.target.value;
+            const ID = e.target.getAttribute('data-id');
+            const input = e.target;
+            saveCurrentValue(ID, value, input);
+        });
+    });
+
+    function saveCurrentValue(ID, value, input, isDelete) {
+        input.style.borderColor = 'black';
+
+        if (value?.length > 2) {
+
+            fetch('/admin_panel/products/edit_category', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    category: value ? value : null,
+                    ID: ID ? ID : null
+                })
+            })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.status == 'error') {
+                        input.style.borderColor = 'red';
+                    } else {
+                        input.style.borderColor = '';
+                        input.setAttribute('disabled', '');
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    input.style.borderColor = 'red';
+                });
+
+        } else {
+            input.style.borderColor = 'red';
+        };
+    };
+
+    function deleteCategory(ID) {
+        fetch('/admin_panel/products/delete_category', {
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ID: ID
+            })
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.status == 'error') {
+                    console.log(res.message);
+                } else {
+                    window.location.reload();
+                };
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    };
+
+</script>

@@ -135,6 +135,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
 
     return new Promise(async (resolve, reject) => {
 
+        // validates all uid accordin to the type of validation
         if (UIDRequired || UID.length > 0 || typeOfValidation == 'signup') {
             if (typeOfValidation == 'signup') {
 
@@ -166,6 +167,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
 
                         if (typeOfValidation == 'google' || typeOfValidation == 'phone') {
                             // UID from google or UID from phone } firebase;
+
                         } else {
                             let UIDFromDB = typeOfValidation == 'adminLoign' ?
                                 await db.adminUser.find({ adminID: UID }) :
@@ -176,7 +178,8 @@ export function validatior(data, requiredIn, typeOfValidation) {
                             } else {
                                 reject("UID is not valid"); return 0;
                             };
-                        }
+                        };
+                        //...
                         output.UID = UID;
                     } else {
                         reject("Invalid UID"); return 0;
@@ -185,6 +188,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
             };
         };
 
+        // email validation accordin to the type of validation
         if (emailRequired || email.length >= 5) {
 
             if (email.length == 0) {
@@ -226,7 +230,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
                             console.error(error)
                         };
                     };
-
+                    //...
                     output.email = email;
                 } else {
                     reject("Enter a valid email");
@@ -235,6 +239,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
             };
         };
 
+        // password validation also creates and compare hashesh
         if (passwordRequired || password.length > 0) {
             if (password.length == 0) {
                 reject("Password field cannot be empty");
@@ -272,6 +277,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
             };
         };
 
+        // name validation
         if (nameRequired || name.length > 0) {
             if (name.length == 0) {
                 reject("Name is required"); return 0;
@@ -288,6 +294,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
             };
         };
 
+        // role validation admin or user
         if (roleRequired || role.length > 0) {
 
             if (role.length == 0) {
@@ -302,11 +309,10 @@ export function validatior(data, requiredIn, typeOfValidation) {
                     reject("Invalid role");
                     return 0;
                 };
-
             };
-
         };
 
+        // phone number validation according to type of validation
         if (phone || phoneRequired) {
             if (phone.length == 0) {
                 reject('Phone number required'); return 0;
@@ -325,14 +331,12 @@ export function validatior(data, requiredIn, typeOfValidation) {
                                     'Phone number already registered';
                                 reject(rejectMessage); return 0;
                             };
-
                         } catch (error) {
                             console.error('ValidatorPhoneUpdateUser_DB err => ', error); return 0;
                         };
                     };
-
+                    //..
                     output.phone = phone;
-
                 } else {
                     reject('Enter your phone number correctly, No country code needed'); return 0;
                 };
@@ -341,6 +345,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
             };
         };
 
+        // valdiate card id also creates cart id
         if (cart || cartRequired) {
             if (typeOfValidation == 'signup') {
 
@@ -349,7 +354,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
                 do {
                     ID = randomId(CARTID_LENGTH);
                 } while (await db.users.find({ cart: ID }).length > 0);
-
+                //...
                 output.cart = ID;
 
             } else {
@@ -363,6 +368,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
             };
         };
 
+        // valdiate and create address id
         if (address || addressRequired) {
             if (typeOfValidation == 'signup') {
 
@@ -371,7 +377,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
                 do {
                     ID = randomId(ADDRESSID_LENGTH);
                 } while (await db.users.find({ address: ID }).length > 0);
-
+                //...
                 output.address = ID;
 
             } else {
@@ -385,10 +391,11 @@ export function validatior(data, requiredIn, typeOfValidation) {
                     } else {
                         reject('Provide a valid AddressID'); return 0;
                     };
-                }
+                };
             };
         };
 
+        // validate and create orders id
         if (orders || ordersRequired) {
             if (typeOfValidation == 'signup') {
 
@@ -397,7 +404,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
                 do {
                     ID = randomId(ORDERID_LENGTH);
                 } while (await db.users.find({ orders: ID }).length > 0);
-
+                //...
                 output.orders = ID;
 
             } else {
@@ -411,6 +418,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
             };
         };
 
+        // validate and create wishlist id
         if (wishList || wishListRequired) {
             if (typeOfValidation == 'signup') {
 
@@ -419,7 +427,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
                 do {
                     wishID = randomId(WISHLISTID_LENGTH);
                 } while (await db.users.find({ wishList: wishID }).length > 0);
-
+                //...
                 output.wishList = wishID;
 
             } else {
@@ -437,6 +445,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
             };
         };
 
+        // return promise with results after validation
         resolve(output);
     });
 };

@@ -42,7 +42,7 @@ app.get(['/', '/index.html'], users.home);
 
 app.get(['/shop', '/shop.html'], users.shop);
 
-app.get(['/product', '/product.html'], users.product);
+app.get(['/product/:id', '/product.html/:id'], users.product);
 
 
 export default app;

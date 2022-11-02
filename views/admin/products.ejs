@@ -5,8 +5,8 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">All Users</h1>
-    <p class="mb-4">Edit, Update, Create, block and unblock Users</p>
+    <h1 class="h3 mb-2 text-gray-800">All Products</h1>
+    <p class="mb-4">View, Update, Create, and delete products</p>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
@@ -19,48 +19,50 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Provider</th>
+                            <th>IMG</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th>Quantitly</th>
+                            <!-- <th>Discount</th> -->
+                            <th>Category</th>
                             <th>Created</th>
-                            <th>Lastlogin</th>
-                            <th style="cursor: pointer; text-align: center;">blocked</th>
                             <th style="cursor: pointer; text-align: center;">-</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <% users.forEach((user,index,array)=>{ %>
+                        <% products.forEach((product,index,array)=>{ %>
                             <tr>
                                 <td>
                                     <%=index+1%>
                                 </td>
                                 <td style="text-transform:capitalize;">
-                                    <%=user.name%>
+                                    <img style="width: 60px;" src="/product_images/<%=product.PID%>1.jpg" alt="IMG">
                                 </td>
                                 <td>
-                                    <%=user.email%>
+                                    <%=product.title%>
                                 </td>
                                 <td>
-                                    <%=user.phone%>
+                                    <%=product.description%>
                                 </td>
                                 <td style="text-transform:capitalize;">
-                                    <%=user.loginProvider%>
+                                    <%=product.price%>
                                 </td>
                                 <td>
-                                    <%=user.creationTime%>
+                                    <%=product.stock%>
+                                </td>
+                                <!-- <td>
+                                    <%=product.offer?product.offer:'-'%>
+                                </td> -->
+                                <td>
+                                    <%=product.category%>
                                 </td>
                                 <td>
-                                    <%=user.lastLogin%>
+                                    <%=product.creationTime%>
                                 </td>
-                                <td style="text-transform:capitalize; cursor: pointer; text-align: center;">
-                                    <%if(user.blocked){%>
-                                        <i class="fas fa-exclamation-circle"></i> blocked
-                                        <%}else{%>
-                                            <i class="fas fa-check-circle"></i> good
-                                            <%};%>
-                                </td>
-                                <td style="cursor: pointer; text-align: center;" onclick="window.location.href='/admin_panel/user_management/edit_user/<%=user.UID%>'"><i class="fas fa-cog"></i>&nbsp;Setup</td>
+                                <td style="cursor: pointer; text-align: center;"
+                                    onclick="window.location.href='/admin_panel/user_management/edit_product/<%=product.UID%>'">
+                                    <i class="fas fa-cog"></i>&nbsp;Setup</td>
                             </tr>
                             <% }); %>
                     </tbody>

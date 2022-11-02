@@ -3,11 +3,22 @@
   padding: 10px;
   width: 100%;
 }
-.card .card-body .input-cont input, .card .card-body .input-cont select {
+.card .card-body .input-cont input,
+.card .card-body .input-cont select,
+.card .card-body .input-cont textarea {
   width: 100%;
   padding: 10px 15px;
   border-radius: 5px;
   border: 1px solid rgb(156, 156, 156);
+}
+.card .card-body .input-cont label {
+  position: relative;
+  width: 100%;
+}
+.card .card-body .input-cont label span {
+  position: absolute;
+  right: 0;
+  color: red;
 }
 .card .card-body .input-cont.horz {
   display: flex;
@@ -24,6 +35,12 @@
   color: white;
   cursor: pointer;
   background-color: rgb(101, 101, 101);
+}
+.card .card-body .input-img {
+  box-sizing: border-box;
+  padding: 10px 15px;
+  margin: 10px;
+  border: 1px solid #9c9c9c;
 }
 @media screen and (max-width: 1024px) {
   .card .card-body .input-cont.horz {

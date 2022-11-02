@@ -67,9 +67,11 @@
     function validator(btn) {
         let email = document.getElementById("emaliInput").value.trim();
         let password = document.getElementById("passwordInput").value.trim();
-        let disp_state = document.getElementById("disp_state");
-
+        
         const disp = ({ message, isGood, returnVal }) => {
+
+            let disp_state = document.getElementById("disp_state");
+
             disp_state.style.backgroundColor = isGood ? 'rgb(205 255 196 / 56%)' : 'rgb(255 203 203 / 56%)';
             disp_state.style.display = message || returnVal == false ? 'flex' : 'none';
             disp_state.innerText = message ? message : disp_state.innerText;
@@ -122,4 +124,5 @@
         };
 
     };
+
 </script>

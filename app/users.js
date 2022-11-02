@@ -1,4 +1,5 @@
 import * as auth from './services/auth.js';
+import * as db from './services/schema.js';
 
 
 export const home = (req, res) => {
@@ -7,19 +8,50 @@ export const home = (req, res) => {
         user: req.user
     });
 };
-export const shop = (req, res) => {
+export const shop = async (req, res) => {
     const currentPage = 'shop';
-    res.render('users/shop', {
-        currentPage,
-        user: req.user
-    });
+
+    try {
+
+        let products = await db.products.find();
+
+        res.render('users/shop', {
+            currentPage,
+            user: req.user,
+            products: products
+        });
+
+    } catch (error) {
+        res.render('users/404', {
+            message: `Can't read product data from db `,
+            code: 500
+        });
+    };
 };
-export const product = (req, res) => {
+export const product = async (req, res) => {
+
     const currentPage = 'product';
-    res.render('users/product', {
-        currentPage,
-        user: req.user
-    });
+    const PID = req.params.id;
+    
+    try {
+
+        const productData = await db.products.findOne({ PID: PID });
+
+        res.render('users/product', {
+            currentPage,
+            user: req.user,
+            product: productData
+        });
+
+    } catch (error) {
+        res.render('users/404', {
+            message: `Can't read product data from db `,
+            code: 500
+        });
+    };
+
+
+
 };
 export const cart = (req, res) => {
     const currentPage = 'cart';

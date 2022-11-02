@@ -74,12 +74,12 @@
                         <li class="<%=locals.currentPage=='shop'?'active':'';%>">
                             <a href="/shop">Shop</a>
                         </li>
-                        <li class="<%=locals.currentPage=='product'?'active':'';%>">
-                            <a href="/product">Product</a>
-                        </li>
                         <%if(locals.user){%>
                             <li class="<%=locals.currentPage=='cart'?'active':'';%>">
                                 <a href="/cart">Cart</a>
+                            </li>
+                            <li class="<%=locals.currentPage=='wishlist'?'active':'';%>">
+                                <a href="/wishlist">Wishlist</a>
                             </li>
                             <li class="<%=locals.currentPage=='dashboard'?'active':'';%>">
                                 <a href="/dashboard">My Account</a>

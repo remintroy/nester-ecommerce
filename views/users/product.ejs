@@ -16,8 +16,8 @@
                         <div class="product-gallery product-gallery-vertical">
                             <div class="row">
                                 <figure class="product-main-image">
-                                    <img id="product-zoom" src="https://m.media-amazon.com/images/I/61mqt9nnVfL._SX425_.jpg"
-                                        data-zoom-image="https://m.media-amazon.com/images/I/61mqt9nnVfL._SL1500_.jpg" alt="Product image">
+                                    <img id="product-zoom" src="/product_images/<%=product.PID%>1.jpg"
+                                        data-zoom-image="/product_images/<%=product.PID%>1.jpg" alt="Product image">
 
                                     <a href="#" id="btn-product-gallery" class="btn-product-gallery">
                                         <i class="icon-arrows"></i>
@@ -26,27 +26,27 @@
 
                                 <div id="product-zoom-gallery" class="product-image-gallery">
                                     <a class="product-gallery-item active" href=""
-                                        data-image="https://m.media-amazon.com/images/I/61mqt9nnVfL._SL1500_.jpg"
-                                        data-zoom-image="https://m.media-amazon.com/images/I/61mqt9nnVfL._SL1500_.jpg">
-                                        <img src="https://m.media-amazon.com/images/I/61mqt9nnVfL._SL1500_.jpg" alt="Product View">
+                                        data-image="/product_images/<%=product.PID%>1.jpg"
+                                        data-zoom-image="/product_images/<%=product.PID%>1.jpg">
+                                        <img src="/product_images/<%=product.PID%>1.jpg" alt="Product View">
                                     </a>
 
                                     <a class="product-gallery-item" href=""
-                                        data-image="https://m.media-amazon.com/images/I/61zdUFFa28L._SL1500_.jpg"
-                                        data-zoom-image="https://m.media-amazon.com/images/I/61zdUFFa28L._SL1500_.jpg">
-                                        <img src="https://m.media-amazon.com/images/I/61zdUFFa28L._SL1500_.jpg" alt="Product cross">
+                                        data-image="/product_images/<%=product.PID%>2.jpg"
+                                        data-zoom-image="/product_images/<%=product.PID%>2.jpg">
+                                        <img src="/product_images/<%=product.PID%>2.jpg" alt="Product cross">
                                     </a>
 
                                     <a class="product-gallery-item" href=""
-                                        data-image="https://m.media-amazon.com/images/I/61xlundccRL._SL1500_.jpg"
-                                        data-zoom-image="https://m.media-amazon.com/images/I/61xlundccRL._SL1500_.jpg">
-                                        <img src="https://m.media-amazon.com/images/I/61xlundccRL._SL1500_.jpg" alt="Product back">
+                                        data-image="/product_images/<%=product.PID%>3.jpg"
+                                        data-zoom-image="/product_images/<%=product.PID%>3.jpg">
+                                        <img src="/product_images/<%=product.PID%>3.jpg" alt="Product back">
                                     </a>
 
                                     <a class="product-gallery-item" href=""
-                                        data-image="https://m.media-amazon.com/images/I/615mK10BS4L._SL1500_.jpg"
-                                        data-zoom-image="https://m.media-amazon.com/images/I/615mK10BS4L._SL1500_.jpg">
-                                        <img src="https://m.media-amazon.com/images/I/615mK10BS4L._SL1500_.jpg" alt="Product with full components">
+                                        data-image="/product_images/<%=product.PID%>4.jpg"
+                                        data-zoom-image="/product_images/<%=product.PID%>4.jpg">
+                                        <img src="/product_images/<%=product.PID%>4.jpg" alt="Product with full components">
                                     </a>
                                 </div><!-- End .product-image-gallery -->
                             </div><!-- End .row -->
@@ -55,22 +55,15 @@
 
                     <div class="col-md-6">
                         <div class="product-details">
-                            <h1 class="product-title">Motorcycle Projector Light, IP65 Waterproof Quick Start 10‑60V 20W Mini Motorcycle for Modification</h1>
+                            <h1 class="product-title"><%=product.title%></h1>
                             <!-- End .product-title -->
 
-                            <div class="ratings-container">
-                                <div class="ratings">
-                                    <div class="ratings-val" style="width: 80%;"></div><!-- End .ratings-val -->
-                                </div><!-- End .ratings -->
-                                <a class="ratings-text" href="#product-review-link" id="review-link">( 2 Reviews )</a>
-                            </div><!-- End .rating-container -->
-
                             <div class="product-price">
-                                ₹1,063
+                               ₹ <%=product.price%>
                             </div><!-- End .product-price -->
 
                             <div class="product-content">
-                                <p>Quick Start: The premium quality motorcycle LED projector light can be started quickly without heating time, saving both power and energy, greatly bring you more convenience. </p>
+                                <p><%=product.description%></p>
                             </div><!-- End .product-content -->
                             
 
@@ -263,248 +256,6 @@
                 </div><!-- End .tab-content -->
             </div><!-- End .product-details-tab -->
 
-            <h2 class="title text-center mb-4">You May Also Like</h2><!-- End .title text-center -->
-
-            <div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow" data-toggle="owl"
-                data-owl-options='{
-                            "nav": false, 
-                            "dots": true,
-                            "margin": 20,
-                            "loop": false,
-                            "responsive": {
-                                "0": {
-                                    "items":1
-                                },
-                                "480": {
-                                    "items":2
-                                },
-                                "768": {
-                                    "items":3
-                                },
-                                "992": {
-                                    "items":4
-                                },
-                                "1200": {
-                                    "items":4,
-                                    "nav": true,
-                                    "dots": false
-                                }
-                            }
-                        }'>
-                <div class="product product-7 text-center">
-                    <figure class="product-media">
-                        <span class="product-label label-new">New</span>
-                        <a href="product.html">
-                            <img src="assets/images/products/product-4.jpg" alt="Product image" class="product-image">
-                        </a>
-
-                        <div class="product-action-vertical">
-                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to
-                                    wishlist</span></a>
-                            <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
-                                title="Quick view"><span>Quick view</span></a>
-                            <a href="#" class="btn-product-icon btn-compare" title="Compare"><span>Compare</span></a>
-                        </div><!-- End .product-action-vertical -->
-
-                        <div class="product-action">
-                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                        </div><!-- End .product-action -->
-                    </figure><!-- End .product-media -->
-
-                    <div class="product-body">
-                        <div class="product-cat">
-                            <a href="#">Women</a>
-                        </div><!-- End .product-cat -->
-                        <h3 class="product-title"><a href="product.html">Brown paperbag waist <br>pencil skirt</a></h3>
-                        <!-- End .product-title -->
-                        <div class="product-price">
-                            $60.00
-                        </div><!-- End .product-price -->
-                        <div class="ratings-container">
-                            <div class="ratings">
-                                <div class="ratings-val" style="width: 20%;"></div><!-- End .ratings-val -->
-                            </div><!-- End .ratings -->
-                            <span class="ratings-text">( 2 Reviews )</span>
-                        </div><!-- End .rating-container -->
-
-                        <div class="product-nav product-nav-thumbs">
-                            <a href="#" class="active">
-                                <img src="assets/images/products/product-4-thumb.jpg" alt="product desc">
-                            </a>
-                            <a href="#">
-                                <img src="assets/images/products/product-4-2-thumb.jpg" alt="product desc">
-                            </a>
-
-                            <a href="#">
-                                <img src="assets/images/products/product-4-3-thumb.jpg" alt="product desc">
-                            </a>
-                        </div><!-- End .product-nav -->
-                    </div><!-- End .product-body -->
-                </div><!-- End .product -->
-
-                <div class="product product-7 text-center">
-                    <figure class="product-media">
-                        <span class="product-label label-out">Out of Stock</span>
-                        <a href="product.html">
-                            <img src="assets/images/products/product-6.jpg" alt="Product image" class="product-image">
-                        </a>
-
-                        <div class="product-action-vertical">
-                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to
-                                    wishlist</span></a>
-                            <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
-                                title="Quick view"><span>Quick view</span></a>
-                            <a href="#" class="btn-product-icon btn-compare" title="Compare"><span>Compare</span></a>
-                        </div><!-- End .product-action-vertical -->
-
-                        <div class="product-action">
-                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                        </div><!-- End .product-action -->
-                    </figure><!-- End .product-media -->
-
-                    <div class="product-body">
-                        <div class="product-cat">
-                            <a href="#">Jackets</a>
-                        </div><!-- End .product-cat -->
-                        <h3 class="product-title"><a href="product.html">Khaki utility boiler jumpsuit</a></h3>
-                        <!-- End .product-title -->
-                        <div class="product-price">
-                            <span class="out-price">$120.00</span>
-                        </div><!-- End .product-price -->
-                        <div class="ratings-container">
-                            <div class="ratings">
-                                <div class="ratings-val" style="width: 80%;"></div><!-- End .ratings-val -->
-                            </div><!-- End .ratings -->
-                            <span class="ratings-text">( 6 Reviews )</span>
-                        </div><!-- End .rating-container -->
-                    </div><!-- End .product-body -->
-                </div><!-- End .product -->
-
-                <div class="product product-7 text-center">
-                    <figure class="product-media">
-                        <span class="product-label label-top">Top</span>
-                        <a href="product.html">
-                            <img src="assets/images/products/product-11.jpg" alt="Product image" class="product-image">
-                        </a>
-
-                        <div class="product-action-vertical">
-                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to
-                                    wishlist</span></a>
-                            <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
-                                title="Quick view"><span>Quick view</span></a>
-                            <a href="#" class="btn-product-icon btn-compare" title="Compare"><span>Compare</span></a>
-                        </div><!-- End .product-action-vertical -->
-
-                        <div class="product-action">
-                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                        </div><!-- End .product-action -->
-                    </figure><!-- End .product-media -->
-
-                    <div class="product-body">
-                        <div class="product-cat">
-                            <a href="#">Shoes</a>
-                        </div><!-- End .product-cat -->
-                        <h3 class="product-title"><a href="product.html">Light brown studded Wide fit wedges</a></h3>
-                        <!-- End .product-title -->
-                        <div class="product-price">
-                            $110.00
-                        </div><!-- End .product-price -->
-                        <div class="ratings-container">
-                            <div class="ratings">
-                                <div class="ratings-val" style="width: 80%;"></div><!-- End .ratings-val -->
-                            </div><!-- End .ratings -->
-                            <span class="ratings-text">( 1 Reviews )</span>
-                        </div><!-- End .rating-container -->
-
-                        <div class="product-nav product-nav-thumbs">
-                            <a href="#" class="active">
-                                <img src="assets/images/products/product-11-thumb.jpg" alt="product desc">
-                            </a>
-                            <a href="#">
-                                <img src="assets/images/products/product-11-2-thumb.jpg" alt="product desc">
-                            </a>
-
-                            <a href="#">
-                                <img src="assets/images/products/product-11-3-thumb.jpg" alt="product desc">
-                            </a>
-                        </div><!-- End .product-nav -->
-                    </div><!-- End .product-body -->
-                </div><!-- End .product -->
-
-                <div class="product product-7 text-center">
-                    <figure class="product-media">
-                        <a href="product.html">
-                            <img src="assets/images/products/product-10.jpg" alt="Product image" class="product-image">
-                        </a>
-
-                        <div class="product-action-vertical">
-                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to
-                                    wishlist</span></a>
-                            <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
-                                title="Quick view"><span>Quick view</span></a>
-                            <a href="#" class="btn-product-icon btn-compare" title="Compare"><span>Compare</span></a>
-                        </div><!-- End .product-action-vertical -->
-
-                        <div class="product-action">
-                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                        </div><!-- End .product-action -->
-                    </figure><!-- End .product-media -->
-
-                    <div class="product-body">
-                        <div class="product-cat">
-                            <a href="#">Jumpers</a>
-                        </div><!-- End .product-cat -->
-                        <h3 class="product-title"><a href="product.html">Yellow button front tea top</a></h3>
-                        <!-- End .product-title -->
-                        <div class="product-price">
-                            $56.00
-                        </div><!-- End .product-price -->
-                        <div class="ratings-container">
-                            <div class="ratings">
-                                <div class="ratings-val" style="width: 0%;"></div><!-- End .ratings-val -->
-                            </div><!-- End .ratings -->
-                            <span class="ratings-text">( 0 Reviews )</span>
-                        </div><!-- End .rating-container -->
-                    </div><!-- End .product-body -->
-                </div><!-- End .product -->
-
-                <div class="product product-7 text-center">
-                    <figure class="product-media">
-                        <a href="product.html">
-                            <img src="assets/images/products/product-7.jpg" alt="Product image" class="product-image">
-                        </a>
-
-                        <div class="product-action-vertical">
-                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to
-                                    wishlist</span></a>
-                            <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
-                                title="Quick view"><span>Quick view</span></a>
-                            <a href="#" class="btn-product-icon btn-compare" title="Compare"><span>Compare</span></a>
-                        </div><!-- End .product-action-vertical -->
-
-                        <div class="product-action">
-                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                        </div><!-- End .product-action -->
-                    </figure><!-- End .product-media -->
-
-                    <div class="product-body">
-                        <div class="product-cat">
-                            <a href="#">Jeans</a>
-                        </div><!-- End .product-cat -->
-                        <h3 class="product-title"><a href="product.html">Blue utility pinafore denim dress</a></h3>
-                        <!-- End .product-title -->
-                        <div class="product-price">
-                            $76.00
-                        </div><!-- End .product-price -->
-                        <div class="ratings-container">
-                            <div class="ratings">
-                                <div class="ratings-val" style="width: 20%;"></div><!-- End .ratings-val -->
-                            </div><!-- End .ratings -->
-                            <span class="ratings-text">( 2 Reviews )</span>
-                        </div><!-- End .rating-container -->
-                    </div><!-- End .product-body -->
-                </div><!-- End .product -->
-            </div><!-- End .owl-carousel -->
         </div><!-- End .container -->
     </div><!-- End .page-content -->
 </main><!-- End .main -->

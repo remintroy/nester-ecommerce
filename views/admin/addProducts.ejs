@@ -1,0 +1,325 @@
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Add products</h1>
+    <p class="mb-4">
+        Add products to the site with one simple step
+    </p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary" style="text-transform: capitalize;">
+                New product
+            </h6>
+            <span style="text-transform: capitalize;">Create product</span>
+        </div>
+        <div class="card-body">
+
+            <div class="input-cont">
+                <label for="title">Title * <span></span></label>
+                <textarea type="text" name="Title" id="titleInput" autocomplete="off"
+                    placeholder="Product title"></textarea>
+            </div>
+
+            <div class="input-cont">
+                <label for="description">Description * <span></span></label>
+                <textarea type="text" name="description" id="descriptionInput" autocomplete="off"
+                    placeholder="Breaf description"></textarea>
+            </div>
+
+            <div class="input-cont horz">
+                <div class="input-cont">
+                    <label for="price">Price * <span></span></label>
+                    <input type="text" name="price" id="priceInput" placeholder="Price" autocomplete="off">
+                </div>
+                <div class="input-cont">
+                    <label for="quantity">Quantity * <span></span></label>
+                    <input type="text" name="quantity" id="quantityInput" autocomplete="off" placeholder="Quantity">
+                </div>
+            </div>
+
+            <div class="input-cont horz">
+                <div class="input-cont">
+                    <label for="discount">Discount (optional) <span></span></label>
+                    <input type="text" name="offer" id="offerInput" autocomplete="off" placeholder="Discount amount">
+                </div>
+                <div class="input-cont">
+                    <label for="category">Catogery * <span></span></label>
+                    <select name="category" id="categoryInput">
+                        <option value="">--Select--</option>
+                        <% category.forEach((element,index,array)=>{ %>
+
+                            <option value="<%= element.category %> ">
+                                <%= element.category %>
+                            </option>
+
+                            <% }); %>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-cont horz">
+                <div class="input-cont">
+                    <label for="imgA">Main Image of product * <span></span></label>
+                    <input type="file" accept="image/jpeg" name="imgA" id="imgA">
+                </div>
+                <div class="input-cont">
+                    <label for="imgB">Second image of product * <span></span></label>
+                    <input type="file" accept="image/jpeg" name="imgB" id="imgB">
+                </div>
+            </div>
+            <div class="input-cont horz">
+                <div class="input-cont">
+                    <label for="imgC">Third image of product * <span></span></label>
+                    <input type="file" accept="image/jpeg" name="imgC" id="imgC">
+                </div>
+                <div class="input-cont">
+                    <label for="imgD">Fourth image of product * <span></span></label>
+                    <input type="file" accept="image/jpeg" name="imgD" id="imgD">
+                </div>
+            </div>
+
+            <div id="disp_state"
+                style="padding: 10px 15px; display: none; text-transform: capitalize; background-color: rgb(255, 206, 206); box-sizing: border-box; margin: 10px; color: black;"
+                class="mt-2 rounded">
+                error
+            </div>
+
+            <button class="btn" onclick="updateUserData()">Confirm</button><br><br>
+        </div>
+    </div>
+
+    <script>
+
+
+        const imgFiles = {};
+
+        // add event listners to each input and saves the result in imgFiles object
+        const attachEvenListners = () => {
+            const IDS_OF_FILE_INPUT = ['imgA', 'imgB', 'imgC', 'imgD'];
+            IDS_OF_FILE_INPUT.forEach((id, index, array) => {
+                document.getElementById(id).addEventListener('change', (e) => {
+                    imgFiles['img' + (index + 1)] = e.target.files;
+                });
+            });
+        };
+        attachEvenListners();
+
+        const xmlRq = new XMLHttpRequest();
+
+        function updateUserData() {
+
+            const provider = '';
+            const UID = ''
+
+            const title = document.getElementById("titleInput");
+            const description = document.getElementById("descriptionInput");
+            const price = document.getElementById("priceInput");
+            const quantity = document.getElementById("quantityInput");
+            const offer = document.getElementById('offerInput');
+            const category = document.getElementById('categoryInput');
+            const imgA = document.getElementById('imgA');
+            const imgB = document.getElementById('imgB');
+            const imgC = document.getElementById('imgC');
+            const imgD = document.getElementById('imgD');
+
+            const errorTitle = title.parentElement.querySelector("span");
+            const errorDescription = description.parentElement.querySelector("span");
+            const errorPrice = price.parentElement.querySelector("span");
+            const errorQuantity = quantity.parentElement.querySelector("span");
+            const errorOffer = offer.parentElement.querySelector("span");
+            const errorCategory = category.parentElement.querySelector("span");
+            const errorimgA = imgA.parentElement.querySelector("span");
+            const errorimgB = imgB.parentElement.querySelector("span");
+            const errorimgC = imgC.parentElement.querySelector("span");
+            const errorimgD = imgD.parentElement.querySelector("span");
+
+            errorTitle.innerHTML = '';
+            errorDescription.innerHTML = '';
+            errorPrice.innerHTML = '';
+            errorQuantity.innerHTML = '';
+            errorOffer.innerHTML = '';
+            errorCategory.innerHTML = '';
+            errorimgA.innerHTML = '';
+            errorimgB.innerHTML = '';
+            errorimgC.innerHTML = '';
+            errorimgD.innerHTML = '';
+
+            const disp = ({ message, isGood, returnVal, errI }) => {
+                switch (errI) {
+                    case 1: {
+                        errorTitle.innerText = message;
+                        break;
+                    };
+                    case 2: {
+                        errorDescription.innerText = message;
+                        break;
+                    };
+                    case 3: {
+                        errorPrice.innerText = message;
+                        break;
+                    };
+                    case 4: {
+                        errorQuantity.innerText = message;
+                        break;
+                    };
+                    case 5: {
+                        errorOffer.innerText = message;
+                        break;
+                    };
+                    case 6: {
+                        errorCategory.innerText = message;
+                        break;
+                    };
+                    case 7: {
+                        errorimgA.innerText = message;
+                        break;
+                    };
+                    case 8: {
+                        errorimgB.innerText = message;
+                        break;
+                    };
+                    case 9: {
+                        errorimgC.innerText = message;
+                        break;
+                    };
+                    case 10: {
+                        errorimgD.innerText = message;
+                        break;
+                    };
+                    default: {
+                        let disp_state = document.getElementById("disp_state");
+                        disp_state.style.backgroundColor = isGood ? 'rgb(205 255 196 / 56%)' : 'rgb(255 203 203 / 56%)';
+                        disp_state.style.display = message || returnVal == false ? 'flex' : 'none';
+                        disp_state.innerText = message ? message : disp_state.innerText;
+                        break;
+                    };
+                };
+                return isGood || message == '' ? true : returnVal;
+            };
+
+            disp({
+                message: 'errro'
+            });
+
+            let thereIsNoError = true;
+
+            let imgChecker = 0;
+
+            imgChecker = imgFiles?.img1?.length > 0 ?
+                ++imgChecker :
+                disp({ message: 'This image is required', returnVal: imgChecker, errI: 7 });
+            imgChecker = imgFiles?.img2?.length > 0 ?
+                ++imgChecker :
+                disp({ message: 'This image is required', returnVal: imgChecker, errI: 8 });
+            imgChecker = imgFiles?.img3?.length > 0 ?
+                ++imgChecker :
+                disp({ message: 'This image is required', returnVal: imgChecker, errI: 9 });
+            imgChecker = imgFiles?.img4?.length > 0 ?
+                ++imgChecker :
+                disp({ message: 'This image is required', returnVal: imgChecker, errI: 10 });
+
+            thereIsNoError = imgChecker === 4 ? thereIsNoError : false;
+
+
+            thereIsNoError = category.value.length > 0 ?
+                disp({ returnVal: thereIsNoError }) :
+                disp({ message: 'Select catogery', returnVal: false, errI: 6 });
+
+            thereIsNoError = isNaN(offer.value) && offer.value.length > 0 ?
+                disp({ message: 'Enter a valid Discount amount', returnVal: false, errI: 5 }) :
+                disp({ returnVal: thereIsNoError });
+
+            thereIsNoError = isNaN(quantity.value) || quantity.value.length == 0 ?
+                disp({ message: 'Enter a valid Quantity amount', returnVal: false, errI: 4 }) :
+                disp({ returnVal: thereIsNoError });
+
+            thereIsNoError = isNaN(price.value) || price.value.length == 0 ?
+                disp({ message: 'Enter a valid Price amount', returnVal: false, errI: 3 }) :
+                disp({ returnVal: thereIsNoError });
+
+            thereIsNoError = description.value.length < 20 ?
+                disp({ message: `Description must contain ${20 - description.value.length} more characters`, returnVal: false, errI: 2 }) :
+                disp({ returnVal: thereIsNoError });
+
+            thereIsNoError = title.value.length < 10 ?
+                disp({ message: `Title must contain ${10 - title.value.length} more characters`, returnVal: false, errI: 1 }) :
+                disp({ returnVal: thereIsNoError });
+
+            if (thereIsNoError) {
+
+                const formData = new FormData();
+
+                const data = {
+                    title: title.value ? title.value : null,
+                    description: description.value ? description.value : null,
+                    price: price.value ? price.value : null,
+                    quantity: quantity.value ? quantity.value : null,
+                    offer: offer.value ? offer.value : null,
+                    category: category.value ? category.value : null
+                };
+
+                formData.append('img1', imgFiles.img1[0]);
+                formData.append('img2', imgFiles.img2[0]);
+                formData.append('img3', imgFiles.img3[0]);
+                formData.append('img4', imgFiles.img4[0]);
+                formData.append("data", JSON.stringify(data));
+
+                xmlRq.abort();
+                xmlRq.open('POST', '/admin_panel/products/add_product');
+
+                xmlRq.upload.addEventListener('progress', ({ loaded, total }) => {
+
+                    let status = Math.floor((loaded / total) * 100);
+
+                    disp({ message: `Uploading ${status}%`, isGood: true });
+                    if (status == 100) {
+                        disp({ message: `Processing...`, isGood: true });
+                    };
+                });
+
+                xmlRq.onreadystatechange = (e) => {
+                    if (xmlRq.readyState === 4) {
+                        if (xmlRq.status == 200) {
+                            let res = JSON.parse(xmlRq.response);
+
+                            disp({
+                                message: res.message,
+                                isGood: res.status == 'error' ? false : true
+                            });
+
+                            if (res.status == 'good') {
+                                if (res?.action) {
+                                    window.location.href = action;
+                                } else {
+                                    window.location.reload();
+                                };
+                            };
+                            
+                        } else {
+                            disp({
+                                message: 'Error connecting to server'
+                            });
+                        };
+                    };
+                };
+
+
+                xmlRq.addEventListener('error', (error) => {
+                    disp({
+                        message: "Error connecting to server"
+                    });
+                    console.error(error);
+                });
+
+                xmlRq.send(formData);
+
+            };
+        };
+    </script>
+
+
+</div>
+<!-- /.container-fluid -->

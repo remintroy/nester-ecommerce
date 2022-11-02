@@ -93,33 +93,66 @@
             let password = document.getElementById('PasswordInput');
             let confirm = document.getElementById('ConfirmInput');
 
-            fetch(`/admin_panel/user_management/edit_user/${UID}`, {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                method: 'POST',
-                body: JSON.stringify({
-                    email: email.value ? email.value : null,
-                    name: name.value ? name.value : null,
-                    phone: phone.value ? phone.value : null,
-                    state: state.value ? state.value : null,
-                    password: password.value ? password.value : null,
-                    UID: UID,
-                    provider: provider
+            let thereIsNoError = true;
+
+            thereIsNoError = password.value != confirm.value && password.value.length > 0 ?
+                disp({ message: `Confirm password dosen't match`, returnVal: false }) :
+                disp({ returnVal: thereIsNoError });
+
+            thereIsNoError = password.value.length < 6 && password.value.length > 0 ?
+                disp({ message: 'Enter a valid password', returnVal: false }) :
+                disp({ returnVal: thereIsNoError });
+
+            thereIsNoError = phone.value.match(/^\+?[1-9][0-9]{7,14}$/) ?
+                disp({ returnVal: thereIsNoError }) :
+                phone.value.length > 0 ?
+                    disp({ message: 'Enter a valid phone number', returnVal: false }) :
+                    disp({ returnVal: thereIsNoError });
+
+            thereIsNoError = email.value.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) ?
+                disp({ returnVal: thereIsNoError }) :
+                email.value.length > 0 ?
+                    disp({ message: 'Enter a valid email', returnVal: false }) :
+                    disp({ returnVal: thereIsNoError });
+
+            thereIsNoError = name.value.match(/^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$/g) ?
+                disp({ returnVal: thereIsNoError }) :
+                name.value.length > 0 ?
+                    disp({ message: 'Enter a valid name', returnVal: false }) :
+                    disp({ returnVal: thereIsNoError });
+
+
+            if (thereIsNoError) {
+
+                fetch(`/admin_panel/user_management/edit_user/${UID}`, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        email: email.value ? email.value : null,
+                        name: name.value ? name.value : null,
+                        phone: phone.value ? phone.value : null,
+                        state: state.value ? state.value : null,
+                        password: password.value ? password.value : null,
+                        UID: UID,
+                        provider: provider
+                    })
                 })
-            })
-                .then(res => res.json())
-                .then(res => {
-                    if (res.status == 'error') {
-                        disp({ message: res.message });
-                    } else {
-                        disp({ message: res.message, isGood: true });
-                        // window.location.reload();
-                    };
-                })
-                .catch(err => {
-                    console.log('err', err);
-                })
+                    .then(res => res.json())
+                    .then(res => {
+                        if (res.status == 'error') {
+                            disp({ message: res.message });
+                        } else {
+                            disp({ message: res.message, isGood: true });
+                            // window.location.reload();
+                        };
+                    })
+                    .catch(err => {
+                        console.log('err', err);
+                    });
+            };
+
         };
     </script>
 
