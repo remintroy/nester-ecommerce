@@ -154,6 +154,7 @@ export const products_disp = async (req, res) => {
         });
     };
 };
+// add product
 export const addProducts = async (req, res) => {
     try {
 
@@ -180,6 +181,7 @@ export const addProducts = async (req, res) => {
         });
     };
 };
+// api for adding product
 export const addProductsAPI = async (req, res) => {
 
     const data = req.body?.data ? JSON.parse(req.body.data) : null;
@@ -197,6 +199,76 @@ export const addProductsAPI = async (req, res) => {
     };
 
 };
+// edit product
+export const editProduct = async (req, res) => {
+    try {
+        const PID = req.params.id;
+
+        const output = await products.validatior({
+            PID: PID
+        });
+
+        try {
+
+            const productDataFromDb = await db.products.findOne({ PID: output.PID });
+            const categoryDataFromDb = await db.category.find();
+            const keys = Object.keys(productDataFromDb._doc);
+            const result = {};
+
+            for (let i = 0; i < keys.length; i++) {
+                result[keys[i]] = keys[i] == 'creationTime' ? dataToReadable(productDataFromDb.creationTime) : productDataFromDb[keys[i]];
+            };
+
+            res.render('admin/editProduct', {
+                layout: layout,
+                currentPageA: 'products',
+                currentPage: 'editProduct',
+                product: result,
+                category: categoryDataFromDb
+            });
+
+        } catch (error) {
+            console.log(error);
+            res.render('admin/404', {
+                code: 500,
+                message: "Error fetching product data form db",
+                layout: layout
+            });
+        };
+
+    } catch (error) {
+        res.render('admin/404', {
+            code: 400,
+            message: error,
+            layout: layout
+        });
+    };
+};
+// api for edit product
+export const editProductAPI = async (req, res) => {
+    try {
+
+        const output = await products.editProduct(req.body, req.files);
+
+        res.send({ status: 'good', message: output });
+
+    } catch (error) {
+        res.send({ status: 'error', message: error });
+    };
+};
+// api for delete product
+export const deleteProductAPI = async (req, res) => {
+    try {
+
+        const output = await products.deleteProduct(req.body.PID);
+
+        res.send({ status: 'good', message: output , action:'/admin_panel/products/'});
+
+    } catch (error) {
+        res.send({ status: 'error', message: error });
+    };
+};
+// all category
 export const category = async (req, res) => {
     try {
 
@@ -231,6 +303,7 @@ export const category = async (req, res) => {
 
     };
 };
+// add category
 export const addCategory = async (req, res) => {
     try {
 
@@ -257,6 +330,7 @@ export const addCategory = async (req, res) => {
         });
     };
 };
+// api for adding category 
 export const addCategoryAPI = async (req, res) => {
 
     try {
@@ -269,6 +343,7 @@ export const addCategoryAPI = async (req, res) => {
         res.send({ status: "error", message: error });
     };
 };
+// api for editing category
 export const editCategoryAPI = async (req, res) => {
     try {
 
@@ -280,6 +355,7 @@ export const editCategoryAPI = async (req, res) => {
         res.send({ status: 'error', message: error });
     };
 };
+// api for deleting category
 export const deleteCategoryAPI = async (req, res) => {
     try {
 
@@ -291,12 +367,13 @@ export const deleteCategoryAPI = async (req, res) => {
         res.send({ status: 'error', message: error });
     };
 };
-
+// login page
 export const login = (req, res) => {
     res.render('admin/login', {
         layout: 'admin_auth_layout'
     });
 };
+// api for login
 export const loginApi = async (req, res) => {
     try {
         let userData = await auth.adminLogin(req.body);
@@ -309,7 +386,7 @@ export const loginApi = async (req, res) => {
         res.send({ status: 'error', message: error });
     }
 };
-
+// edit user
 export const editUser = async (req, res) => {
 
     try {
@@ -336,6 +413,7 @@ export const editUser = async (req, res) => {
     };
 
 };
+// api for edit user
 export const editUserAPI = async (req, res) => {
     try {
 

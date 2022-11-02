@@ -1,5 +1,6 @@
 import * as db from './schema.js';
 import { randomId } from './util.js';
+import fs from 'fs';
 
 const __dirname = process.cwd();
 
@@ -34,13 +35,18 @@ export function validatior(data, requiredIn, typeOfValidation) {
         offer = '',
         stock = '',
         category = '',
-        files = '',
+        files = {},
         PID = ''
     } = data;
 
-    title = title.trim();
-    description = description.trim();
-    category = category.trim().toLocaleLowerCase();
+    title = title ? title.trim() : '';
+    description = description ? description.trim() : '';
+    category = category ? category.trim().toLocaleLowerCase() : '';
+    price = price ? price : '';
+    offer = offer ? offer : '';
+    stock = stock ? stock : '';
+    PID = PID ? PID : '';
+    files = files ? files : {};
 
     const titleRequired = requiredIn?.title ? true : false;
     const priceRequired = requiredIn?.price ? true : false;
@@ -328,6 +334,108 @@ export const addProduct = ({ title, description, price, quantity, offer, categor
         };
     });
 };
-export const editProduct = ({title, description, price, quantity, offer, category}, files) => {
+export const editProduct = (body, files) => {
+    return new Promise(async (resolve, reject) => {
+        try {
 
+            const parsedBody = body?.data ? JSON.parse(body.data) : {};
+
+            const { title, description, price, quantity, offer, category, PID } = parsedBody;
+
+            const output = await validatior(
+                {
+                    title: title,
+                    description: description,
+                    price: price,
+                    stock: quantity,
+                    offer: offer,
+                    category: category,
+                    files: files,
+                    PID: PID?.trim()
+                },
+                {
+                    PID: true,
+                },
+                'updateproduct'
+            );
+
+            try {
+
+                if (output.files) {
+                    output.files?.img1?.mv(`${__dirname}/public/product_images/${output.PID + 1}.jpg`);
+                    output.files?.img2?.mv(`${__dirname}/public/product_images/${output.PID + 2}.jpg`);
+                    output.files?.img3?.mv(`${__dirname}/public/product_images/${output.PID + 3}.jpg`);
+                    output.files?.img4?.mv(`${__dirname}/public/product_images/${output.PID + 4}.jpg`);
+                };
+
+                const ExistingData = await db.products.findOne({ PID: PID });
+
+                const addedData = await db.products.updateOne({ PID: PID }, {
+                    $set: {
+                        title: output.title ? output.title : ExistingData.title,
+                        description: output.description ? output.description : ExistingData.description,
+                        category: output.category ? output.category : ExistingData.category,
+                        price: output.price ? output.price : ExistingData?.price ? ExistingData.price : 0,
+                        offer: output.offer ? output.offer : ExistingData?.offer ? ExistingData.offer : 0,
+                        stock: output.stock ? output.stock : ExistingData?.stock ? ExistingData.stock : 0,
+                    }
+                });
+
+                resolve('Product update success');
+
+            } catch (error) {
+                console.error("ERROR_UPDATING_PRODUCTS => ", error);
+                reject('Error updating product'); return 0;
+            };
+
+        } catch (error) {
+            console.log(error)
+            reject(error);
+        };
+    });
+};
+export const deleteProduct = (PID) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            console.log(PID)
+
+            let output = await validatior(
+                {
+                    PID: PID
+                },
+                {
+                    PID: true
+                },
+                'updateproduct'
+            );
+
+            try {
+
+                const afterDeleted = await db.products.deleteOne({ PID: PID });
+
+                let img1 = fs.unlink(`${__dirname}/public/product_images/${output.PID}1.jpg`, () => {
+
+                    let img2 = fs.unlink(`${__dirname}/public/product_images/${output.PID}2.jpg`, () => {
+
+                        let img3 = fs.unlink(`${__dirname}/public/product_images/${output.PID}3.jpg`, () => {
+                            
+                            let img4 = fs.unlink(`${__dirname}/public/product_images/${output.PID}4.jpg`, () => {
+
+                                resolve("Product successfully deleted");
+                            });
+                        });
+                    });
+                });
+
+
+            } catch (error) {
+                console.error("DELETE_PRDUCT_DB => ", error);
+                reject("Error deleting product"); return 0;
+            };
+
+        } catch (error) {
+            reject(error);
+        };
+    });
 };

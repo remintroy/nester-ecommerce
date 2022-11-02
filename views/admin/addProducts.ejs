@@ -81,10 +81,12 @@
                 </div>
             </div>
 
-            <div id="disp_state"
-                style="padding: 10px 15px; display: none; text-transform: capitalize; background-color: rgb(255, 206, 206); box-sizing: border-box; margin: 10px; color: black;"
-                class="mt-2 rounded">
-                error
+            <div id="disp_state" style="
+                padding: 10px 15px; display: none; 
+                text-transform: capitalize; 
+                background-color: rgb(255, 206, 206); 
+                box-sizing: border-box; margin: 10px; color: black;" class="mt-2 rounded">
+                Fill above fields correctly to proceed
             </div>
 
             <button class="btn" onclick="updateUserData()">Confirm</button><br><br>
@@ -92,7 +94,6 @@
     </div>
 
     <script>
-
 
         const imgFiles = {};
 
@@ -189,6 +190,10 @@
                         errorimgD.innerText = message;
                         break;
                     };
+                    case 11: {
+                        let disp_state = document.getElementById("disp_state").style.display = 'none';
+                        break;
+                    }
                     default: {
                         let disp_state = document.getElementById("disp_state");
                         disp_state.style.backgroundColor = isGood ? 'rgb(205 255 196 / 56%)' : 'rgb(255 203 203 / 56%)';
@@ -200,9 +205,7 @@
                 return isGood || message == '' ? true : returnVal;
             };
 
-            disp({
-                message: 'errro'
-            });
+            disp({ errI: 11 });
 
             let thereIsNoError = true;
 
@@ -297,7 +300,7 @@
                                     window.location.reload();
                                 };
                             };
-                            
+
                         } else {
                             disp({
                                 message: 'Error connecting to server'
