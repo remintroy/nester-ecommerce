@@ -196,7 +196,7 @@ export const addCategory = ({ category }) => {
 
             const output = await validatior(
                 {
-                    category: category
+                    category: category?.trim()
                 },
                 {
                     category: true
@@ -223,6 +223,8 @@ export const addCategory = ({ category }) => {
 export const editCategory = ({ category, ID }) => {
     return new Promise(async (resolve, reject) => {
         try {
+
+            category = category?.trim().toLocaleLowerCase();
 
             if (category.length < 2) {
                 throw 'invalid category';

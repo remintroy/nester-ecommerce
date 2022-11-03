@@ -28,10 +28,52 @@
                 </div><!-- End .header-search -->
             </div>
 
-            <div class="header-right" >
+            <!-- <div class="header-right" >
                 <% if(!locals.user){ %>
                     <h6 class="text-white p-3 mb-0 bg-primary rounded" onclick="window.location.href='/user_signin'" style="cursor: pointer;">Login</h6>
                 <% }; %>  
+                
+            </div>End .header-right -->
+            <div class="header-right ">
+                <% if(locals.user){ %>
+                    <div class="wishlist">
+                        <a href="/dashboard" title="My account">
+                            <div class="icon">
+                                <i class="icon-user"></i>
+                            </div>
+                            <p>
+                                <%= user.name?user.name:Account %>
+                            </p>
+                        </a>
+                    </div>
+
+                    <div class="wishlist">
+                        <a href="/wishlist" title="Wishlist">
+                            <div class="icon">
+                                <i class="icon-heart-o"></i>
+                                <span class="wishlist-count badge">3</span>
+                            </div>
+                            <p>Wishlist</p>
+                        </a>
+                    </div>
+
+
+                    <div class="cart-dropdown">
+                        <a href="/cart" class="dropdown-toggle">
+                            <div class="icon">
+                                <i class="icon-shopping-cart"></i>
+                                <span class="cart-count">2</span>
+                            </div>
+                            <p>Cart</p>
+                        </a>
+                    </div>
+
+                    <% } else{%>
+                        <a href="/user_signin"><button class="btn btn-primary" type="button">
+                                Login
+                            </button></a>
+                        <% }%>
+
             </div><!-- End .header-right -->
         </div><!-- End .container -->
     </div><!-- End .header-middle -->
@@ -49,16 +91,14 @@
                         <nav class="side-nav">
                             <ul class="menu-vertical sf-arrows">
                                 <li class="item-lead"><a href="#">Daily offers</a></li>
-                                <li class="item-lead"><a href="#">Gift Ideas</a></li>
-                                <li><a href="#">Beds</a></li>
-                                <li><a href="#">Lighting</a></li>
-                                <li><a href="#">Sofas & Sleeper sofas</a></li>
-                                <li><a href="#">Storage</a></li>
-                                <li><a href="#">Armchairs & Chaises</a></li>
-                                <li><a href="#">Decoration </a></li>
-                                <li><a href="#">Kitchen Cabinets</a></li>
-                                <li><a href="#">Coffee & Tables</a></li>
-                                <li><a href="#">Outdoor Furniture </a></li>
+                                <li class="item-lead"><a href="#">Common parts</a></li>
+                                <% if(locals.categorys){ %>
+                                    <% for(let i=0; i<locals.categorys.length; i++){if(i<10){ %>
+                                        <li><a href="#">
+                                                <%= categorys[i]?.category %>
+                                            </a></li>
+                                        <%} };%>
+                                            <% }; %>
                             </ul><!-- End .menu-vertical -->
                         </nav><!-- End .side-nav -->
                     </div><!-- End .dropdown-menu -->
@@ -84,7 +124,7 @@
                             <li class="<%=locals.currentPage=='dashboard'?'active':'';%>">
                                 <a href="/dashboard">My Account</a>
                             </li>
-                        <%};%>
+                            <%};%>
                     </ul><!-- End .menu -->
                 </nav><!-- End .main-nav -->
             </div><!-- End .header-center -->

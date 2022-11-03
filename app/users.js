@@ -1,11 +1,17 @@
 import * as auth from './services/auth.js';
 import * as db from './services/schema.js';
 
+const getCategorys = async () => {
+    return await db.category.find();
+};
 
 export const home = (req, res) => {
-    res.render('users/index', {
-        currentPage: 'home',
-        user: req.user
+    getCategorys().then(categorys => {
+        res.render('users/index', {
+            currentPage: 'home',
+            user: req.user,
+            categorys: categorys
+        });
     });
 };
 export const shop = async (req, res) => {
@@ -15,10 +21,15 @@ export const shop = async (req, res) => {
 
         let products = await db.products.find();
 
-        res.render('users/shop', {
-            currentPage,
-            user: req.user,
-            products: products
+        getCategorys().then(categorys => {
+
+            res.render('users/shop', {
+                currentPage,
+                user: req.user,
+                products: products,
+                categorys
+            });
+
         });
 
     } catch (error) {
@@ -32,7 +43,7 @@ export const product = async (req, res) => {
 
     const currentPage = 'product';
     const PID = req.params.id;
-    
+
     try {
 
         const productData = await db.products.findOne({ PID: PID });
@@ -55,30 +66,42 @@ export const product = async (req, res) => {
 };
 export const cart = (req, res) => {
     const currentPage = 'cart';
-    res.render('users/cart', {
-        currentPage,
-        user: req.user
+    getCategorys().then(categorys => {
+        res.render('users/cart', {
+            currentPage,
+            user: req.user,
+            categorys
+        });
     });
 };
 export const wishlist = (req, res) => {
     const currentPage = 'wishlist';
-    res.render('users/wishlist', {
-        currentPage,
-        user: req.user
+    getCategorys().then(categorys => {
+        res.render('users/wishlist', {
+            currentPage,
+            user: req.user,
+            categorys
+        });
     });
 };
 export const dashboard = (req, res) => {
     const currentPage = 'dashboard';
-    res.render('users/dashboard', {
-        currentPage,
-        user: req.user
-    });
+    getCategorys().then(categorys => {
+        res.render('users/dashboard', {
+            currentPage,
+            user: req.user,
+            categorys: categorys
+        });
+    })
 };
 export const checkout = (req, res) => {
     const currentPage = 'checkout';
-    res.render('users/checkout', {
-        currentPage,
-        user: req.user
+    getCategorys().then(categorys => {
+        res.render('users/checkout', {
+            currentPage,
+            user: req.user,
+            categorys
+        });
     });
 };
 export const login = (req, res) => {
