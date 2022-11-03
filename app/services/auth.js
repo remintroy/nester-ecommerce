@@ -204,10 +204,16 @@ export function validatior(data, requiredIn, typeOfValidation) {
                             let emailIn = await db.users.find({ email: email });
 
                             if (emailIn.length > 0) {
-                                let rejectMessage = emailIn[0].UID == UID && emailIn[0].email == email ?
-                                    'Enter a different email to update' :
-                                    'Email aready exists';
-                                reject(rejectMessage); return 0;
+                                // let rejectMessage = emailIn[0].UID == UID && emailIn[0].email == email ?
+                                //     'Enter a different email to update' :
+                                //     'Email aready exists';
+                                // reject(rejectMessage); return 0;
+
+                                if (emailIn[0].UID == UID && emailIn[0].email == email) {
+
+                                } else {
+                                    reject('Email already exists'); return 0;
+                                };
                             };
                         } catch (error) {
                             console.error('validatorUpateEmail_DB err => ', error)
@@ -325,11 +331,16 @@ export function validatior(data, requiredIn, typeOfValidation) {
 
                             const phoneIn = await db.users.find({ phone: phone });
 
-                            if (phoneIn.length > 0) {
-                                let rejectMessage = phoneIn[0].UID == UID && phoneIn[0].phone == phone ?
-                                    'Enter a different phone number to update' :
-                                    'Phone number already registered';
-                                reject(rejectMessage); return 0;
+                            if (phoneIn.length > 0 && typeOfValidation != 'phone') {
+                                // let rejectMessage = phoneIn[0].UID == UID && phoneIn[0].phone == phone ?
+                                //     'Enter a different phone number to update' :
+                                //     'Phone number already registered';
+                                // reject(rejectMessage); return 0;
+                                if (phoneIn[0].UID == UID && phoneIn[0].phone == phone) {
+
+                                } else {
+                                    reject('Phone number already registerd'); return 0;
+                                };
                             };
                         } catch (error) {
                             console.error('ValidatorPhoneUpdateUser_DB err => ', error); return 0;
@@ -656,11 +667,11 @@ export const userDataUpdate = ({ UID, email, password, name, phone, state }) => 
             // updatable: email, password, name, phone, state
             const output = await validatior(
                 {
-                    UID: UID,
-                    email: email,
-                    password: password,
-                    name: name,
-                    phone: phone,
+                    UID: UID?.trim(),
+                    email: email?.trim(),
+                    password: password?.trim(),
+                    name: name?.trim(),
+                    phone: phone?.trim(),
                 },
                 {
 
@@ -668,42 +679,49 @@ export const userDataUpdate = ({ UID, email, password, name, phone, state }) => 
                 'updateUser'
             );
 
-            const result = {};
-            const keys = Object.keys(output);
-
-            for (let i = 0; i < keys.length; i++) {
-                if (output[keys[i]] && keys[i] != "UID") {
-                    result[keys[i]] = output[keys[i]];
-                };
-            };
-
-            if (state) {
-                result.blocked = state == 'disabled' ? true : false;
-            };
-
-            if (Object.keys(result).length <= 0) {
-                reject('Nothing to Update'); return 0;
-            };
-
             try {
-                const updated = await db.users.updateOne(
-                    {
-                        UID: output.UID
-                    },
-                    {
-                        $set: result
-                    }
-                );
-                resolve('Updated Successfully');
-                // console.log('updated => ', updated);
-                // console.log('output => ', output);
-                // console.log('result => ', result);
+
+                const result = {};
+                const keys = Object.keys(output);
+
+                for (let i = 0; i < keys.length; i++) {
+                    if (output[keys[i]] && keys[i] != "UID") {
+                        result[keys[i]] = output[keys[i]];
+                    };
+                };
+
+                if (state) {
+                    result.blocked = state == 'disabled' ? true : false;
+                };
+
+                if (Object.keys(result).length <= 0) {
+                    reject('Nothing to Update'); return 0;
+                };
+
+
+                try {
+                    const updated = await db.users.updateOne(
+                        {
+                            UID: output.UID
+                        },
+                        {
+                            $set: result
+                        }
+                    );
+                    resolve('Updated Successfully');
+                    // console.log('updated => ', updated);
+                    // console.log('output => ', output);
+                    // console.log('result => ', result);
+                } catch (error) {
+                    console.error("UpdateUserData_DB err => ", error);
+                };
+
             } catch (error) {
-                console.error("UpdateUserData_DB err => ", error);
+                reject("Internal error"); return 0;
             };
 
         } catch (error) {
-            reject(error);
+            reject(error); return 0;
         };
 
     });

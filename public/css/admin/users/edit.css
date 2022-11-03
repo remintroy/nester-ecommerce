@@ -46,4 +46,35 @@
   .card .card-body .input-cont.horz {
     flex-direction: column;
   }
+}
+
+.tabe_editable_TD {
+  position: relative;
+  text-transform: capitalize;
+  padding: 0 !important;
+  height: auto;
+  position: relative;
+  min-width: 100px;
+  width: -webkit-min-content;
+  width: -moz-min-content;
+  width: min-content;
+}
+.tabe_editable_TD input {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  position: absolute;
+  outline: none;
+  padding: 5px 15px;
+  height: 100%;
+}
+.tabe_editable_TD .width-helper {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 5px 20px;
+  color: transparent;
 }/*# sourceMappingURL=edit.css.map */

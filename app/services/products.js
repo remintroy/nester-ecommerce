@@ -338,7 +338,7 @@ export const editProduct = (body, files) => {
     return new Promise(async (resolve, reject) => {
         try {
 
-            const parsedBody = body?.data ? JSON.parse(body.data) : {};
+            const parsedBody = body?.data ? JSON.parse(body.data) : body ? body : {};
 
             const { title, description, price, quantity, offer, category, PID } = parsedBody;
 
@@ -389,7 +389,6 @@ export const editProduct = (body, files) => {
             };
 
         } catch (error) {
-            console.log(error)
             reject(error);
         };
     });
@@ -419,7 +418,7 @@ export const deleteProduct = (PID) => {
                     let img2 = fs.unlink(`${__dirname}/public/product_images/${output.PID}2.jpg`, () => {
 
                         let img3 = fs.unlink(`${__dirname}/public/product_images/${output.PID}3.jpg`, () => {
-                            
+
                             let img4 = fs.unlink(`${__dirname}/public/product_images/${output.PID}4.jpg`, () => {
 
                                 resolve("Product successfully deleted");

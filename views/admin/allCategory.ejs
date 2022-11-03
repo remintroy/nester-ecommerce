@@ -6,7 +6,10 @@
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">All Catogory's</h1>
-    <p class="mb-4">Edit and Update category's</p>
+    <p class="mb-4">
+        Edit and Update category's
+        <br>Some fields can be updated within this page those fields are highlighted
+    </p>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
@@ -33,11 +36,10 @@
                                 <td>
                                     <%=index+1%>
                                 </td>
-                                <td style="text-transform:capitalize; padding: 0; position: relative; min-width: 100px;"
+                                <td class="tabe_editable_TD" title="Click To edit"
                                     onclick="categoryName('<%=category._id%>',this)">
-                                    <input class="input_editable" type="text" data-id="<%=category._id%>"
-                                        style="width:100%; position: absolute; outline: none; padding: 5px 15px; height: 100%;"
-                                        disabled value="<%=category.category%>">
+                                    <input class="input_editable" type="text" data-id="<%=category._id%>" disabled
+                                        value="<%=category.category%>">
                                 </td>
                                 <td>
                                     <%=category._id%>

@@ -133,7 +133,26 @@ export const products_disp = async (req, res) => {
             const result = {};
 
             for (let i = 0; i < keys.length; i++) {
-                result[keys[i]] = keys[i] == 'creationTime' ? dataToReadable(element.creationTime) : element[keys[i]];
+
+                const CONST_MAX_TITLE_LEN = 50;
+                const CONST_MAX_DESCRIPTION_LEN = 30;
+
+                // key is creation time
+                result[keys[i]] = keys[i] == 'creationTime' ? // --if-- key is creation time
+                    // formatted time to readable
+                    dataToReadable(element.creationTime) :
+                    result[keys[i]] = keys[i] == 'title' ? // -- else if --
+                        // title is more than title len
+                        element[keys[i]].length > CONST_MAX_TITLE_LEN ? // --if--
+                            // creationTime true and title is above the limit
+                            element[keys[i]].slice(0, CONST_MAX_TITLE_LEN) + '...' : // --inner else--
+                            // return same value
+                            element[keys[i]] : // -- else if--
+                        result[keys[i]] = keys[i] == 'description' ? // --if--
+                            element[keys[i]].length > CONST_MAX_DESCRIPTION_LEN ? // --inner if--
+                                element[keys[i]].slice(0, CONST_MAX_DESCRIPTION_LEN) + '...' : // --inner else--
+                                element[keys[i]] : // -- else --
+                            element[keys[i]];
             };
 
             output.push(result);
@@ -262,7 +281,7 @@ export const deleteProductAPI = async (req, res) => {
 
         const output = await products.deleteProduct(req.body.PID);
 
-        res.send({ status: 'good', message: output , action:'/admin_panel/products/'});
+        res.send({ status: 'good', message: output, action: '/admin_panel/products/' });
 
     } catch (error) {
         res.send({ status: 'error', message: error });

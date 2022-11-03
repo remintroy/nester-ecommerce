@@ -156,7 +156,7 @@ export const loginWithOtpAPI = async (req, res) => {
 
         req.session.user = userDataFromOTP;
 
-        res.send({ status: 'good', message: 'added user', action: '/' });
+        res.send({ status: 'good', message: 'SignIn success', action: '/' });
 
     } catch (error) {
         res.send({ status: 'error', message: error });

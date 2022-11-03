@@ -14,10 +14,11 @@
                 border: 1px solid rgb(156, 156, 156);
             }
 
-            label{
+            label {
                 position: relative;
                 width: 100%;
-                span{
+
+                span {
                     position: absolute;
                     right: 0;
                     color: red;
@@ -58,4 +59,53 @@
             }
         }
     }
+}
+
+
+// .tabe_editable_TD {
+//     text-transform: capitalize;
+//     padding: 0 !important;
+//     position: relative;
+//     min-width: 100px;
+
+//     input {
+//         width: 100%;
+//         position: absolute;
+//         outline: none;
+//         padding: 5px 15px;
+//         height: 100%;
+//     }
+
+// }
+
+.tabe_editable_TD {
+    position: relative;
+    text-transform: capitalize;
+    padding: 0 !important;
+    height: auto;
+    position: relative;
+    min-width: 100px;
+    width: min-content;
+
+    input {
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        position: absolute;
+        outline: none;
+        padding: 5px 15px;
+        height: 100%;
+    }
+
+    .width-helper{
+        position: relative;
+        height: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 5px 20px;
+        color:transparent
+    }
+
 }

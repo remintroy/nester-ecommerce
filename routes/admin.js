@@ -14,7 +14,7 @@ adminApp.get('/user_management/disabled_users', auth.mustLoginAsAdmin, admin.dis
 // edit user
 adminApp.get('/user_management/edit_user/:UID', auth.mustLoginAsAdmin, admin.editUser);
 // api for edit user data
-adminApp.put('/user_management/edit_user/:UID', auth.mustLoginAsAdminAPI, admin.editUserAPI);
+adminApp.put('/user_management/edit_user/', auth.mustLoginAsAdminAPI, admin.editUserAPI);
 // all products
 adminApp.get('/products', auth.mustLoginAsAdmin, admin.products_disp);
 // add products

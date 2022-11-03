@@ -6,7 +6,7 @@
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">All Users</h1>
-    <p class="mb-4">Edit, Update, Create, block and unblock Users</p>
+    <p class="mb-4">Edit, Update, Create, block and unblock Users <br>Some fields can be updated within this page those fields are highlighted</p>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
@@ -35,14 +35,31 @@
                                 <td>
                                     <%=index+1%>
                                 </td>
-                                <td style="text-transform:capitalize;">
-                                    <%=user.name%>
+
+                                <td class="tabe_editable_TD" title="Click To edit"
+                                    onclick="categoryName('<%=user.UID%>',this)">
+                                    <div class="width-helper">
+                                        <%=user?.name?user.name.split(" ").join(""):''%></div>
+                                    <input type=" text" class="input_editable" disabled data-id="<%=user.UID%>"
+                                            value="<%=user.name%>" data-type="name">
                                 </td>
-                                <td>
-                                    <%=user.email%>
+
+                                <td class="tabe_editable_TD" title="Click To edit"
+                                    onclick="categoryName('<%=user.UID%>',this)">
+                                    <div class="width-helper">
+                                        <%=user.email%>
+                                    </div>
+                                    <input type="text" class="input_editable" disabled data-id="<%=user.UID%>"
+                                        value="<%=user.email%>" data-type="email">
                                 </td>
-                                <td>
-                                    <%=user.phone%>
+
+                                <td class="tabe_editable_TD" title="Click To edit"
+                                    onclick="categoryName('<%=user.UID%>',this)">
+                                    <div class="width-helper">
+                                        <%=user.phone%>
+                                    </div>
+                                    <input type="text" class="input_editable" disabled data-id="<%=user.UID%>"
+                                        value="<%=user.phone%>" data-type="phone">
                                 </td>
                                 <td style="text-transform:capitalize;">
                                     <%=user.loginProvider%>
@@ -60,7 +77,10 @@
                                             <i class="fas fa-check-circle"></i> good
                                             <%};%>
                                 </td>
-                                <td style="cursor: pointer; text-align: center;" onclick="window.location.href='/admin_panel/user_management/edit_user/<%=user.UID%>'"><i class="fas fa-cog"></i>&nbsp;Setup</td>
+                                <td style="cursor: pointer; text-align: center;"
+                                    onclick="window.location.href='/admin_panel/user_management/edit_user/<%=user.UID%>'">
+                                    More&nbsp;<i class="fas fa-cog"></i>
+                                </td>
                             </tr>
                             <% }); %>
                     </tbody>
@@ -70,3 +90,71 @@
     </div>
 </div>
 <!-- /.container-fluid -->
+
+<script>
+
+    function categoryName(ID, td, type) {
+        const categoryInput = td.querySelector('input');
+        categoryInput.removeAttribute('disabled');
+        categoryInput.focus();
+    };
+
+    const inputCollection = document.querySelectorAll('input.input_editable');
+
+    inputCollection.forEach(element => {
+        element.addEventListener('keyup', e => {
+            if (e.keyCode == 13) {
+                const value = e.target.value;
+                const UID = e.target.getAttribute('data-id');
+                const input = e.target;
+                const type = e.target.getAttribute('data-type');
+                saveCurrentValue(UID, value, input, type);
+            };
+        });
+        element.addEventListener('focusout', e => {
+            const value = e.target.value;
+            const UID = e.target.getAttribute('data-id');
+            const input = e.target;
+            const type = e.target.getAttribute('data-type');
+            saveCurrentValue(UID, value, input, type);
+        });
+    });
+
+    function saveCurrentValue(UID, value, input, type) {
+        input.style.borderColor = 'black';
+
+        if (value?.length > 2) {
+
+            fetch('/admin_panel/user_management/edit_user', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: type == 'name' ? value : null,
+                    email: type == 'email' ? input.value : null,
+                    phone: type == 'phone' ? value : null,
+                    UID: UID ? UID : null,
+                })
+            })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.status == 'error') {
+                        console.log('ERROR_A => ', res.message);
+                        input.style.borderColor = 'red';
+                    } else {
+                        input.style.borderColor = '';
+                        input.setAttribute('disabled', '');
+                    };
+                })
+                .catch(error => {
+                    console.error(error);
+                    input.style.borderColor = 'red';
+                });
+
+        } else {
+            input.style.borderColor = 'red';
+        };
+    };
+
+</script>

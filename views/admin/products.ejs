@@ -6,7 +6,9 @@
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">All Products</h1>
-    <p class="mb-4">View, Update, Create, and delete products</p>
+    <p class="mb-4">View, Update, Create, and delete products
+        <br>Some fields can be updated within this page those fields are highlighted
+    </p>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
@@ -45,11 +47,15 @@
                                 <td>
                                     <%=product.description%>
                                 </td>
-                                <td style="text-transform:capitalize;">
-                                    <%=product.price%>
+                                <td class="tabe_editable_TD" title="Click To edit"
+                                    onclick="categoryName('<%=product.PID%>',this)">
+                                    <input type="text" class="input_editable" disabled data-id="<%=product.PID%>"
+                                        value="<%=product.price%>" data-type="price">
                                 </td>
-                                <td>
-                                    <%=product.stock%>
+                                <td class="tabe_editable_TD" title="Click To edit"
+                                    onclick="categoryName('<%=product.PID%>',this)">
+                                    <input type="text" class="input_editable" disabled data-id="<%=product.PID%>"
+                                        value="<%=product.stock%>" data-type="stock">
                                 </td>
                                 <!-- <td>
                                     <%=product.offer?product.offer:'-'%>
@@ -62,7 +68,8 @@
                                 </td>
                                 <td style="cursor: pointer; text-align: center;"
                                     onclick="window.location.href='/admin_panel/products/edit_product/<%=product.PID%>'">
-                                    <i class="fas fa-cog"></i>&nbsp;Setup</td>
+                                    more&nbsp;<i class="fas fa-cog"></i>
+                                </td>
                             </tr>
                             <% }); %>
                     </tbody>
@@ -72,3 +79,74 @@
     </div>
 </div>
 <!-- /.container-fluid -->
+
+
+<script>
+
+    function categoryName(ID, td, type) {
+        const categoryInput = td.querySelector('input');
+        categoryInput.removeAttribute('disabled');
+        categoryInput.focus();
+    };
+
+    const inputCollection = document.querySelectorAll('input.input_editable');
+
+    inputCollection.forEach(element => {
+        element.addEventListener('keyup', e => {
+            if (e.keyCode == 13) {
+                const value = e.target.value;
+                const PID = e.target.getAttribute('data-id');
+                const input = e.target;
+                const type = e.target.getAttribute('data-type');
+                saveCurrentValue(PID, value, input, type);
+            };
+        });
+        element.addEventListener('focusout', e => {
+            const value = e.target.value;
+            const PID = e.target.getAttribute('data-id');
+            const input = e.target;
+            const type = e.target.getAttribute('data-type');
+            saveCurrentValue(PID, value, input, type);
+        });
+    });
+
+    function saveCurrentValue(PID, value, input, type) {
+        input.style.borderColor = 'black';
+
+        if (value?.length > 2) {
+
+            fetch('/admin_panel/products/edit_product', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+
+                    price: type == 'price' ? value : null,
+                    stock: type = 'stock' ? value : null,
+                    PID: PID ? PID : null,
+                    type: type ? type : null
+
+                })
+            })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.status == 'error') {
+                        console.log('ERROR_A => ', res.message);
+                        input.style.borderColor = 'red';
+                    } else {
+                        input.style.borderColor = '';
+                        input.setAttribute('disabled', '');
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    input.style.borderColor = 'red';
+                });
+
+        } else {
+            input.style.borderColor = 'red';
+        };
+    };
+
+</script>
