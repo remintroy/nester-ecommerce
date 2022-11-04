@@ -3,8 +3,16 @@ import { randomId, dataToReadable } from './services/util.js';
 import * as db from './services/schema.js';
 import * as products from './services/products.js';
 
-const layout = `admin_layout`
+const layout = `admin_layout`;
 
+// warns deprication of a route
+export const depricationWarn = async(req, res)=>{
+    res.render('admin/404', { 
+        layout: layout, 
+        message: 'This page is currently unavailable or changed path',
+        code:404,
+    });
+};
 // admin dashboard
 export const dashboard = async (req, res) => {
 

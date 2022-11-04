@@ -28,6 +28,18 @@
 .card .card-body .input-cont.horz .input-cont {
   padding: 0;
 }
+.card .card-body img {
+  width: 100%;
+  -o-object-fit: scale-down;
+     object-fit: scale-down;
+  border: 1px dashed #d3d3d3;
+  max-height: 300px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+.card .card-body img.changed {
+  border: 1px dashed gray;
+}
 .card .card-body button {
   padding: 10px 40px;
   margin-left: 10px;

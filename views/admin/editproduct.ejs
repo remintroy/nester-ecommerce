@@ -22,33 +22,33 @@
             <div class="input-cont">
                 <label for="title">Title * <span></span></label>
                 <textarea type="text" name="Title" id="titleInput" autocomplete="off"
-                    placeholder="<%=product?.title?product.title:'Product title'%>"></textarea>
+                    placeholder="Product title"><%=product?.title?product.title:''%></textarea>
             </div>
 
             <div class="input-cont">
                 <label for="description">Description * <span></span></label>
-                <textarea type="text" name="description" id="descriptionInput" autocomplete="off"
-                    placeholder="<%=product?.description?product.description:'Breaf description'%>"></textarea>
+                <textarea type="text" name="description" id="descriptionInput" autocomplete="off" 
+                placeholder="Breaf description"><%=product?.description?product.description:''%></textarea>
             </div>
 
             <div class="input-cont horz">
                 <div class="input-cont">
                     <label for="price">Price * <span></span></label>
-                    <input type="text" name="price" id="priceInput"
-                        placeholder="<%=product?.price?product.price:'Price'%>" autocomplete="off">
+                    <input type="text" name="price" id="priceInput" placeholder="Price"
+                        value="<%=product?.price?product.price:''%>" autocomplete="off">
                 </div>
                 <div class="input-cont">
                     <label for="quantity">Quantity * <span></span></label>
-                    <input type="text" name="quantity" id="quantityInput" autocomplete="off"
-                        placeholder="<%=product?.stock?product.stock:'Quantity'%>">
+                    <input type="text" name="quantity" id="quantityInput" autocomplete="off" placeholder="Quantity"
+                        value="<%=product?.stock?product.stock:''%>">
                 </div>
             </div>
 
             <div class="input-cont horz">
                 <div class="input-cont">
                     <label for="discount">Discount (optional) <span></span></label>
-                    <input type="text" name="offer" id="offerInput" autocomplete="off"
-                        placeholder="<%=product?.offer?product.offer:'Discount amount'%>">
+                    <input type="text" name="offer" id="offerInput" autocomplete="off" placeholder="Discount amount"
+                        value="<%=product?.offer?product.offer:''%>">
                 </div>
                 <div class="input-cont">
                     <label for="category">Catogery * <span></span></label>
@@ -70,20 +70,24 @@
             <div class="input-cont horz">
                 <div class="input-cont">
                     <label for="imgA">Main Image of product * <span></span></label>
+                    <img id="imgA_DISP" src="/product_images/<%=product.PID %>1.jpg" alt="">
                     <input type="file" accept="image/jpeg" name="imgA" id="imgA">
                 </div>
                 <div class="input-cont">
                     <label for="imgB">Second image of product * <span></span></label>
+                    <img id="imgB_DISP" src="/product_images/<%=product.PID %>2.jpg" alt="">
                     <input type="file" accept="image/jpeg" name="imgB" id="imgB">
                 </div>
             </div>
             <div class="input-cont horz">
                 <div class="input-cont">
                     <label for="imgC">Third image of product * <span></span></label>
+                    <img id="imgC_DISP" src="/product_images/<%=product.PID %>3.jpg" alt="">
                     <input type="file" accept="image/jpeg" name="imgC" id="imgC">
                 </div>
                 <div class="input-cont">
                     <label for="imgD">Fourth image of product * <span></span></label>
+                    <img id="imgD_DISP" src="/product_images/<%=product.PID %>4.jpg" alt="">
                     <input type="file" accept="image/jpeg" name="imgD" id="imgD">
                 </div>
             </div>
@@ -95,7 +99,7 @@
             </div>
 
             <div class="btn-cont">
-                <button class="btn" onclick="updateUserData()">Confirm</button>
+                <button class="btn" onclick="updateUserData()">Submit</button>
                 <button class="btn btn-danger bg-danger" onclick="confirmDeletion('<%=product.PID%>')">Delete
                     Product</button>
             </div> <br>
@@ -156,10 +160,13 @@
 
         // add event listners to each input and saves the result in imgFiles object
         const attachEvenListners = () => {
+            const DOCS_TO_DISPLAY_IMG_IDS = ['imgA_DISP','imgB_DISP','imgC_DISP','imgD_DISP'];
             const IDS_OF_FILE_INPUT = ['imgA', 'imgB', 'imgC', 'imgD'];
             IDS_OF_FILE_INPUT.forEach((id, index, array) => {
                 document.getElementById(id).addEventListener('change', (e) => {
                     imgFiles['img' + (index + 1)] = e.target.files;
+                    document.getElementById(DOCS_TO_DISPLAY_IMG_IDS[index]).src = URL.createObjectURL(e.target.files[0]);
+                    document.getElementById(DOCS_TO_DISPLAY_IMG_IDS[index]).classList.add('changed');
                 });
             });
         };
