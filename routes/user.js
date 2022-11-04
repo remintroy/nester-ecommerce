@@ -37,6 +37,8 @@ app.post('/user_signin_phone', auth.mustLogoutAsUserAPI, users.loginWithOtpAPI);
 app.post('/user_logout', auth.mustLoginAsUserAPI, users.logoutAPI);
 // api for user registration
 app.post('/user_registration', auth.mustLogoutAsUser, users.signupAPI);
+// api for add to cart
+app.post('/add_to_cart', auth.mustLoginAsUserAPI, users.addTOCartAPI);
 
 // user public routes
 app.get(['/', '/index.html'], users.home);

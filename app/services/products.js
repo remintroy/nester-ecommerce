@@ -1,6 +1,7 @@
 import * as db from './schema.js';
 import { randomId } from './util.js';
 import fs from 'fs';
+import * as auth from './auth.js';
 
 const __dirname = process.cwd();
 
@@ -169,7 +170,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
                     PID = randomId(PID_LENGTH);
                 } while ((await db.products.find({ PID: PID })).length != 0);
                 output.PID = PID;
-            } else if (typeOfValidation = 'updateproduct') {
+            } else if (typeOfValidation == 'updateproduct') {
                 let PID_FORM_DB = await db.products.find({ PID: PID });
                 if (PID_FORM_DB.length == 0) {
                     reject("Invalid PID");

@@ -463,7 +463,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
 
 
 export const mustLoginAsAdmin = (req, res, next) => {
-    if (req.isLoggedIn && req.admin) {
+    if (req.admin) {
         next();
     } else {
         res.status(401);
@@ -471,7 +471,7 @@ export const mustLoginAsAdmin = (req, res, next) => {
     };
 };
 export const mustLoginAsAdminAPI = (req, res, next) => {
-    if (req.isLoggedIn && req.admin) {
+    if (req.admin) {
         next();
     } else {
         res.status(401);
@@ -496,7 +496,7 @@ export const mustLogoutAsAdminAPI = (req, res, next) => {
 };
 
 export const mustLoginAsUser = (req, res, next) => {
-    if (req.isLoggedIn && req.user) {
+    if (req.user) {
         next();
     } else {
         res.status(401);
@@ -504,7 +504,7 @@ export const mustLoginAsUser = (req, res, next) => {
     };
 };
 export const mustLoginAsUserAPI = (req, res, next) => {
-    if (req.isLoggedIn && req.user) {
+    if (req.user) {
         next();
     } else {
         res.status(401);

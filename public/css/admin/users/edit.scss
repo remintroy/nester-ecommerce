@@ -25,6 +25,17 @@
                 }
             }
 
+            img{
+                width: 100%;
+                object-fit: scale-down;
+                border:1px dashed #d3d3d3;
+                max-height: 300px;
+                margin-bottom: 10px;
+                border-radius: 5px;
+            }
+            img.changed{
+                border:1px dashed gray;
+            }
         }
 
         .input-cont.horz {
@@ -37,17 +48,6 @@
             }
         }
 
-        img{
-            width: 100%;
-            object-fit: scale-down;
-            border:1px dashed #d3d3d3;
-            max-height: 300px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-        }
-        img.changed{
-            border:1px dashed gray;
-        }
 
 
         button {

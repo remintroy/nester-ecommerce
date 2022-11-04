@@ -36,8 +36,8 @@ export const users = db.model("user", new mongoose.Schema({
     },
     loginProvider: String,
     blocked: {
-        type:Boolean,
-        default:false
+        type: Boolean,
+        default: false
     },
     address: String,
     orders: String,
@@ -77,25 +77,30 @@ export const products = db.model("products", new mongoose.Schema({
 }));
 
 export const category = db.model("category", new mongoose.Schema({
-    category:String,
-    creationTime:{
-        type:Date,
-        default:new Date()
+    category: String,
+    creationTime: {
+        type: Date,
+        default: new Date()
     },
-    disabled:{
-        type:Boolean,
-        default:false
+    disabled: {
+        type: Boolean,
+        default: false
     }
 }));
 
 export const cart = db.model("cart", new mongoose.Schema({
-    cartID: String,
     UID: String,
     products: [
         {
             PID: String,
-            quantity: Number,
-            addedAt: Date,
+            quantity: {
+                type: Number,
+                default: 1
+            },
+            updated: {
+                type: Date,
+                default: new Date()
+            },
         }
     ]
 }));
