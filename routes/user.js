@@ -38,7 +38,9 @@ app.post('/user_logout', auth.mustLoginAsUserAPI, users.logoutAPI);
 // api for user registration
 app.post('/user_registration', auth.mustLogoutAsUser, users.signupAPI);
 // api for add to cart
-app.post('/add_to_cart', auth.mustLoginAsUserAPI, users.addTOCartAPI);
+app.post('/cart_add', auth.mustLoginAsUserAPI, users.addTOCartAPI);
+// api for add to cart
+app.delete('/cart_delete', auth.mustLoginAsUserAPI, users.deleteFormCartAPI);
 
 // user public routes
 app.get(['/', '/index.html'], users.home);

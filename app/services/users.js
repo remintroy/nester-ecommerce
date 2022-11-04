@@ -69,7 +69,7 @@ export const addProductToCart = (UID, PID, quantity) => {
                                     resolve("Product updated"); return 0;
                                 };
                             } catch (error) {
-                                console.log('Error => ',error);
+                                console.log('Error => ', error);
                                 reject('Oops someting went wrong'); return 0;
                             };
                         } else {
@@ -84,7 +84,7 @@ export const addProductToCart = (UID, PID, quantity) => {
                                 });
                                 resolve("Product added"); return 0;
                             } catch (error) {
-                                console.log('Error => ',error);
+                                console.log('Error => ', error);
                                 reject("Oops something went wrong"); return 0;
                             };
                         };
@@ -109,12 +109,12 @@ export const addProductToCart = (UID, PID, quantity) => {
                         addedData.save();
                         resolve("Product added");
                     } catch (error) {
-                        console.log('Error => ',error);
+                        console.log('Error => ', error);
                         reject('Error adding to cart'); return 0;
                     };
                 };
             } catch (error) {
-                console.log('Error => ',error);
+                console.log('Error => ', error);
                 reject("Oops something went wrong"); return 0;
             };
         } catch (error) {
@@ -123,3 +123,23 @@ export const addProductToCart = (UID, PID, quantity) => {
     });
 };
 
+export const deleteFormCart = (UID, PID) => {
+    return new Promise(async (resolve, reject) => {
+
+        try {
+            // validating inputs
+            const userOutput = await auth.validatior({ UID: UID }, { UIDRequired: true });
+            const productOutput = await products.validatior({ PID: PID }, { PID: true });
+
+            try {
+
+            } catch (error) {
+                console.error()
+                reject('Oops something went wrong');
+            };
+
+        } catch (error) {
+            reject(error); return 0;
+        };
+    });
+};

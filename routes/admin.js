@@ -13,8 +13,6 @@ adminApp.post('/products/add_product', auth.mustLoginAsAdminAPI, admin.addProduc
 adminApp.put('/products/edit_product/', auth.mustLoginAsAdminAPI, admin.editProductAPI);
 // api for adding caegory
 adminApp.post('/products/add_category', auth.mustLoginAsAdminAPI, admin.addCategoryAPI); 
-// all category listing
-adminApp.get('/products/categorys', auth.mustLoginAsAdminAPI, admin.category);
 // api for edit category
 adminApp.put('/products/edit_category', auth.mustLoginAsAdminAPI, admin.editCategoryAPI);
 // api for delete category
@@ -22,8 +20,10 @@ adminApp.delete('/products/delete_category', auth.mustLoginAsAdminAPI, admin.del
 // api for delete products
 adminApp.delete('/products/delete_product/', auth.mustLoginAsAdminAPI, admin.deleteProductAPI);
 
-
+// auth checker 
 adminApp.use(auth.mustLoginAsAdmin);
+// render helper by setting locals
+adminApp.use(admin.localsForAdmin);
 
 // dashboard routes
 adminApp.get('/', admin.dashboard);
@@ -33,6 +33,8 @@ adminApp.get('/user_management', admin.users);
 adminApp.get('/user_management/disabled_users', admin.disabledUsers);
 // edit user
 adminApp.get('/user_management/edit_user/:UID', admin.editUser);
+// all category listing
+adminApp.get('/products/categorys', auth.mustLoginAsAdminAPI, admin.category);
 // all products
 adminApp.get('/products', admin.products_disp);
 // add products
@@ -52,6 +54,6 @@ adminApp.get('/products/edit_product/:id', admin.editProduct);
 // 404 for admin
 adminApp.use((req, res) => {
     res.render('admin/404', { layout: 'admin_layout', message: 'Page Not Found !' })
-})
+});
 
 export default adminApp;

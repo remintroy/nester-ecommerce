@@ -200,7 +200,7 @@ export const addTOCartAPI = async (req, res) => {
 
         const PID = req.body.PID; // form request
         const UID = req.user.UID; // form session
-        const quantity = req.body?.quantity ? req.body.quantity : null;
+        const quantity = req.body?.quantity ? req.body.quantity : null; // from request
 
         // adds product to cart or if exist updates the quantity
         const output = await userService.addProductToCart(UID, PID, quantity);
@@ -211,5 +211,21 @@ export const addTOCartAPI = async (req, res) => {
         console.log('error => ', error);
         res.send({ status: 'error', message: error });
     };
-    
+
+};
+export const deleteFormCartAPI = async (req, res) => {
+    try {
+
+        const PID = req.body.PID; // form request
+        const UID = req.user.UID; // form session
+
+        // adds product to cart or if exist updates the quantity
+        const output = await userService.deleteFormCart(UID, PID);
+
+        res.send({ status: 'good', message: output });
+
+    } catch (error) {
+        console.log('error => ', error);
+        res.send({ status: 'error', message: error });
+    };
 };

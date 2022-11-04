@@ -5,52 +5,41 @@ import * as products from './services/products.js';
 
 const layout = `admin_layout`;
 
+// set up all common locals for render
+export const localsForAdmin = async (req, res, next) => {
+    res.locals.layout = `admin_layout`;
+    res.locals.title = `Admin-panel`;
+    res.locals.admin = req.admin;
+    next();
+};
 // warns deprication of a route
-export const depricationWarn = async(req, res)=>{
-    res.render('admin/404', { 
-        layout: layout, 
-        message: 'This page is currently unavailable or changed path',
-        code:404,
-    });
+export const depricationWarn = async (req, res) => {
+    res.locals.message = 'This page is currently unavailable or changed path';
+    res.locals.code = 404;
+    res.render('admin/404');
 };
 // admin dashboard
 export const dashboard = async (req, res) => {
-
     try {
-
-        const data = {
-            layout: layout
-        };
-
-        data.title = `Admin-panel`;
-        data.admin = req.admin
-        data.currentPage = 'dashboard';
-
-        res.render('admin/dashboard', data);
-
+        res.locals.title = `Admin-panel`;
+        res.locals.admin = req.admin;
+        res.locals.currentPage = 'dashboard';
+        res.render('admin/dashboard');
     } catch (error) {
         console.error(error);
-
-        res.render('admin/404', {
-            layout: 'admin_layout',
-            message: `Internal error`,
-            code: 500
-        });
+        res.locals.message = `Internal error`;
+        res.locals.code = 500;
+        res.render('admin/404');
     };
-
 };
 // all user 
 export const users = async (req, res) => {
-
     try {
-
-        let allUsers = await db.users.find({}, { password: 0 });
-
+        const allUsers = await db.users.find({}, { password: 0 });
         const userData = [];
 
         for (let i = 0; i < allUsers.length; i++) {
-
-            let output = {};
+            const output = {};
 
             output.name = allUsers[i].name;
             output.phone = allUsers[i].phone;
@@ -64,40 +53,27 @@ export const users = async (req, res) => {
             userData.push(output);
         };
 
-        res.render('admin/users', {
-            layout: layout,
-            users: userData,
-            admin: req.admin,
-            currentPage: 'users',
-            currentPageA: 'users'
-        });
+        res.locals.users = userData;
+        res.locals.currentPage = 'users';
+        res.locals.currentPageA = 'users';
 
+        res.render('admin/users');
     } catch (error) {
-
-        res.render('admin/404', {
-            layout: 'admin_layout',
-            message: `Can't read user data from db `,
-            code: 500
-        });
-
+        res.locals.message = `Can't read user data from db `;
+        res.locals.code = 500;
+        res.render('admin/404');
     };
-
 };
 // all desabled users
 export const disabledUsers = async (req, res) => {
     try {
-
-        let allUsers = await db.users.find({}, { password: 0 });
-
+        const allUsers = await db.users.find({}, { password: 0 });
         const userData = [];
 
         for (let i = 0; i < allUsers.length; i++) {
+            const output = {};
 
-            let output = {};
-
-            if (!allUsers[i]?.blocked) {
-                continue;
-            };
+            if (!allUsers[i]?.blocked) continue;
 
             output.name = allUsers[i].name;
             output.phone = allUsers[i].phone;
@@ -111,28 +87,20 @@ export const disabledUsers = async (req, res) => {
             userData.push(output);
         };
 
-        res.render('admin/users', {
-            layout: layout,
-            users: userData,
-            admin: req.admin,
-            currentPage: 'diabledUsers',
-            currentPageA: 'users'
-        });
+        res.locals.users = userData;
+        res.locals.currentPage = 'diabledUsers';
+        res.locals.currentPageA = 'users';
 
+        res.render('admin/users');
     } catch (error) {
-
-        res.render('admin/404', {
-            layout: 'admin_layout',
-            message: `Can't read user data from db `,
-            code: 500
-        });
-
+        res.locals.message = `Can't read user data from db `;
+        res.locals.message = 500;
+        res.render('admin/404');
     };
 };
 // all products
 export const products_disp = async (req, res) => {
     try {
-
         const productData = await db.products.find();
         const output = [];
 
@@ -141,10 +109,8 @@ export const products_disp = async (req, res) => {
             const result = {};
 
             for (let i = 0; i < keys.length; i++) {
-
                 const CONST_MAX_TITLE_LEN = 50;
                 const CONST_MAX_DESCRIPTION_LEN = 30;
-
                 // key is creation time
                 result[keys[i]] = keys[i] == 'creationTime' ? // --if-- key is creation time
                     // formatted time to readable
@@ -162,123 +128,85 @@ export const products_disp = async (req, res) => {
                                 element[keys[i]] : // -- else --
                             element[keys[i]];
             };
-
             output.push(result);
         });
+        res.locals.currentPage = 'products';
+        res.locals.currentPageA = 'products';
+        res.locals.products = output;
 
-        res.render('admin/products', {
-            layout: layout,
-            currentPageA: 'products',
-            currentPage: 'products',
-            products: output
-        });
-
+        res.render('admin/products');
     } catch (error) {
-        res.render('admin/404', {
-            layout: 'admin_layout',
-            message: `Faild to fetch product data from db `,
-            code: 500
-        });
+        res.locals.message = `Faild to fetch product data from db `;
+        res.locals.code = 500;
+        res.render('admin/404');
     };
 };
 // add product
 export const addProducts = async (req, res) => {
     try {
-
+        // get all categoy form db
         const category = await db.category.find({});
-
-        const data = {
-            layout: layout
-        };
-
-        data.title = `Admin-panel`;
-        data.admin = req.admin
-        data.currentPageA = 'products';
-        data.currentPage = 'addProducts';
-        data.category = category;
-
-        res.render('admin/addProducts', data);
-
+        res.locals.currentPageA = 'products';
+        res.locals.currentPage = 'addProducts';
+        res.locals.category = category;
+        res.render('admin/addProducts');
     } catch (error) {
         console.error(error);
-        res.render('admin/404', {
-            layout: 'admin_layout',
-            message: `Internal error`,
-            code: 500
-        });
+        res.locals.message = `Interal error`;
+        res.locals.code = 500;
+        res.render('admin/404');
     };
 };
 // api for adding product
 export const addProductsAPI = async (req, res) => {
-
     const data = req.body?.data ? JSON.parse(req.body.data) : null;
-
     const files = req.files;
 
     try {
-
         const output = await products.addProduct(data, files);
 
         res.send({ status: 'good', message: 'Product added' });
-
     } catch (error) {
         res.send({ status: "error", message: error });
     };
-
 };
 // edit product
 export const editProduct = async (req, res) => {
     try {
         const PID = req.params.id;
-
-        const output = await products.validatior({
-            PID: PID
-        });
-
+        const output = await products.validatior({ PID: PID });
         try {
-
-            const productDataFromDb = await db.products.findOne({ PID: output.PID });
-            const categoryDataFromDb = await db.category.find();
-            const keys = Object.keys(productDataFromDb._doc);
+            const product = await db.products.findOne({ PID: output.PID });
+            const categorys = await db.category.find();
+            const keys = Object.keys(product._doc);
             const result = {};
 
             for (let i = 0; i < keys.length; i++) {
-                result[keys[i]] = keys[i] == 'creationTime' ? dataToReadable(productDataFromDb.creationTime) : productDataFromDb[keys[i]];
+                result[keys[i]] = keys[i] == 'creationTime' ? dataToReadable(product.creationTime) : product[keys[i]];
             };
 
-            res.render('admin/editProduct', {
-                layout: layout,
-                currentPageA: 'products',
-                currentPage: 'editProduct',
-                product: result,
-                category: categoryDataFromDb
-            });
-
+            res.locals.currentPage = 'editProduct';
+            res.locals.currentPageA = 'products';
+            res.locals.product = result;
+            res.locals.category = categorys;
+            res.render('admin/editProduct');
         } catch (error) {
             console.log(error);
-            res.render('admin/404', {
-                code: 500,
-                message: "Error fetching product data form db",
-                layout: layout
-            });
+            res.locals.code = 500;
+            res.locals.message = "Error fetching product data form db"
+            res.render('admin/404');
         };
-
     } catch (error) {
-        res.render('admin/404', {
-            code: 400,
-            message: error,
-            layout: layout
-        });
+        res.locals.message = error;
+        res.render('admin/404');
     };
 };
 // api for edit product
 export const editProductAPI = async (req, res) => {
     try {
-
         const output = await products.editProduct(req.body, req.files);
 
         res.send({ status: 'good', message: output });
-
     } catch (error) {
         res.send({ status: 'error', message: error });
     };
@@ -286,11 +214,9 @@ export const editProductAPI = async (req, res) => {
 // api for delete product
 export const deleteProductAPI = async (req, res) => {
     try {
-
         const output = await products.deleteProduct(req.body.PID);
 
         res.send({ status: 'good', message: output, action: '/admin_panel/products/' });
-
     } catch (error) {
         res.send({ status: 'error', message: error });
     };
@@ -298,74 +224,53 @@ export const deleteProductAPI = async (req, res) => {
 // all category
 export const category = async (req, res) => {
     try {
-
-        const allCategoryFormDB = await db.category.find({});
+        const allCategory = await db.category.find({});
         const output = [];
 
-        allCategoryFormDB.forEach((element, index, array) => {
-
+        allCategory.forEach(element => {
             const keys = Object.keys(element._doc);
             const result = {};
 
             for (let i = 0; i < keys.length; i++) {
                 result[keys[i]] = keys[i] == 'creationTime' ? dataToReadable(element.creationTime) : element[keys[i]];
             };
+
             output.push(result);
         });
 
-        res.render('admin/allCategory', {
-            layout: layout,
-            categorys: output,
-            currentPageA: 'products',
-            currentPage: 'allCategory'
-        });
-
+        res.locals.categorys = output;
+        res.locals.currentPage = 'allCategory';
+        res.locals.currentPageA = 'products';
+        res.render('admin/allCategory');
     } catch (error) {
         console.log('ALL_CATEGORY_PAGE_DB => ', error);
-        res.render('admin/404', {
-            layout: 'admin_layout',
-            message: `Can't read category's from db `,
-            code: 500
-        });
-
+        res.locals.message = `Can't read category's from db `;
+        res.locals.code = 500;
+        res.render('admin/404');
     };
 };
 // add category
 export const addCategory = async (req, res) => {
     try {
-
         const category = await db.category.find({});
 
-        const data = {
-            layout: layout
-        };
-
-        data.title = `Admin-panel`;
-        data.admin = req.admin
-        data.currentPageA = 'products';
-        data.currentPage = 'addCategory';
-        data.category = category;
-
-        res.render('admin/addCategory', data);
-
+        res.locals.currentPageA = 'products';
+        res.locals.currentPage = 'addCategory';
+        res.locals.category = category;
+        res.render('admin/addCategory');
     } catch (error) {
         console.error(error);
-        res.render('admin/404', {
-            layout: 'admin_layout',
-            message: `Internal error`,
-            code: 500
-        });
+        res.locals.message = `Internal error`;
+        res.locals.code = 500;
+        res.render('admin/404');
     };
 };
 // api for adding category 
 export const addCategoryAPI = async (req, res) => {
-
     try {
-
         const output = await products.addCategory(req.body);
 
         res.send({ status: 'good', message: 'Successfully added category' });
-
     } catch (error) {
         res.send({ status: "error", message: error });
     };
@@ -373,11 +278,9 @@ export const addCategoryAPI = async (req, res) => {
 // api for editing category
 export const editCategoryAPI = async (req, res) => {
     try {
-
         const output = await products.editCategory(req.body);
 
         res.send({ status: 'good', message: output });
-
     } catch (error) {
         res.send({ status: 'error', message: error });
     };
@@ -385,69 +288,59 @@ export const editCategoryAPI = async (req, res) => {
 // api for deleting category
 export const deleteCategoryAPI = async (req, res) => {
     try {
-
         const output = await products.deleteCategory(req.body);
 
         res.send({ status: 'good', message: output });
-
     } catch (error) {
         res.send({ status: 'error', message: error });
     };
 };
 // login page
 export const login = (req, res) => {
-    res.render('admin/login', {
-        layout: 'admin_auth_layout'
-    });
+    res.locals.layout = 'admin_auth_layout';
+    res.render('admin/login');
 };
 // api for login
 export const loginApi = async (req, res) => {
     try {
-        let userData = await auth.adminLogin(req.body);
+        const userData = await auth.adminLogin(req.body);
 
         req.session.loggedIn = true;
         req.session.admin = userData.adminID;
-
         res.send({ status: "good", message: 'Login success', action: "/admin_panel/" });
     } catch (error) {
         res.send({ status: 'error', message: error });
-    }
+    };
 };
 // edit user
 export const editUser = async (req, res) => {
-
     try {
-
         const output = await auth.validatior({ UID: req.params.UID });
 
         try {
-
             const userData = await db.users.findOne({ UID: output.UID });
 
-            res.render('admin/editUser', {
-                layout: layout,
-                currentPageA: 'users',
-                user: userData
-            });
-
+            res.locals.user = userData;
+            res.currentPageA = 'users';
+            res.render('admin/editUser');
         } catch (error) {
-            console.log(error)
-            res.render('admin/404', { layout: layout, message: 'Unable to fetch userdata', code: 500 })
+            console.log(error);
+            res.locals.message = 'Unable to fetch userdata';
+            res.locals.code = 500;
+            res.render('admin/404');
         };
-
     } catch (error) {
-        res.render('admin/404', { layout: layout, message: error, code: '400' })
+        res.locals.message = error;
+        res.locals.code = 400;
+        res.render('admin/404');
     };
-
 };
 // api for edit user
 export const editUserAPI = async (req, res) => {
     try {
-
         const output = await auth.userDataUpdate(req.body);
 
         res.send({ status: 'good', message: 'User data updated' });
-
     } catch (error) {
         res.send({ status: 'error', message: error });
     };
