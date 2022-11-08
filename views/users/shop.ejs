@@ -50,8 +50,8 @@
                                 <figure class="product-media">
                                     <span class="product-label label-new">New</span>
                                     <a href="/product/<%=product.PID%>">
-                                        <img src="/product_images/<%=product.PID%>1.jpg"
-                                            alt="Product image" class="product-image">
+                                        <img src="/product_images/<%=product.PID%>1.jpg" alt="Product image"
+                                            class="product-image">
                                     </a>
 
                                     <div class="product-action-vertical">
@@ -60,22 +60,26 @@
                                     </div><!-- End .product-action -->
 
                                     <div class="product-action action-icon-top">
-                                        <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-
-
+                                        <div class="btn-product btn-cart" style="cursor: pointer;" onclick="addToCart('<%=product.PID%>',this)">
+                                            <span>add to cart</span>
+                                        </div>
                                     </div><!-- End .product-action -->
                                 </figure><!-- End .product-media -->
 
                                 <div class="product-body">
                                     <div class="product-cat" style="text-transform: capitalize;">
-                                        <a href="#"><%=product.category%></a>
+                                        <a href="#">
+                                            <%=product.category%>
+                                        </a>
                                     </div><!-- End .product-cat -->
-                                    <h3 class="product-title"><a href="/view/<%=product.PID%>"><%=product.title%></a></h3>
+                                    <h3 class="product-title"><a href="/view/<%=product.PID%>">
+                                            <%=product.title%>
+                                        </a></h3>
                                     <!-- End .product-title -->
                                     <div class="product-price">
                                         ₹ <%=product.price%>
                                     </div><!-- End .product-price -->
-                                    
+
 
                                 </div><!-- End .product-body -->
                             </div><!-- End .product -->
@@ -83,7 +87,7 @@
                         <% }) %>
 
 
-                            
+
                 </div><!-- End .row -->
 
                 <div class="load-more-container text-center">
@@ -351,3 +355,22 @@
         </div><!-- End .container-fluid -->
     </div><!-- End .page-content -->
 </main><!-- End .main -->
+
+<script>
+    function addToCart(PID) {
+        fetch('/cart_action', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                PID: PID
+            })
+        })
+            .then(res => res.json())
+            .then(res => {
+                console.log(res)
+            })
+            .catch(error => console.log(error));
+    };
+</script>

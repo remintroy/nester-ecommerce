@@ -1,3 +1,4 @@
+import e from 'express';
 import * as auth from './auth.js';
 import * as products from './products.js';
 import * as db from './schema.js';
@@ -122,24 +123,96 @@ export const addProductToCart = (UID, PID, quantity) => {
         };
     });
 };
-
 export const deleteFormCart = (UID, PID) => {
     return new Promise(async (resolve, reject) => {
 
         try {
             // validating inputs
             const userOutput = await auth.validatior({ UID: UID }, { UIDRequired: true });
-            const productOutput = await products.validatior({ PID: PID }, { PID: true });
+            const productOutput = await products.validatior({ PID: PID }, { PID: true }, 'updateproduct');
 
             try {
 
+                const formDb = await db.cart.updateOne({ UID: userOutput.UID }, {
+                    $pull: {
+                        'products': { PID: productOutput.PID }
+                    }
+                });
+
+                if (formDb.modifiedCount == 0) {
+                    resolve('Nothing to remove');
+                } else {
+                    resolve("Item removed form cart");
+                };
+
             } catch (error) {
-                console.error()
+                console.error(error)
                 reject('Oops something went wrong');
             };
 
         } catch (error) {
             reject(error); return 0;
+        };
+    });
+};
+export const getAllCartProducts = (UID) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // validating inputs
+            const userOutput = await auth.validatior({ UID: UID }, { UIDRequired: true });
+
+            try {
+                const products = await db.cart.aggregate([
+                    {
+                        $match: { UID: userOutput.UID }
+                    },
+                    {
+                        $unwind: "$products"
+                    },
+                    {
+                        $sort: { 'products.updated': -1 }
+                    },
+                    {
+                        $lookup: {
+                            from: 'products',
+                            localField: 'products.PID',
+                            foreignField: 'PID',
+                            as: 'cartProducts'
+                        }
+                    },
+                    {
+                        $addFields: {
+                            'cartProducts.quantity': '$$ROOT.products.quantity',
+                            'cartProducts.updated': '$$ROOT.products.updated'
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: '$products.PID',
+                            products: {
+                                $push: '$cartProducts'
+                            }
+                        }
+                    },
+                    {
+                        $project: { _id: 0 }
+                    }
+                ]);
+
+                // formatting output results 
+                const output = [];
+
+                products.forEach(e => {
+                    output.push(e.products[0][0]);
+                });
+
+                resolve(output);
+
+            } catch (error) {
+                reject('Oops something went wrong');
+            };
+        } catch (error) {
+            reject(error);
         };
     });
 };
