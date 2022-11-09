@@ -211,3 +211,15 @@ export const updateUserAddressAPI = async (req, res) => {
         res.send({ status: 'error', message: error });
     };
 };
+export const deleteUserAddressAPI = async (req, res) => {
+    try {
+        const UID = req.user.UID; // form session
+        // adds product to cart or if exist updates the quantity
+        const output = await userService.deleteUserAddress(UID, req.body);
+
+        res.send({ status: 'good', message: output });
+    } catch (error) {
+        console.log('error => ', error);
+        res.send({ status: 'error', message: error });
+    };
+};

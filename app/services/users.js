@@ -250,9 +250,11 @@ const updateAddress = (UID, existingData, newAddress) => {
                 } catch (error) {
                     reject('Error updating to db');
                 };
+
+                resolve("Address updated successfully"); return 0;
             };
 
-            resolve(finalOutput);
+            resolve('No address found with provided id thus created new address');
 
         } catch (error) {
             console.log('error=>', error);
@@ -524,6 +526,33 @@ export const updateUserAddress = (UID, address) => {
             };
         } catch (error) {
             reject(error);
+        };
+    });
+};
+export const deleteUserAddress = (UID, body) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const addressOutput = await addressValidator(UID, body);
+
+            try {
+
+                const data = await db.address.updateOne({ UID: addressOutput.UID }, {
+                    $pull: {
+                        'address': { _id: addressOutput.addressID }
+                    }
+                });
+
+                if(data.modifiedCount>0){
+                    resolve("Address removed successfully");
+                }else{
+                    resolve("Nothing to remove");
+                };
+
+            } catch (error) {
+                reject("Error removing address from db");
+            };
+        } catch (error) {
+            reject(error); return 0;
         };
     });
 };

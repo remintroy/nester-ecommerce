@@ -32,6 +32,8 @@ app.delete('/cart_action', auth.mustLoginAsUserAPI, users.deleteFormCartAPI);
 app.post('/user_address', auth.mustLoginAsUserAPI, users.addUserAddressAPI);
 // api for updating user address
 app.put('/user_address', auth.mustLoginAsUserAPI, users.updateUserAddressAPI);
+// api for delete user address
+app.delete('/user_address', auth.mustLoginAsUserAPI, users.deleteUserAddressAPI);
 
 // sub - dev api's
 // api for get all products form cart
