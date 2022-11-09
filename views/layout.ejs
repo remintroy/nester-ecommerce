@@ -3,6 +3,7 @@
 
 
 <!-- molla/index-2.html  22 Nov 2019 09:55:32 GMT -->
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -37,9 +38,9 @@
 
         <%- include('./users/partials/header') %>
 
-        <%- body %> 
+            <%- body %>
 
-        <%- include('./users/partials/footer') %>
+                <%- include('./users/partials/footer') %>
 
     </div><!-- End .page-wrapper -->
 
@@ -99,6 +100,24 @@
     <script src="/assets/js/jquery.sticky-kit.min.js"></script>
     <!-- Main JS File -->
     <script src="/assets/js/main.js"></script>
+    <script>
+        function addToCart(PID) {
+            fetch('/cart_action', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    PID: PID
+                })
+            })
+                .then(res => res.json())
+                .then(res => {
+                    document.getElementById("cart_total_count").innerText = res.message.totalCount;
+                })
+                .catch(error => console.log(error));
+        };
+    </script>
 </body>
 
 

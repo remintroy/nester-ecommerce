@@ -6,7 +6,8 @@
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">All Users</h1>
-    <p class="mb-4">Edit, Update, Create, block and unblock Users <br>Some fields can be updated within this page those fields are highlighted</p>
+    <p class="mb-4">Edit, Update, Create, block and unblock Users <br>Some fields can be updated within this page those
+        fields are highlighted</p>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
@@ -25,8 +26,9 @@
                             <th>Provider</th>
                             <th>Created</th>
                             <th>Lastlogin</th>
-                            <th style="cursor: pointer; text-align: center;">blocked</th>
-                            <th style="cursor: pointer; text-align: center;">-</th>
+                            <th style="cursor: pointer; text-align: center;">Enable / Disable</th>
+                            <!-- <th style="cursor: pointer; text-align: center;">-</th> -->
+                            <th style="cursor: pointer; text-align: center;">Edit</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,31 +38,43 @@
                                     <%=index+1%>
                                 </td>
 
-                                <td class="tabe_editable_TD" title="Click To edit"
+                                <!-- <td class="tabe_editable_TD" title="Click To edit"
                                     onclick="categoryName('<%=user.UID%>',this)">
                                     <div class="width-helper">
                                         <%=user?.name?user.name.split(" ").join(""):''%></div>
                                     <input type=" text" class="input_editable" disabled data-id="<%=user.UID%>"
                                             value="<%=user.name%>" data-type="name">
+                                </td> -->
+
+                                <td style="text-transform:capitalize;">
+                                    <%=user.name%>
                                 </td>
 
-                                <td class="tabe_editable_TD" title="Click To edit"
-                                    onclick="categoryName('<%=user.UID%>',this)">
-                                    <div class="width-helper">
-                                        <%=user.email%>
-                                    </div>
-                                    <input type="text" class="input_editable" disabled data-id="<%=user.UID%>"
-                                        value="<%=user.email%>" data-type="email">
+                                <!-- <td class=" tabe_editable_TD" title="Click To edit"
+                                        onclick="categoryName('<%=user.UID%>',this)">
+                                        <div class="width-helper">
+                                            <%=user.email%>
+                                        </div>
+                                        <input type="text" class="input_editable" disabled data-id="<%=user.UID%>"
+                                            value="<%=user.email%>" data-type="email">
+                                </td> -->
+
+                                <td>
+                                    <%=user.email%>
                                 </td>
 
-                                <td class="tabe_editable_TD" title="Click To edit"
+                                <!-- <td class="tabe_editable_TD" title="Click To edit"
                                     onclick="categoryName('<%=user.UID%>',this)">
                                     <div class="width-helper">
                                         <%=user.phone%>
                                     </div>
                                     <input type="text" class="input_editable" disabled data-id="<%=user.UID%>"
                                         value="<%=user.phone%>" data-type="phone">
+                                </td> -->
+                                <td>
+                                    <%=user.phone%>
                                 </td>
+
                                 <td style="text-transform:capitalize;">
                                     <%=user.loginProvider%>
                                 </td>
@@ -72,15 +86,32 @@
                                 </td>
                                 <td style="text-transform:capitalize; cursor: pointer; text-align: center;">
                                     <%if(user.blocked){%>
-                                        <i class="fas fa-exclamation-circle"></i> blocked
+                                        <i class="fas fa-exclamation-circle"></i> Disabled
                                         <%}else{%>
-                                            <i class="fas fa-check-circle"></i> Active
+                                            <i class="fas fa-check-circle"></i> Enabled
                                             <%};%>
                                 </td>
-                                <td style="cursor: pointer; text-align: center;"
+
+                                <td <%if(!user.blocked){%>
+                                    style="text-transform:capitalize; cursor: pointer; text-align: center;
+                                    background-color: #ffb6b6; color:black;"
+                                    onclick="blockUser('<%=user.UID%>',this)"
+                                        <%}else{%>
+                                            style="text-transform:capitalize; cursor: pointer; text-align: center;
+                                            background-color: #c6ffba; color:black;"
+                                            onclick="unBlockUser('<%=user.UID%>',this)"
+                                                <%} %>>
+                                                    <%if(user.blocked){%>
+                                                        Enable
+                                                        <%}else{%>
+                                                            Disable
+                                                            <%};%>
+                                </td>
+
+                                <!-- <td style="cursor: pointer; text-align: center;"
                                     onclick="window.location.href='/admin_panel/user_management/edit_user/<%=user.UID%>'">
                                     More&nbsp;<i class="fas fa-cog"></i>
-                                </td>
+                                </td> -->
                             </tr>
                             <% }); %>
                     </tbody>
@@ -92,6 +123,13 @@
 <!-- /.container-fluid -->
 
 <script>
+
+    function blockUser(UID, obj) {
+        saveCurrentValue(UID, 'disabled', obj, 'state');
+    };
+    function unBlockUser(UID, obj) {
+        saveCurrentValue(UID, 'enable', obj, 'state');
+    };
 
     function categoryName(ID, td, type) {
         const categoryInput = td.querySelector('input');
@@ -121,8 +159,9 @@
     });
 
     function saveCurrentValue(UID, value, input, type) {
-        input.style.borderColor = 'black';
-
+        if (type != 'state') {
+            input.style.borderColor = 'black';
+        }
         if (value?.length > 2) {
 
             fetch('/admin_panel/user_management/edit_user', {
@@ -135,17 +174,30 @@
                     email: type == 'email' ? input.value : null,
                     phone: type == 'phone' ? value : null,
                     UID: UID ? UID : null,
+                    state: type == 'state' && value == 'disabled' ? 'disabled' : 'enable'
                 })
             })
                 .then(res => res.json())
                 .then(res => {
-                    if (res.status == 'error') {
-                        console.log('ERROR_A => ', res.message);
-                        input.style.borderColor = 'red';
+                    if (type == 'state') {
+                        if (value == 'disabled') {
+                            input.style.backgroundColor = '#c6ffba';
+                            input.setAttribute('onclick', `unBlockUser('${UID}',this)`);
+                            input.innerText = 'Enable';
+                        } else {
+                            input.style.backgroundColor = '#ffb6b6';
+                            input.setAttribute('onclick', `blockUser('${UID}',this)`);
+                            input.innerText = 'Disable';
+                        }
                     } else {
-                        input.style.borderColor = '';
-                        input.setAttribute('disabled', '');
-                    };
+                        if (res.status == 'error') {
+                            console.log('ERROR_A => ', res.message);
+                            input.style.borderColor = 'red';
+                        } else {
+                            input.style.borderColor = '';
+                            input.setAttribute('disabled', '');
+                        };
+                    }
                 })
                 .catch(error => {
                     console.error(error);

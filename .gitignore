@@ -2,3 +2,4 @@
 .env
 /public/product_images
 /uploads
+/public/banners

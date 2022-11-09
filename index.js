@@ -6,11 +6,11 @@ import dotenv from 'dotenv';
 import fileUpload from 'express-fileupload';
 import Logger from 'morgan';
 
+import { randomId } from './app/services/util.js';
 import * as db from './app/services/schema.js';
 import * as auth from './app/services/auth.js';
 import adminRoute from './routes/admin.js';
 import usersRoute from './routes/user.js';
-import { randomId } from './app/services/util.js';
 
 dotenv.config();
 
@@ -22,7 +22,7 @@ const appConfig = {
 };
 const mongoDbSesson = new ConnectMongoDBSession(session);
 
-app.use(Logger('dev'));
+// app.use(Logger('dev'));
 app.set("view engine", "ejs");
 app.use(session({
     saveUninitialized: false,

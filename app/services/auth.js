@@ -1,5 +1,5 @@
 import * as db from './schema.js';
-import { randomId } from './util.js';
+import { randomId, getCountryByName, nameFormatter } from './util.js';
 import bCrypt from 'bcryptjs';
 import * as firebase from './firebase.js';
 
@@ -69,9 +69,7 @@ export const initAuth = async (req, res, next) => {
  * @param {String} data.name
  * @param {Number} data.phone
  * @param {String} data.cart
- * @param {String} data.address
- * @param {String} data.orders
- * @param {String} data.wishList
+ * @param {String} data.country
  * @param {Object} requiredIn
  * @param {string} requiredIn.emailRequired
  * @param {string} requiredIn.passwordRequired
@@ -80,9 +78,7 @@ export const initAuth = async (req, res, next) => {
  * @param {string} requiredIn.nameRequired
  * @param {string} requiredIn.phoneRequired
  * @param {string} requiredIn.cartRequired
- * @param {string} requiredIn.addressRequired
- * @param {string} requiredIn.ordersRequired
- * @param {string} requiredIn.wishListRequired
+ * @param {string} requiredIn.countryRequired
  * @param {string} typeOfValidation
  */
 export function validatior(data, requiredIn, typeOfValidation) {
@@ -91,12 +87,10 @@ export function validatior(data, requiredIn, typeOfValidation) {
     const password = data.password ? data.password : '';
     const role = data.role ? data.role : '';
     const UID = data.UID ? data.UID : '';
-    const name = data.name ? data.name.toLocaleLowerCase() : '';
+    const name = data.name ? nameFormatter(data.name) : '';
     const phone = data.phone ? data.phone : '';
     const cart = data.cart ? data.cart : '';
-    const address = data.address ? data.address : '';
-    const orders = data.orders ? data.orders : '';
-    const wishList = data.wishList ? data.wishList : '';
+    const country = data.country ? data.country : '';
 
     const required = requiredIn ? requiredIn : {};
     const emailRequired = required.emailRequired ? true : false;
@@ -106,9 +100,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
     const nameRequired = required.nameRequired ? true : false;
     const phoneRequired = required.phoneRequired ? true : false;
     const cartRequired = required.cartRequired ? true : false;
-    const addressRequired = required.addressRequired ? true : false;
-    const ordersRequired = required.ordersRequired ? true : false;
-    const wishListRequired = required.wishListRequired ? true : false;
+    const countryRequired = required.countryRequired ? true : false;
 
     let output = {
         name: null,
@@ -118,9 +110,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
         role: null,
         phone: null,
         cart: null,
-        address: null,
-        orders: null,
-        wishList: null,
+        country: null,
     };
 
     const MIN_NAME_LENGTH = 2;
@@ -128,9 +118,6 @@ export function validatior(data, requiredIn, typeOfValidation) {
     const GOOGLE_UID_LENGTH = 28;
     const PHONE_UID_LENGTH = 28;
     const CARTID_LENGTH = 34;
-    const ADDRESSID_LENGTH = 10;
-    const ORDERID_LENGTH = 34;
-    const WISHLISTID_LENGTH = 34;
     const MIN_PASSWORD_LENGTH = 6;
 
     return new Promise(async (resolve, reject) => {
@@ -322,9 +309,9 @@ export function validatior(data, requiredIn, typeOfValidation) {
         if (phone || phoneRequired) {
             if (phone.length == 0) {
                 reject('Phone number required'); return 0;
-            } else if (phone.length >= 10) {
+            } else if ((phone + "").length >= 10) {
 
-                if (phone.match(/^\+?[1-9][0-9]{7,14}$/)) {
+                if ((phone + "").match(/^\+?[1-9][0-9]{7,14}$/)) {
 
                     if (typeOfValidation == "updateUser" || typeOfValidation == 'signup' || typeOfValidation == 'google') {
                         try {
@@ -379,80 +366,17 @@ export function validatior(data, requiredIn, typeOfValidation) {
             };
         };
 
-        // valdiate and create address id
-        if (address || addressRequired) {
-            if (typeOfValidation == 'signup') {
-
-                let ID = '';
-
-                do {
-                    ID = randomId(ADDRESSID_LENGTH);
-                } while (await db.users.find({ address: ID }).length > 0);
-                //...
-                output.address = ID;
-
+        // country name validator
+        if (country || countryRequired) {
+            if ((country + "").length == 0) {
+                reject('Country required');
             } else {
-                if (typeOfValidation == 'addressUpdate' && address.length == 0) {
-                    output.address = randomId(ADDRESSID_LENGTH);
+                const data = await getCountryByName(country);
+                if (data != null) {
+                    output.country = nameFormatter(country);
                 } else {
-                    if (address.length == 0) {
-                        reject('AddressID Required'); return 0;
-                    } else if (address.length == ADDRESSID_LENGTH) {
-                        output.address = address;
-                    } else {
-                        reject('Provide a valid AddressID'); return 0;
-                    };
+                    reject('Invalid country');
                 };
-            };
-        };
-
-        // validate and create orders id
-        if (orders || ordersRequired) {
-            if (typeOfValidation == 'signup') {
-
-                let ID = '';
-
-                do {
-                    ID = randomId(ORDERID_LENGTH);
-                } while (await db.users.find({ orders: ID }).length > 0);
-                //...
-                output.orders = ID;
-
-            } else {
-                if (orders.length == 0) {
-                    reject('OrderID Required'); return 0;
-                } else if (orders.length == ORDERID_LENGTH) {
-                    output.orders = orders;
-                } else {
-                    reject('Provide a valid OrderID'); return 0;
-                };
-            };
-        };
-
-        // validate and create wishlist id
-        if (wishList || wishListRequired) {
-            if (typeOfValidation == 'signup') {
-
-                let wishID = '';
-
-                do {
-                    wishID = randomId(WISHLISTID_LENGTH);
-                } while (await db.users.find({ wishList: wishID }).length > 0);
-                //...
-                output.wishList = wishID;
-
-            } else {
-
-                if (wishList.length == 0) {
-                    reject('WishListID Required'); return 0;
-                } else {
-                    if (wishList.length == WISHLISTID_LENGTH) {
-                        output.wishList = wishList;
-                    } else {
-                        reject('Provide a valid WishListID'); return 0;
-                    };
-                };
-
             };
         };
 
@@ -661,17 +585,20 @@ export const userSignupWithEmail = ({ email, name, password, phone }) => {
 };
 export const userDataUpdate = ({ UID, email, password, name, phone, state }) => {
     return new Promise(async (resolve, reject) => {
-
         try {
-
             // updatable: email, password, name, phone, state
             const output = await validatior(
                 {
                     UID: UID?.trim(),
-                    email: email?.trim(),
-                    password: password?.trim(),
-                    name: name?.trim(),
-                    phone: phone?.trim(),
+
+                    // 01 of 02 !!! code commented below give permission api to edit sensitive user data 
+                    // 01 0f 02 !!! now api only have permisson to block or unblock user 
+                    // 01 of 02 !!! if neede remove commented code below
+
+                    // email: email?.trim(),
+                    // password: password?.trim(),
+                    // name: name?.trim(),
+                    // phone: phone?.trim(),
                 },
                 {
 
@@ -680,15 +607,19 @@ export const userDataUpdate = ({ UID, email, password, name, phone, state }) => 
             );
 
             try {
-
                 const result = {};
-                const keys = Object.keys(output);
 
-                for (let i = 0; i < keys.length; i++) {
-                    if (output[keys[i]] && keys[i] != "UID") {
-                        result[keys[i]] = output[keys[i]];
-                    };
-                };
+                // 02 of 02 !!! code commented below give permission api to edit sensitive user data 
+                // 02 of 02 !!! now api only have permisson to block or unblock user 
+                // 02 of 02 !!! if neede remove commented code below
+
+                // const keys = Object.keys(output);
+
+                // for (let i = 0; i < keys.length; i++) {
+                //     if (output[keys[i]] && keys[i] != "UID") {
+                //         result[keys[i]] = output[keys[i]];
+                //     };
+                // };
 
                 if (state) {
                     result.blocked = state == 'disabled' ? true : false;
@@ -723,7 +654,6 @@ export const userDataUpdate = ({ UID, email, password, name, phone, state }) => 
         } catch (error) {
             reject(error); return 0;
         };
-
     });
 };
 

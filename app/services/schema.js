@@ -50,12 +50,19 @@ export const address = db.model("address", new mongoose.Schema({
     UID: String,
     address: [
         {
+            type: {
+                type: String,
+                default: 'secondary'
+            },
+            name: String,
             country: String,
             phone: Number,
             pin: Number,
+            houseNumber: Number,
+            streetNumber: Number,
+            town: String,
             state: String,
             landmark: String,
-            locality: String,
             email: String
         }
     ]
@@ -65,14 +72,16 @@ export const products = db.model("products", new mongoose.Schema({
     PID: String,
     title: String,
     description: String,
-    img: Array,
     category: Array,
     price: Number,
     creationTime: {
         type: Date,
         default: new Date()
     },
-    offer: Number,
+    offer: {
+        type: Number,
+        default: 0
+    },
     stock: Number
 }));
 
@@ -147,4 +156,12 @@ export const adminUser = db.model("admin", new mongoose.Schema(
     }
 ));
 
-
+export const countries = db.model("countries", new mongoose.Schema(
+    {
+        name: String,
+        code: String,
+        timezone: String,
+        utc: String,
+        mobileCode: String
+    }
+));

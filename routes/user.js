@@ -28,10 +28,14 @@ app.post('/cart_action', auth.mustLoginAsUserAPI, users.addTOCartAPI);
 app.put('/cart_action', auth.mustLoginAsUserAPI, users.addTOCartAPI);
 // api for add to cart
 app.delete('/cart_action', auth.mustLoginAsUserAPI, users.deleteFormCartAPI);
+// api for addign user address
+app.post('/user_address', auth.mustLoginAsUserAPI, users.addUserAddressAPI);
+// api for updating user address
+app.put('/user_address', auth.mustLoginAsUserAPI, users.updateUserAddressAPI);
 
 // sub - dev api's
 // api for get all products form cart
-app.post('/cart_all', auth.mustLoginAsUserAPI, users.getAllProductsFormCart);
+app.post('/cart_all', auth.mustLoginAsUserAPI, users.getAllProductsFormCartAPI);
 
 // usersign in page
 app.get('/user_signin', auth.mustLogoutAsUser, users.login);

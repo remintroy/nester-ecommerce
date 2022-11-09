@@ -31,8 +31,6 @@ adminApp.get('/', admin.dashboard);
 adminApp.get('/user_management', admin.users);
 // disabled users listing
 adminApp.get('/user_management/disabled_users', admin.disabledUsers);
-// edit user
-adminApp.get('/user_management/edit_user/:UID', admin.editUser);
 // all category listing
 adminApp.get('/products/categorys', auth.mustLoginAsAdminAPI, admin.category);
 // all products
@@ -41,6 +39,9 @@ adminApp.get('/products', admin.products_disp);
 adminApp.get('/products/add_product', admin.addProducts);
 // edit products
 adminApp.get('/products/edit_product/:id', admin.editProduct);
+
+// edit user
+// adminApp.get('/user_management/edit_user/:UID', admin.editUser); // this route is disabled due to sequrity
 
 
 // routes is now depricated are listed below - start

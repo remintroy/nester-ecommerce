@@ -356,21 +356,3 @@
     </div><!-- End .page-content -->
 </main><!-- End .main -->
 
-<script>
-    function addToCart(PID) {
-        fetch('/cart_action', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                PID: PID
-            })
-        })
-            .then(res => res.json())
-            .then(res => {
-                console.log(res)
-            })
-            .catch(error => console.log(error));
-    };
-</script>

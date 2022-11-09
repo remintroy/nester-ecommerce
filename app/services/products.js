@@ -317,9 +317,9 @@ export const addProduct = ({ title, description, price, quantity, offer, categor
                     title: output.title,
                     description: output.description,
                     category: output.category,
-                    price: output.price,
-                    offer: output.offer,
-                    stock: output.stock,
+                    price: output.price ? output.price : 0,
+                    offer: output.offer ? output.offer < output.price ? output.offer : output.price : 0,
+                    stock: output.stock ? output.stock : 0,
                 });
 
                 addedData.save();
@@ -379,7 +379,7 @@ export const editProduct = (body, files) => {
                         description: output.description ? output.description : ExistingData.description,
                         category: output.category ? output.category : ExistingData.category,
                         price: output.price ? output.price : ExistingData?.price ? ExistingData.price : 0,
-                        offer: output.offer ? output.offer : ExistingData?.offer ? ExistingData.offer : 0,
+                        offer: output.offer ? output.offer < output.price ? output.offer : output.price : ExistingData?.offer ? ExistingData.offer : 0,
                         stock: output.stock ? output.stock : ExistingData?.stock ? ExistingData.stock : 0,
                     }
                 });

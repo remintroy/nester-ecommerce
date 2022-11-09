@@ -2,14 +2,16 @@ import * as auth from './services/auth.js';
 import * as db from './services/schema.js';
 import * as userService from './services/users.js';
 
-const getCategorys = async () => {
-    return await db.category.find();
-};
 // locals for users
 export const localsForUser = async (req, res, next) => {
-    res.locals.categorys = await db.category.find();
-    res.locals.user = req.user;
-    next();
+    try {
+        if (req.user) res.locals.cartProducts = await userService.getAllCartProducts(req.user?.UID);
+        res.locals.categorys = await db.category.find();
+        res.locals.user = req.user;
+        next();
+    } catch (error) {
+        console.log(error)
+    };
 };
 
 // auth - pages
@@ -77,23 +79,16 @@ export const loginWithOtpAPI = async (req, res) => {
 
 // common - pages
 export const home = (req, res) => {
-    getCategorys().then(categorys => {
-        res.locals.user = req.user;
-        res.locals.categorys = categorys;
-        res.currentPage = 'home';
-        res.render('users/index');
-    });
+    res.locals.user = req.user;
+    res.currentPage = 'home';
+    res.render('users/index');
 };
 export const shop = async (req, res) => {
     try {
         const products = await db.products.find();
-        getCategorys().then(categorys => {
-            res.locals.currentPage = 'shop';
-            res.locals.user = req.user;
-            res.locals.categorys = categorys;
-            res.locals.products = products;
-            res.render('users/shop');
-        });
+        res.locals.currentPage = 'shop';
+        res.locals.products = products;
+        res.render('users/shop');
     } catch (error) {
         res.locals.message = `Can't read product data from db `;
         res.locals.code = 500;
@@ -128,7 +123,6 @@ export const product = async (req, res) => {
 export const cart = async (req, res) => {
     res.locals.currentPage = 'cart';
     try {
-        res.locals.cartProducts = await userService.getAllCartProducts(req.user.UID);
         res.render('users/cart');
     } catch (error) {
         res.locals.message = `Can't read product data from db `;
@@ -137,34 +131,16 @@ export const cart = async (req, res) => {
     };
 };
 export const wishlist = (req, res) => {
-    const currentPage = 'wishlist';
-    getCategorys().then(categorys => {
-        res.render('users/wishlist', {
-            currentPage,
-            user: req.user,
-            categorys
-        });
-    });
+    res.locals.currentPage = 'wishlist';
+    res.render('users/wishlist');
 };
 export const dashboard = (req, res) => {
-    const currentPage = 'dashboard';
-    getCategorys().then(categorys => {
-        res.render('users/dashboard', {
-            currentPage,
-            user: req.user,
-            categorys: categorys
-        });
-    })
+    res.locals.currentPage = 'dashboard';
+    res.render('users/dashboard');
 };
 export const checkout = (req, res) => {
-    const currentPage = 'checkout';
-    getCategorys().then(categorys => {
-        res.render('users/checkout', {
-            currentPage,
-            user: req.user,
-            categorys
-        });
-    });
+    res.locals.currentPage = 'checkout';
+    res.render('users/checkout');
 };
 
 // common - api's
@@ -194,11 +170,10 @@ export const deleteFormCartAPI = async (req, res) => {
         res.send({ status: 'good', message: output });
 
     } catch (error) {
-        console.log('error => ', error);
         res.send({ status: 'error', message: error });
     };
 };
-export const getAllProductsFormCart = async (req, res) => {
+export const getAllProductsFormCartAPI = async (req, res) => {
     try {
         const UID = req.user.UID; // form session
 
@@ -207,6 +182,30 @@ export const getAllProductsFormCart = async (req, res) => {
 
         res.send({ status: 'good', message: output });
 
+    } catch (error) {
+        console.log('error => ', error);
+        res.send({ status: 'error', message: error });
+    };
+};
+export const addUserAddressAPI = async (req, res) => {
+    try {
+        const UID = req.user.UID; // form session
+        // adds product to cart or if exist updates the quantity
+        const output = await userService.addUserAddress(UID, req.body);
+
+        res.send({ status: 'good', message: output });
+    } catch (error) {
+        console.log('error => ', error);
+        res.send({ status: 'error', message: error });
+    };
+};
+export const updateUserAddressAPI = async (req, res) => {
+    try {
+        const UID = req.user.UID; // form session
+        // adds product to cart or if exist updates the quantity
+        const output = await userService.updateUserAddress(UID, req.body);
+
+        res.send({ status: 'good', message: output });
     } catch (error) {
         console.log('error => ', error);
         res.send({ status: 'error', message: error });
