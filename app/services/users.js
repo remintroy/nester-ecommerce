@@ -1,5 +1,3 @@
-import * as auth from './auth.js';
-import * as db from './schema.js';
 import * as cart from './cart.js';
 import * as address from './address.js';
 import { checkout } from './orders.js';

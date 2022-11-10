@@ -78,7 +78,7 @@
                         disp({ returnVal: thereIsNoError }) :
                         disp({ message: 'Enter a valid phone number', returnVal: false });
 
-                    thereIsNoError = phone_value.length == 0 ?
+                    thereIsNoError = phone_value?.length == 0 ?
                         disp({ message: 'Phone cannot be empty', returnVal: false }) :
                         disp({ returnVal: thereIsNoError });
 

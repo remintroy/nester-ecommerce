@@ -2,6 +2,7 @@ import * as auth from './services/auth.js';
 import { randomId, dataToReadable } from './services/util.js';
 import * as db from './services/schema.js';
 import * as products from './services/products.js';
+import * as orders from './services/orders.js';
 
 const layout = `admin_layout`;
 
@@ -224,7 +225,7 @@ export const deleteProductAPI = async (req, res) => {
 // all orders page
 export const ordres = async (req, res) => {
     try {
-        res.locals.ordres = await db.orders.find({});
+        res.locals.orders = await orders.getAll();
         res.locals.currentPage = 'orders';
         res.locals.currentPageA = 'orders';
         res.render('admin/orders');

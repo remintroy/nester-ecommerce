@@ -5,9 +5,8 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">All Catogory's</h1>
-    <p class="mb-4">
-        Edit, add and Update category's
+    <h1 class="h3 mb-2 text-gray-800">All Products</h1>
+    <p class="mb-4">View, Update, Create, and delete products
         <br>Some fields can be updated within this page those fields are highlighted
     </p>
 
@@ -17,56 +16,59 @@
             <h6 class="m-0 font-weight-bold text-primary">All users</h6>
         </div>
         <div class="card-body">
-            <div class="mb-1 small" id="progressDisp"></div>
-            <div class="progress progress-sm mb-2" style="background-color: transparent;">
-                <div class="progress-bar" id="progressBar" role="progressbar" style="width: 0%" aria-valuenow="75"
-                    aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Name</th>
-                            <th>ID</th>
-                            <th>Created</th>
-                            <th>status</th>
-                            <!-- <th style="cursor: pointer; text-align: center;">Disable / Enable</th> -->
-                            <th style="cursor: pointer; text-align: center;">Delete </th>
+                            <th>IMG</th>
+                            <th>Title</th>
+                            <th>Emali</th>
+                            <th>Price</th>
+                            <th>Quantitly</th>
+                            <!-- <th>Discount</th> -->
+                            <th>Category</th>
+                            <th>Orderd</th>
+                            <th style="cursor: pointer; text-align: center;">-</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <% locals?.categorys?.forEach((category,index,array)=>{ %>
+                        <% locals?.orders?.forEach((order,index,array)=>{ %>
                             <tr>
                                 <td>
                                     <%=index+1%>
                                 </td>
-                                <td class="tabe_editable_TD" title="Click To edit"
-                                    onclick="categoryName('<%=category._id%>',this)">
-                                    <input class="input_editable" type="text" data-id="<%=category._id%>" disabled
-                                        value="<%=category.category%>">
-                                </td>
-                                <td>
-                                    <%=category._id%>
-                                </td>
-                                <td>
-                                    <%=category.creationTime%>
-                                </td>
                                 <td style="text-transform:capitalize;">
-                                    <%if(category.status){%>
-                                        &nbsp;<i class="fas fa-exclamation-circle"></i> disabled
-                                        <%}else{%>
-                                            &nbsp;<i class="fas fa-check-circle"></i> active
-                                            <%};%>
+                                    <img style="width: 60px;" src="/product_images/<%=order?.orders?.products?.PID%>1.jpg" alt="IMG">
                                 </td>
-                                <!-- <td style="cursor: pointer; text-align: center;"
-                                    onclick="window.location.href='/admin_panel/products/<%=category.UID%>'">
-                                    <i class="fas fa-minus-circle"></i>&nbsp;&nbsp;Disable
+                                <td>
+                                    <%=order?.orders?.products?.title?.slice(0,34)+"..."%>
+                                </td>
+                                <td>
+                                    <%=order?.user[0]?.email%>
+                                </td>
+                                <td class="tabe_editable_TD" title="Click To edit"
+                                    onclick="categoryName('<%=order.PID%>',this)">
+                                    <input type="text" class="input_editable" disabled data-id="<%=order.PID%>"
+                                        value="<%=order?.orders?.products?.price%>" data-type="price">
+                                </td>
+                                <td class="tabe_editable_TD" title="Click To edit"
+                                    onclick="categoryName('<%=order.PID%>',this)">
+                                    <input type="text" class="input_editable" disabled data-id="<%=order.PID%>"
+                                        value="<%=order?.orders?.products?.quantity%>" data-type="stock">
+                                </td>
+                                <!-- <td>
+                                    <%=order.offer?order.offer:'-'%>
                                 </td> -->
-
+                                <td>
+                                    <%=order.category%>
+                                </td>
+                                <td>
+                                    <%=order.creationTime%>
+                                </td>
                                 <td style="cursor: pointer; text-align: center;"
-                                    onclick="deleteCategory('<%=category._id%>')">
-                                    <i class="fas fa-trash-alt"></i>&nbsp;&nbsp;Delete
+                                    onclick="window.location.href='/admin_panel/products/edit_product/<%=order.PID%>'">
+                                    more&nbsp;<i class="fas fa-cog"></i>
                                 </td>
                             </tr>
                             <% }); %>
@@ -77,3 +79,74 @@
     </div>
 </div>
 <!-- /.container-fluid -->
+
+
+<script>
+
+    function categoryName(ID, td, type) {
+        const categoryInput = td.querySelector('input');
+        categoryInput.removeAttribute('disabled');
+        categoryInput.focus();
+    };
+
+    const inputCollection = document.querySelectorAll('input.input_editable');
+
+    inputCollection.forEach(element => {
+        element.addEventListener('keyup', e => {
+            if (e.keyCode == 13) {
+                const value = e.target.value;
+                const PID = e.target.getAttribute('data-id');
+                const input = e.target;
+                const type = e.target.getAttribute('data-type');
+                saveCurrentValue(PID, value, input, type);
+            };
+        });
+        element.addEventListener('focusout', e => {
+            const value = e.target.value;
+            const PID = e.target.getAttribute('data-id');
+            const input = e.target;
+            const type = e.target.getAttribute('data-type');
+            saveCurrentValue(PID, value, input, type);
+        });
+    });
+
+    function saveCurrentValue(PID, value, input, type) {
+        input.style.borderColor = 'black';
+
+        if (value?.length > 2) {
+
+            fetch('/admin_panel/products/edit_product', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+
+                    price: type == 'price' ? value : null,
+                    stock: type = 'stock' ? value : null,
+                    PID: PID ? PID : null,
+                    type: type ? type : null
+
+                })
+            })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.status == 'error') {
+                        console.log('ERROR_A => ', res.message);
+                        input.style.borderColor = 'red';
+                    } else {
+                        input.style.borderColor = '';
+                        input.setAttribute('disabled', '');
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    input.style.borderColor = 'red';
+                });
+
+        } else {
+            input.style.borderColor = 'red';
+        };
+    };
+
+</script>

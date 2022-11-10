@@ -80,6 +80,7 @@ const addTODB = (UID, address, type) => {
     });
 };
 
+//.. user
 export const checkout = (UID, body) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -138,3 +139,55 @@ export const checkout = (UID, body) => {
         };
     });
 };
+
+//.. admin 
+export const getAll = () => {
+    return new Promise((resolve, reject) => {
+        try {
+            const data = db.orders.aggregate([
+                {
+                    $unwind: '$orders'
+                },
+                {
+                    $unwind: '$orders.products'
+                },
+                {
+                    $lookup: {
+                        localField:'UID',
+                        foreignField:'UID',
+                        from:'users',
+                        as:"user"
+                    }
+                },
+                {
+                    $sort: {
+                        'orders.dateOFOrder': -1
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0
+                    }
+                }
+            ]);
+            resolve(data);
+        } catch (error) {
+            reject(error);
+        };
+    });
+};
+
+
+
+
+
+
+const test = async () => {
+    try {
+        const result = await getAll();
+        console.log('TEST => ', result[0]);
+    } catch (error) {
+        console.log('TEST Err => ', error);
+    };
+};
+test();
