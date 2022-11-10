@@ -1,7 +1,6 @@
 import * as db from './schema.js';
 import { randomId } from './util.js';
 import fs from 'fs';
-import * as auth from './auth.js';
 
 const __dirname = process.cwd();
 

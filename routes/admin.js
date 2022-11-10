@@ -39,6 +39,8 @@ adminApp.get('/products', admin.products_disp);
 adminApp.get('/products/add_product', admin.addProducts);
 // edit products
 adminApp.get('/products/edit_product/:id', admin.editProduct);
+// all orders
+adminApp.get('/orders', admin.ordres);
 
 // edit user
 // adminApp.get('/user_management/edit_user/:UID', admin.editUser); // this route is disabled due to sequrity

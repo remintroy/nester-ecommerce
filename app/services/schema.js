@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import dotenv from 'dotenv';
-import * as util from './util.js';
 
 dotenv.config();
 
@@ -58,8 +57,8 @@ export const address = db.model("address", new mongoose.Schema({
             country: String,
             phone: Number,
             pin: Number,
-            houseNumber: Number,
-            streetNumber: Number,
+            houseNumber: String,
+            streetNumber: String,
             town: String,
             state: String,
             landmark: String,
@@ -115,19 +114,25 @@ export const cart = db.model("cart", new mongoose.Schema({
 }));
 
 export const orders = db.model("orders", new mongoose.Schema({
-    orderID: String,
     UID: String,
-    products: [
+    orders: [
         {
-            orderID: String,
-            PID: String,
-            product: {
-            },
-            formAddress: String,
-            toAdress: String,
+            products: Array,
+            address: Object,
             trackingID: String,
-            status: String,
-            dateOFOrder: Date
+            status: {
+                type: String,
+                default: 'pending'
+            },
+            paymentType: String,
+            paymentStatus: {
+                type: String,
+                default: 'pending'
+            },
+            dateOFOrder: {
+                type: Date,
+                default: new Date()
+            }
         }
     ]
 }));

@@ -221,6 +221,20 @@ export const deleteProductAPI = async (req, res) => {
         res.send({ status: 'error', message: error });
     };
 };
+// all orders page
+export const ordres = async (req, res) => {
+    try {
+        res.locals.ordres = await db.orders.find({});
+        res.locals.currentPage = 'orders';
+        res.locals.currentPageA = 'orders';
+        res.render('admin/orders');
+    } catch (error) {
+        console.log('ALL_ORDERS_PAGE_DB => ', error);
+        res.locals.message = `Can't get order's from db `;
+        res.locals.code = 500;
+        res.render('admin/404');
+    };
+};
 // all category
 export const category = async (req, res) => {
     try {

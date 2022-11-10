@@ -1,6 +1,8 @@
 import * as auth from './services/auth.js';
 import * as db from './services/schema.js';
 import * as userService from './services/users.js';
+import { getAllCountries, getAllCountriesName } from './services/util.js';
+import { appConfig } from '../index.js';
 
 // locals for users
 export const localsForUser = async (req, res, next) => {
@@ -8,6 +10,7 @@ export const localsForUser = async (req, res, next) => {
         if (req.user) res.locals.cartProducts = await userService.getAllCartProducts(req.user?.UID);
         res.locals.categorys = await db.category.find();
         res.locals.user = req.user;
+        res.locals.appName = appConfig.name;
         next();
     } catch (error) {
         console.log(error)
@@ -138,9 +141,18 @@ export const dashboard = (req, res) => {
     res.locals.currentPage = 'dashboard';
     res.render('users/dashboard');
 };
-export const checkout = (req, res) => {
-    res.locals.currentPage = 'checkout';
-    res.render('users/checkout');
+export const checkout = async (req, res) => {
+    try {
+        const UID = req.user.UID;
+        res.locals.country = await getAllCountries();
+        res.locals.address = await userService.getAllAddress(UID);
+        res.locals.currentPage = 'checkout';
+        res.render('users/checkout');
+    } catch (error) {
+        res.locals.message = "Cant display this page now...";
+        res.locals.error = 'Faild to fetch address related data form database'
+        res.render('users/404');
+    };
 };
 
 // common - api's
@@ -218,6 +230,17 @@ export const deleteUserAddressAPI = async (req, res) => {
         const output = await userService.deleteUserAddress(UID, req.body);
 
         res.send({ status: 'good', message: output });
+    } catch (error) {
+        console.log('error => ', error);
+        res.send({ status: 'error', message: error });
+    };
+};
+export const checkoutCartProductsAPI = async (req, res) => {
+    try {
+        const UID = req.user.UID; // form session
+        // adds product to cart or if exist updates the quantity
+        const output = await userService.checkoutCart(UID, req.body);
+        res.send({ status: 'success', message: output, action: '/dashboard' });
     } catch (error) {
         console.log('error => ', error);
         res.send({ status: 'error', message: error });

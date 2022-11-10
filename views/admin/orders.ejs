@@ -1,0 +1,79 @@
+<!-- Custom styles for this page -->
+<link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">All Catogory's</h1>
+    <p class="mb-4">
+        Edit, add and Update category's
+        <br>Some fields can be updated within this page those fields are highlighted
+    </p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">All users</h6>
+        </div>
+        <div class="card-body">
+            <div class="mb-1 small" id="progressDisp"></div>
+            <div class="progress progress-sm mb-2" style="background-color: transparent;">
+                <div class="progress-bar" id="progressBar" role="progressbar" style="width: 0%" aria-valuenow="75"
+                    aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>ID</th>
+                            <th>Created</th>
+                            <th>status</th>
+                            <!-- <th style="cursor: pointer; text-align: center;">Disable / Enable</th> -->
+                            <th style="cursor: pointer; text-align: center;">Delete </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% locals?.categorys?.forEach((category,index,array)=>{ %>
+                            <tr>
+                                <td>
+                                    <%=index+1%>
+                                </td>
+                                <td class="tabe_editable_TD" title="Click To edit"
+                                    onclick="categoryName('<%=category._id%>',this)">
+                                    <input class="input_editable" type="text" data-id="<%=category._id%>" disabled
+                                        value="<%=category.category%>">
+                                </td>
+                                <td>
+                                    <%=category._id%>
+                                </td>
+                                <td>
+                                    <%=category.creationTime%>
+                                </td>
+                                <td style="text-transform:capitalize;">
+                                    <%if(category.status){%>
+                                        &nbsp;<i class="fas fa-exclamation-circle"></i> disabled
+                                        <%}else{%>
+                                            &nbsp;<i class="fas fa-check-circle"></i> active
+                                            <%};%>
+                                </td>
+                                <!-- <td style="cursor: pointer; text-align: center;"
+                                    onclick="window.location.href='/admin_panel/products/<%=category.UID%>'">
+                                    <i class="fas fa-minus-circle"></i>&nbsp;&nbsp;Disable
+                                </td> -->
+
+                                <td style="cursor: pointer; text-align: center;"
+                                    onclick="deleteCategory('<%=category._id%>')">
+                                    <i class="fas fa-trash-alt"></i>&nbsp;&nbsp;Delete
+                                </td>
+                            </tr>
+                            <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->

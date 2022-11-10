@@ -1,5 +1,5 @@
 import * as db from './schema.js';
-import { randomId, getCountryByName, nameFormatter } from './util.js';
+import { randomId, getCountryByName, nameFormatter, getCountryBycode } from './util.js';
 import bCrypt from 'bcryptjs';
 import * as firebase from './firebase.js';
 
@@ -370,6 +370,13 @@ export function validatior(data, requiredIn, typeOfValidation) {
         if (country || countryRequired) {
             if ((country + "").length == 0) {
                 reject('Country required');
+            } else if ((country + "").length == 2) {
+                const data = await getCountryBycode(country);
+                if (data != null) {
+                    output.country = data.name;
+                } else {
+                    reject('Invalid country');
+                };
             } else {
                 const data = await getCountryByName(country);
                 if (data != null) {

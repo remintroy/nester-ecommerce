@@ -49,6 +49,27 @@ export const dataToReadable = (date) => {
 
 
 // uses db --- start
+export const getAllCountries = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const data = await db.countries.aggregate([
+                {
+                    $project: {
+                        _id: 0,
+                    }
+                },
+                {
+                    $sort:{
+                        name:1
+                    }
+                }
+            ]);
+            resolve(data);
+        } catch (error) {
+            reject('Error while fectching country data form db');
+        };
+    });
+};
 export const getAllCountriesName = () => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -63,7 +84,7 @@ export const getAllCountriesName = () => {
                 },
                 {
                     $project: {
-                        names: {
+                        name: {
                             $sortArray: {
                                 input: '$names',
                                 sortBy: 1
@@ -73,7 +94,7 @@ export const getAllCountriesName = () => {
                     }
                 },
                 {
-                    $unwind: "$names"
+                    $unwind: "$name"
                 }
 
             ]);

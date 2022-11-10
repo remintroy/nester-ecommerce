@@ -1,0 +1,319 @@
+import * as auth from './auth.js';
+import * as products from './products.js';
+import * as db from './schema.js';
+
+const MAX_PRODUCT_QUANTITY = 100;
+
+export const getSingleProductWithTotal = (UID, PID) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // checks if user id is valid
+            const userOutput = await auth.validatior({ UID: UID }, { UIDRequired: true });
+            // check if product id is valid
+            const productOutput = await products.validatior({ PID: PID }, { PID: true }, 'updateproduct');
+            try {
+                const productData = await db.cart.aggregate([
+                    {
+                        $match: { UID: userOutput.UID }
+                    },
+                    { $unwind: '$products' },
+                    {
+                        $lookup: {
+                            from: 'products',
+                            foreignField: "PID",
+                            localField: 'products.PID',
+                            as: 'details'
+                        }
+                    },
+                    {
+                        $match: {
+                            'details.PID': {
+                                $exists: true,
+                                $ne: null
+                            }
+                        }
+                    },
+                    {
+                        $project: {
+                            PID: '$products.PID',
+                            price: { $arrayElemAt: ['$details.price', 0] },
+                            offer: { $arrayElemAt: ['$details.offer', 0] },
+                            quantity: '$products.quantity',
+                            total: {
+                                $multiply: [
+                                    '$products.quantity',
+                                    {
+                                        $subtract: [
+                                            {
+                                                $arrayElemAt: ['$details.price', 0]
+                                            },
+                                            {
+                                                $arrayElemAt: ['$details.offer', 0]
+                                            },
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: 'cartSubTotal',
+                            subTotal: { $sum: '$total' },
+                            totalCount: { $sum: '$quantity' },
+                            product: { $addToSet: '$$ROOT' },
+                        }
+                    },
+                    { $unwind: '$product' },
+                    {
+                        $match: { 'product.PID': productOutput.PID }
+                    },
+                    {
+                        $project: {
+                            _id: 0,
+                            'product._id': 0
+                        }
+                    }
+                ]);
+                resolve(productData[0]);
+            } catch (error) {
+                reject('Error fetching product data');
+            };
+        } catch (error) {
+            reject(error);
+        };
+    });
+};
+export const getAllProductsWithTotal = (UID) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // checks if user id is valid
+            const userOutput = await auth.validatior({ UID: UID }, { UIDRequired: true });
+            try {
+                const products = await db.cart.aggregate([
+                    { $match: { UID: userOutput.UID } },
+                    { $unwind: "$products" },
+                    { $sort: { 'products.updated': -1 } },
+                    {
+                        $lookup: {
+                            from: 'products',
+                            localField: 'products.PID',
+                            foreignField: 'PID',
+                            as: 'cartProducts'
+                        }
+                    },
+                    {
+                        $addFields: {
+                            'cartProducts.quantity': '$$ROOT.products.quantity',
+                            'cartProducts.updated': '$$ROOT.products.updated',
+                            'cartProducts.total': {
+                                $multiply: [
+                                    '$$ROOT.products.quantity',
+                                    {
+                                        $subtract: [
+                                            { $arrayElemAt: ['$$ROOT.cartProducts.price', 0] },
+                                            { $arrayElemAt: ['$$ROOT.cartProducts.offer', 0] }
+                                        ]
+                                    }
+                                ]
+                            },
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: '$products.PID',
+                            product: { $push: { $arrayElemAt: ['$cartProducts', 0] } }
+                        }
+                    },
+                    {
+                        $match: {
+                            'product.PID': {
+                                $exists: true,
+                                $ne: null
+                            }
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: { $arrayElemAt: ['$product.PID', 0] },
+                            product: { $push: { $arrayElemAt: ['$product', 0] } }
+                        }
+                    },
+                    { $project: { product: { $arrayElemAt: ['$product', 0] } } },
+                    { $replaceRoot: { newRoot: "$product" } },
+                    {
+                        $group: {
+                            _id: "subTotal",
+                            subTotal: { $sum: '$total' },
+                            products: { $addToSet: '$$ROOT' },
+                            quantity: { $sum: '$quantity' }
+                        }
+                    },
+                    {
+                        $addFields: {
+                            'products.subTotal': '$subTotal',
+                            'products.totalCount': '$quantity'
+                        }
+                    },
+                    { $unwind: '$products' },
+                    { $replaceRoot: { newRoot: "$products" } },
+                    { $project: { _id: 0 } }
+                ]);
+                resolve(products);
+            } catch (error) {
+                console.log(error)
+                reject('Error fetching product data');
+            };
+        } catch (error) {
+            reject(error);
+        };
+    });
+};
+export const deleteProduct = (UID, PID) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // validating inputs
+            const userOutput = await auth.validatior({ UID: UID }, { UIDRequired: true });
+            const productOutput = await products.validatior({ PID: PID }, { PID: true }, 'updateproduct');
+
+            try {
+
+                const formDb = await db.cart.updateOne({ UID: userOutput.UID }, {
+                    $pull: {
+                        'products': { PID: productOutput.PID }
+                    }
+                });
+
+                if (formDb.modifiedCount == 0) {
+                    reject('Nothing to remove');
+                } else {
+                    const result = await getAllProductsWithTotal(userOutput.UID);
+                    const output = {
+                        subTotal: result[0]?.subTotal ? result[0].subTotal : 0,
+                        totalCount: result.length
+                    }
+                    resolve(output); return 0;
+                };
+
+            } catch (error) {
+                console.log(error)
+                reject('Oops something went wrong');
+            };
+        } catch (error) {
+            reject(error); return 0;
+        };
+    });
+};
+export const addProduct = (UID, PID, quantity) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            // checks if user id is valid
+            const userOutput = await auth.validatior({ UID: UID }, { UIDRequired: true });
+            // check if product id is valid
+            const productOutput = await products.validatior({ PID: PID }, { PID: true }, 'updateproduct');
+
+            try {
+                const checkForCartDB = await db.cart.find({ UID: userOutput.UID });
+                if (checkForCartDB.length > 0) {
+                    try {
+                        // checks if the same product exists on cart
+
+                        let isThisPIDExists = false;
+                        let isThisPIDExistsIndex = false;
+
+                        checkForCartDB[0].products.forEach((item, index) => {
+                            if (item.PID == productOutput.PID) {
+                                isThisPIDExists = true;
+                                isThisPIDExistsIndex = index;
+                            };
+                        });
+
+                        // product already exist on cart
+                        if (isThisPIDExists) {
+                            // updating quantity of product
+                            try {
+                                if (
+                                    isNaN(Number(quantity)) == false &&
+                                    quantity > 0 &&
+                                    quantity <= MAX_PRODUCT_QUANTITY
+                                ) {
+                                    // update product quantity with new value
+                                    const updatingProductQuantity = await db.cart.updateOne({ UID: userOutput.UID }, {
+                                        $set: {
+                                            [`products.${isThisPIDExistsIndex}.updated`]: new Date(),
+                                            [`products.${isThisPIDExistsIndex}.quantity`]: quantity
+                                        }
+                                    });
+                                    const updatedValues = await getSingleProductWithTotal(userOutput.UID, productOutput.PID);
+                                    resolve(updatedValues); return 0;
+                                    // resolve("Product updated"); return 0;
+                                } else {
+                                    // increase product quantity 
+                                    const updatingProductQuantity = await db.cart.updateOne({ UID: userOutput.UID }, {
+                                        $inc: {
+                                            [`products.${isThisPIDExistsIndex}.quantity`]: 1
+                                        },
+                                        $set: {
+                                            [`products.${isThisPIDExistsIndex}.updated`]: new Date()
+                                        }
+                                    });
+                                    const updatedValues = await getSingleProductWithTotal(userOutput.UID, productOutput.PID);
+                                    resolve(updatedValues); return 0;
+                                };
+                            } catch (error) {
+                                console.log('Error => ', error);
+                                reject('Oops someting went wrong'); return 0;
+                            };
+                        } else {
+                            // adding new product to cart
+                            try {
+                                const addNewProductToDB = await db.cart.updateOne({ UID: userOutput.UID }, {
+                                    $push: {
+                                        products: {
+                                            PID: productOutput.PID
+                                        }
+                                    }
+                                });
+                                const updatedValues = await getSingleProductWithTotal(userOutput.UID, productOutput.PID);
+                                resolve(updatedValues); return 0;
+                            } catch (error) {
+                                console.log('Error => ', error);
+                                reject("Oops something went wrong"); return 0;
+                            };
+                        };
+
+                    } catch (error) {
+                        console.error("error=>", error);
+                        reject('Error adding product to cart'); return 0;
+                    };
+                } else {
+                    // cart not exist for this user on cart collection
+                    try {
+                        // adds products to cart
+                        const addedData = await db.cart({
+                            UID: userOutput.UID,
+                            products: [
+                                {
+                                    PID: productOutput.PID,
+                                    quantity: quantity ? quantity : 1
+                                }
+                            ]
+                        });
+                        addedData.save();
+                        const updatedValues = await getSingleProductWithTotal(userOutput.UID, productOutput.PID);
+                        resolve(updatedValues); return 0;
+                    } catch (error) {
+                        console.log('Error => ', error);
+                        reject('Error adding to cart'); return 0;
+                    };
+                };
+            } catch (error) {
+                console.log('Error => ', error);
+                reject("Oops something went wrong"); return 0;
+            };
+        } catch (error) {
+            reject(error); return 0;
+        };
+    });
+};

@@ -22,7 +22,7 @@
 
                 <div class="toolbox-center">
                     <div class="toolbox-info">
-                        Showing <span>-</span> Products
+                        Showing <span><%= locals?.products?.length %> </span> Products
                     </div><!-- End .toolbox-info -->
                 </div><!-- End .toolbox-center -->
 
@@ -43,7 +43,7 @@
             <div class="products">
                 <div class="row">
 
-                    <% products.forEach((product,index)=>{ %>
+                    <% locals?.products?.forEach((product,index)=>{ %>
 
                         <div class="col-6 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
                             <div class="product">
@@ -60,7 +60,8 @@
                                     </div><!-- End .product-action -->
 
                                     <div class="product-action action-icon-top">
-                                        <div class="btn-product btn-cart" style="cursor: pointer;" onclick="addToCart('<%=product.PID%>',this)">
+                                        <div class="btn-product btn-cart" style="cursor: pointer;"
+                                            onclick="addToCart('<%=product.PID%>',this)">
                                             <span>add to cart</span>
                                         </div>
                                     </div><!-- End .product-action -->
@@ -72,7 +73,7 @@
                                             <%=product.category%>
                                         </a>
                                     </div><!-- End .product-cat -->
-                                    <h3 class="product-title"><a href="/view/<%=product.PID%>">
+                                    <h3 class="product-title"><a href="/product/<%=product.PID%>">
                                             <%=product.title%>
                                         </a></h3>
                                     <!-- End .product-title -->
@@ -355,4 +356,3 @@
         </div><!-- End .container-fluid -->
     </div><!-- End .page-content -->
 </main><!-- End .main -->
-

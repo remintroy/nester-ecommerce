@@ -70,18 +70,18 @@
     </li>
 
     <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item">
+    <li class="nav-item <%=locals.currentPageA=='orders'?'active':'';%>">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
             aria-expanded="true" aria-controls="collapsePages">
             <i class="fas fa-fw fa-folder"></i>
             <span>Orders</span>
         </a>
-        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+        <div id="collapsePages" class="collapse  <%=locals.currentPageA=='orders'?'show':'';%>" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Orders</h6>
-                <a class="collapse-item" href="login.html">Pending</a>
-                <a class="collapse-item" href="register.html">Register</a>
-                <a class="collapse-item" href="forgot-password.html">Prepaid Orders</a>
+                <a class="collapse-item <%=locals.currentPage=='orders'?'active':'';%>" href="/admin_panel/orders">All orders</a>
+                <a class="collapse-item <%=locals.currentPage=='cancelled'?'active':'';%>" href="/admin_panel/cancelled_orders">Cancelled orders</a>
+                <a class="collapse-item <%=locals.currentPage=='pendign'?'active':'';%>" href="/admin_panel/pending_orders">Pending Orders</a>
                 <div class="collapse-divider"></div>
             </div>
         </div>

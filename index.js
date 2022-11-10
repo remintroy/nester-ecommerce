@@ -16,8 +16,8 @@ dotenv.config();
 
 const app = Express();
 const __dirname = process.cwd();
-const appConfig = {
-    name: "MyParts",
+export const appConfig = {
+    name: "Reminz",
     port: process.env.PORT | 8080
 };
 const mongoDbSesson = new ConnectMongoDBSession(session);

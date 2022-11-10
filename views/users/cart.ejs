@@ -142,7 +142,6 @@
         })
             .then(res => res.json())
             .then(res => {
-                console.log(res)
                 if (res.status == 'good') {
                     if (isDeleteFromCart) {
                         deletable.remove();
