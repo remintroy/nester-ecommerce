@@ -1,6 +1,6 @@
 import * as cart from './cart.js';
 import * as address from './address.js';
-import { checkout } from './orders.js';
+import * as orders from './orders.js';
 
 // cart 
 export const addProductToCart = (UID, PID, quantity) => {
@@ -80,7 +80,17 @@ export const getAllAddress = (UID) => {
 export const checkoutCart = (UID, body) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const result = await checkout(UID, body);
+            const result = await orders.checkout(UID, body);
+            resolve(result);
+        } catch (error) {
+            reject(error);
+        };
+    });
+};
+export const cancelOrder = (UID, orderID, PID) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const result = await orders.cancelOrderProductWithUID(UID, orderID, PID);
             resolve(result);
         } catch (error) {
             reject(error);

@@ -140,7 +140,7 @@ export const add = (UID, address) => {
     return new Promise(async (resolve, reject) => {
         try {
 
-            const addressOutput = await addressValidator(UID, address);
+            const addressOutput = await validator(UID, address);
 
             try {
                 // checks for existing data
@@ -223,7 +223,6 @@ export const getAll = (UID) => {
                 resolve(data?.address);
 
             } catch (error) {
-                console.log(error)
                 reject('Error while fetching address');
             };
 

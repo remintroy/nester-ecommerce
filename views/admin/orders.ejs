@@ -17,19 +17,18 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered table_for_orders" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>IMG</th>
-                            <th>Title</th>
-                            <th>Emali</th>
+                            <th>status</th>
+                            <th>Orderd by user</th>
+                            <th>Purchased</th>
+                            <th>Quantity</th>
                             <th>Price</th>
-                            <th>Quantitly</th>
-                            <!-- <th>Discount</th> -->
-                            <th>Category</th>
-                            <th>Orderd</th>
-                            <th style="cursor: pointer; text-align: center;">-</th>
+                            <th>Date</th>
+                            <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -38,37 +37,32 @@
                                 <td>
                                     <%=index+1%>
                                 </td>
-                                <td style="text-transform:capitalize;">
-                                    <img style="width: 60px;" src="/product_images/<%=order?.orders?.products?.PID%>1.jpg" alt="IMG">
+                                <td class="status <%=order?.orders?.status%>">
+                                    <%=order?.orders?.status%>
                                 </td>
                                 <td>
-                                    <%=order?.orders?.products?.title?.slice(0,34)+"..."%>
+                                    <%=order?.user[0]?.email?order?.user[0].email:order?.user[0].phone%>
                                 </td>
                                 <td>
-                                    <%=order?.user[0]?.email%>
-                                </td>
-                                <td class="tabe_editable_TD" title="Click To edit"
-                                    onclick="categoryName('<%=order.PID%>',this)">
-                                    <input type="text" class="input_editable" disabled data-id="<%=order.PID%>"
-                                        value="<%=order?.orders?.products?.price%>" data-type="price">
-                                </td>
-                                <td class="tabe_editable_TD" title="Click To edit"
-                                    onclick="categoryName('<%=order.PID%>',this)">
-                                    <input type="text" class="input_editable" disabled data-id="<%=order.PID%>"
-                                        value="<%=order?.orders?.products?.quantity%>" data-type="stock">
-                                </td>
-                                <!-- <td>
-                                    <%=order.offer?order.offer:'-'%>
-                                </td> -->
-                                <td>
-                                    <%=order.category%>
+                                    <%=order?.orders?.products?.length%> Items
                                 </td>
                                 <td>
-                                    <%=order.creationTime%>
+                                    <%=order?.orders?.products[0]?.totalCount%> pcs
                                 </td>
-                                <td style="cursor: pointer; text-align: center;"
-                                    onclick="window.location.href='/admin_panel/products/edit_product/<%=order.PID%>'">
-                                    more&nbsp;<i class="fas fa-cog"></i>
+                                <td>
+                                    ₹ <%=order?.orders?.products[0]?.subTotal%>
+                                </td>
+                                <td>
+                                    <%=order?.orders?.dateOFOrder%>
+                                </td>
+                                <td style="cursor: pointer; text-align: center; color: white;" class="bg-dark"
+                                    onclick="window.location.href='/admin_panel/orders/<%=order?.orders?._id%>'">
+                                    view
+                                </td>
+                                <td class="status <%=order?.orders?.status=='cancelled'?'err':'cancelled'%> " style="cursor: pointer;"
+                                    onclick="cancelOrder('<%=order?.orders?._id%>',this)">
+                                    <!-- more&nbsp;<i class="fas fa-cog"></i> -->
+                                    Cancel
                                 </td>
                             </tr>
                             <% }); %>
@@ -80,73 +74,28 @@
 </div>
 <!-- /.container-fluid -->
 
-
 <script>
+    function cancelOrder(orderID, tdBtn) {
+        console.log(tdBtn)
+        const td = tdBtn.parentElement.querySelector('td.status');
 
-    function categoryName(ID, td, type) {
-        const categoryInput = td.querySelector('input');
-        categoryInput.removeAttribute('disabled');
-        categoryInput.focus();
-    };
-
-    const inputCollection = document.querySelectorAll('input.input_editable');
-
-    inputCollection.forEach(element => {
-        element.addEventListener('keyup', e => {
-            if (e.keyCode == 13) {
-                const value = e.target.value;
-                const PID = e.target.getAttribute('data-id');
-                const input = e.target;
-                const type = e.target.getAttribute('data-type');
-                saveCurrentValue(PID, value, input, type);
-            };
-        });
-        element.addEventListener('focusout', e => {
-            const value = e.target.value;
-            const PID = e.target.getAttribute('data-id');
-            const input = e.target;
-            const type = e.target.getAttribute('data-type');
-            saveCurrentValue(PID, value, input, type);
-        });
-    });
-
-    function saveCurrentValue(PID, value, input, type) {
-        input.style.borderColor = 'black';
-
-        if (value?.length > 2) {
-
-            fetch('/admin_panel/products/edit_product', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-
-                    price: type == 'price' ? value : null,
-                    stock: type = 'stock' ? value : null,
-                    PID: PID ? PID : null,
-                    type: type ? type : null
-
-                })
+        fetch('/admin_panel/orders/cancel', {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                orderID: orderID
             })
-                .then(res => res.json())
-                .then(res => {
-                    if (res.status == 'error') {
-                        console.log('ERROR_A => ', res.message);
-                        input.style.borderColor = 'red';
-                    } else {
-                        input.style.borderColor = '';
-                        input.setAttribute('disabled', '');
-                    }
-                })
-                .catch(error => {
-                    console.error(error);
-                    input.style.borderColor = 'red';
-                });
-
-        } else {
-            input.style.borderColor = 'red';
-        };
-    };
-
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.status == 'error') {
+                    tdBtn.setAttribute('class','status err');
+                } else {
+                    td.setAttribute('class', 'status cancelled');
+                };
+            })
+            .catch(error => console.log('Error => ', error));
+    }
 </script>

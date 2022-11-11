@@ -3,6 +3,8 @@ import * as db from './services/schema.js';
 import * as userService from './services/users.js';
 import { getAllCountries, getAllCountriesName } from './services/util.js';
 import { appConfig } from '../index.js';
+import * as orders from './services/orders.js';
+import * as address from './services/address.js';
 
 // locals for users
 export const localsForUser = async (req, res, next) => {
@@ -137,9 +139,16 @@ export const wishlist = (req, res) => {
     res.locals.currentPage = 'wishlist';
     res.render('users/wishlist');
 };
-export const dashboard = (req, res) => {
-    res.locals.currentPage = 'dashboard';
-    res.render('users/dashboard');
+export const dashboard = async (req, res) => {
+    try {
+        res.locals.orders = await orders.getByUID(req?.user?.UID);
+        res.locals.currentPage = 'dashboard';
+        res.render('users/dashboard');
+    } catch (error) {
+        res.locals.code = '500';
+        res.locals.message = error;
+        res.render('users/404');
+    };
 };
 export const checkout = async (req, res) => {
     try {
@@ -148,6 +157,30 @@ export const checkout = async (req, res) => {
         res.locals.address = await userService.getAllAddress(UID);
         res.locals.currentPage = 'checkout';
         res.render('users/checkout');
+    } catch (error) {
+        res.locals.message = "Cant display this page now...";
+        res.locals.error = 'Faild to fetch address related data form database'
+        res.render('users/404');
+    };
+};
+export const ordersPg = async (req, res) => {
+    try {
+        res.locals.orders = await orders.getByUIDEach(req?.user?.UID);
+        res.locals.currentPageA = 'dashboard';
+        res.locals.currentPage = 'orders';
+        res.render('users/dashboard');
+    } catch (error) {
+        res.locals.message = "Cant display this page now...";
+        res.locals.error = 'Faild to fetch orders related data form database'
+        res.render('users/404');
+    };
+};
+export const addressPg = async (req, res) => {
+    try {
+        res.locals.address = await address.getAll(req?.user?.UID);
+        res.locals.currentPageA = 'dashboard';
+        res.locals.currentPage = 'address';
+        res.render('users/dashboard');
     } catch (error) {
         res.locals.message = "Cant display this page now...";
         res.locals.error = 'Faild to fetch address related data form database'
@@ -240,9 +273,20 @@ export const checkoutCartProductsAPI = async (req, res) => {
         const UID = req.user.UID; // form session
         // adds product to cart or if exist updates the quantity
         const output = await userService.checkoutCart(UID, req.body);
-        res.send({ status: 'success', message: output, action: '/dashboard' });
+        res.send({ status: 'success', message: output, action: '/dashboard/orders' });
     } catch (error) {
         console.log('error => ', error);
+        res.send({ status: 'error', message: error });
+    };
+};
+export const cancelOrderAPI = async (req, res) => {
+    try {
+        // UID form session 
+        const UID = req.user.UID;
+        //...
+        const result = await userService.cancelOrder(UID, req.body.orderID, req.body.PID);
+        res.send({ status: 'good', message: result });
+    } catch (error) {
         res.send({ status: 'error', message: error });
     };
 };

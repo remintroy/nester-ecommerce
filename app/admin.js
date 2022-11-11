@@ -150,7 +150,7 @@ export const addProducts = async (req, res) => {
         res.locals.currentPageA = 'products';
         res.locals.currentPage = 'addProducts';
         res.locals.category = category;
-        res.render('admin/addProducts');
+        res.render('admin/add_products');
     } catch (error) {
         console.error(error);
         res.locals.message = `Interal error`;
@@ -225,7 +225,7 @@ export const deleteProductAPI = async (req, res) => {
 // all orders page
 export const ordres = async (req, res) => {
     try {
-        res.locals.orders = await orders.getAll();
+        res.locals.orders = await orders.getAllWithFromattedDate();
         res.locals.currentPage = 'orders';
         res.locals.currentPageA = 'orders';
         res.render('admin/orders');
@@ -234,6 +234,15 @@ export const ordres = async (req, res) => {
         res.locals.message = `Can't get order's from db `;
         res.locals.code = 500;
         res.render('admin/404');
+    };
+};
+// api for cancel order
+export const cancelOrderAPI = async (req, res) => {
+    try {
+        const resp = await orders.cancelOrder(req.body.orderID);
+        res.send({ status: "success", message: "Order cancelled" });
+    } catch (error) {
+        res.send({ status: "error", message: error });
     };
 };
 // all category
@@ -361,3 +370,6 @@ export const editUserAPI = async (req, res) => {
     };
 };
 
+export const productHome = async (req, res)=>{
+    res.render('admin/productsHome');
+};

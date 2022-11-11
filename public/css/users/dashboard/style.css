@@ -1,0 +1,50 @@
+.card.card-dashboard .card-body .status {
+  float: right;
+  padding: 8px;
+  border-radius: 3px;
+  color: white;
+}
+.card.card-dashboard .card-body .status.pending {
+  background-color: #edae77;
+}
+.card.card-dashboard .card-body .status.success {
+  background-color: #9cdaa5;
+}
+.card.card-dashboard .card-body .status.processing {
+  background-color: #aab6ea;
+}
+.card.card-dashboard .card-body .status.shipped {
+  background-color: #f698ff;
+}
+.card.card-dashboard .card-body .status.cancelled {
+  background-color: #ff6666;
+}
+.card.card-dashboard .card-body .status.err {
+  background-color: transparent;
+  border: 1px solid red;
+  color: red;
+}
+
+.table_user_dash tr {
+  position: relative;
+}
+.table_user_dash tr img {
+  position: relative;
+  top: 0;
+  height: 50px;
+  -o-object-fit: scale-down;
+     object-fit: scale-down;
+  border-radius: 5px;
+}
+
+.alert.alert-danger {
+  background-color: #ffcccc !important;
+  color: black;
+  margin: 5px 0;
+}
+
+.alert.alert-success {
+  background-color: #d2ffcc !important;
+  color: black;
+  margin: 5px 0;
+}/*# sourceMappingURL=style.css.map */

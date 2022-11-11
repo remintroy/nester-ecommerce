@@ -1,11 +1,11 @@
 <main class="main">
     <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
-        <div class="container-fluid">
+        <div class="container">
             <h1 class="page-title">Explore the products for your bike<span>Shop</span></h1>
         </div><!-- End .container-fluid -->
     </div><!-- End .page-header -->
     <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
-        <div class="container-fluid">
+        <div class="container">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Shop</li>
@@ -14,7 +14,7 @@
     </nav><!-- End .breadcrumb-nav -->
 
     <div class="page-content">
-        <div class="container-fluid">
+        <div class="container">
             <div class="toolbox">
                 <div class="toolbox-left">
                     <a href="#" class="sidebar-toggler"><i class="icon-bars"></i>Filters</a>
@@ -47,10 +47,10 @@
 
                         <div class="col-6 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
                             <div class="product">
-                                <figure class="product-media">
+                                <figure class="product-media rounded">
                                     <span class="product-label label-new">New</span>
                                     <a href="/product/<%=product.PID%>">
-                                        <img src="/product_images/<%=product.PID%>1.jpg" alt="Product image"
+                                        <img src="/product_images/<%=product.PID%>1.jpg" class="" style="box-sizing: border-box;" alt="Product image"
                                             class="product-image">
                                     </a>
 
@@ -74,7 +74,7 @@
                                         </a>
                                     </div><!-- End .product-cat -->
                                     <h3 class="product-title"><a href="/product/<%=product.PID%>">
-                                            <%=product.title%>
+                                            <%=product?.title?.slice(0,50)+'...'%>
                                         </a></h3>
                                     <!-- End .product-title -->
                                     <div class="product-price">

@@ -11,9 +11,11 @@ const db = mongoose.createConnection(process.env.USERDB_URL);
 db.on('error', (error) => console.error(error));
 db.once('open', () => dbLatencyLogger());
 
+export const ObjectID = mongoose.Types.ObjectId;
 export const users = db.model("user", new mongoose.Schema({
     name: String,
     email: String,
+    displayName:String,
     phone: Number,
     phoneVerified: {
         type: Boolean,
@@ -56,7 +58,7 @@ export const address = db.model("address", new mongoose.Schema({
             name: String,
             country: String,
             phone: Number,
-            pin: Number,
+            postalCode: Number,
             houseNumber: String,
             streetNumber: String,
             town: String,

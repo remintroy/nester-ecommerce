@@ -65,6 +65,15 @@
             margin: 10px;
             border: 1px solid #9c9c9c;
         }
+        
+        .img-input-cont{
+            box-sizing: border-box;
+            padding: 10px;
+            position: relative;
+            display: grid;
+            grid-template-columns: auto auto auto auto;
+            gap: 10px;
+        }
 
         @media screen and (max-width:1024px) {
             .input-cont.horz {
@@ -121,4 +130,38 @@
         color:transparent
     }
 
+}
+
+.table_for_orders{
+    tbody{
+        tr{
+            position: relative;
+            td.status{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+            }
+            td.status.pending{
+                background-color: #edae77;
+            }
+            td.status.success{
+                background-color: #9cdaa5;
+            }
+            td.status.processing{
+                background-color: #aab6ea;
+            }
+            td.status.shipped{
+                background-color: #f698ff;
+            }
+            td.status.cancelled{
+                background-color: #ff6666;
+            }
+            td.status.err{
+                background-color: transparent;
+                border: 1px solid red;
+                color: red;
+            }
+        }
+    }
 }

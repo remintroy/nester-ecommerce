@@ -19,6 +19,8 @@ adminApp.put('/products/edit_category', auth.mustLoginAsAdminAPI, admin.editCate
 adminApp.delete('/products/delete_category', auth.mustLoginAsAdminAPI, admin.deleteCategoryAPI);
 // api for delete products
 adminApp.delete('/products/delete_product/', auth.mustLoginAsAdminAPI, admin.deleteProductAPI);
+// api for cancell orders
+adminApp.put('/orders/cancel/', auth.mustLoginAsAdminAPI, admin.cancelOrderAPI);
 
 // auth checker 
 adminApp.use(auth.mustLoginAsAdmin);
@@ -35,12 +37,16 @@ adminApp.get('/user_management/disabled_users', admin.disabledUsers);
 adminApp.get('/products/categorys', auth.mustLoginAsAdminAPI, admin.category);
 // all products
 adminApp.get('/products', admin.products_disp);
+// products Home
+adminApp.get('/products/all', admin.productHome);
 // add products
 adminApp.get('/products/add_product', admin.addProducts);
 // edit products
 adminApp.get('/products/edit_product/:id', admin.editProduct);
 // all orders
 adminApp.get('/orders', admin.ordres);
+// order full data page
+adminApp.get('/orders/:id', admin.ordres);
 
 // edit user
 // adminApp.get('/user_management/edit_user/:UID', admin.editUser); // this route is disabled due to sequrity

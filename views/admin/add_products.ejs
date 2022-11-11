@@ -59,11 +59,44 @@
                     </select>
                 </div>
             </div>
+<!-- 
+            <div class="img-input-cont">
+                <div class="card mb-3">
+                    <img class="card-img-top" src="/product_images/Xa3aTKovaH_bFJ7OxS091.jpg" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Main image *</h5>
+                        <p class="card-text"><small class="text-muted">Uploaded</small></p>
+                    </div>
+                </div>
+                <div class="card mb-3">
+                    <img class="card-img-top" src="/product_images/Xa3aTKovaH_bFJ7OxS091.jpg" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Required *</h5>
+                        <p class="card-text"><small class="text-muted">Uploaded</small></p>
+                    </div>
+                </div>
+                <div class="card mb-3">
+                    <img class="card-img-top" src="/product_images/Xa3aTKovaH_bFJ7OxS091.jpg" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Required *</h5>
+                        <p class="card-text"><small class="text-muted">Uploaded</small></p>
+                    </div>
+                </div>
+                <div class="card mb-3">
+                    <img class="card-img-top" src="/product_images/Xa3aTKovaH_bFJ7OxS091.jpg" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Required *</h5>
+                        <p class="card-text"><small class="text-muted">Uploaded</small></p>
+                        <button class="btn btn-primary">Edit</button>
+                    </div>
+                </div>
+            </div> -->
 
             <div class="input-cont horz">
                 <div class="input-cont">
                     <label for="imgA">Main Image of product * <span></span></label>
                     <img id="imgA_DISP" src="" alt="">
+
                     <input type="file" accept="image/jpeg" name="imgA" id="imgA">
                 </div>
                 <div class="input-cont">
@@ -106,7 +139,7 @@
 
         // add event listners to each input and saves the result in imgFiles object
         const attachEvenListners = () => {
-            const DOCS_TO_DISPLAY_IMG_IDS = ['imgA_DISP','imgB_DISP','imgC_DISP','imgD_DISP'];
+            const DOCS_TO_DISPLAY_IMG_IDS = ['imgA_DISP', 'imgB_DISP', 'imgC_DISP', 'imgD_DISP'];
             const IDS_OF_FILE_INPUT = ['imgA', 'imgB', 'imgC', 'imgD'];
             IDS_OF_FILE_INPUT.forEach((id, index, array) => {
                 document.getElementById(id).addEventListener('change', (e) => {

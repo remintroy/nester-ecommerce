@@ -36,6 +36,8 @@ app.put('/user_address', auth.mustLoginAsUserAPI, users.updateUserAddressAPI);
 app.delete('/user_address', auth.mustLoginAsUserAPI, users.deleteUserAddressAPI);
 // api place order
 app.post('/checkout', auth.mustLoginAsUserAPI, users.checkoutCartProductsAPI);
+// api for cancel order
+app.post('/orders/cancel/', auth.mustLoginAsUserAPI, users.cancelOrderAPI);
 
 // sub - dev api's
 // api for get all products form cart
@@ -63,6 +65,10 @@ app.get(['/cart', '/cart.html'], auth.mustLoginAsUser, users.cart);
 app.get(['/wishlist', '/wishlist.html'], auth.mustLoginAsUser, users.wishlist);
 // dashboard page
 app.get(['/dashboard', '/dashboard.html'], auth.mustLoginAsUser, users.dashboard);
+// ordres page
+app.get('/dashboard/orders', auth.mustLoginAsUser, users.ordersPg);
+// address page
+app.get('/dashboard/address', auth.mustLoginAsUser, users.addressPg);
 // checkout page
 app.get(['/checkout', '/checkout.html'], auth.mustLoginAsUser, users.checkout);
 

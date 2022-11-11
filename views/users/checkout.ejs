@@ -39,103 +39,114 @@
                     <div class="row">
                         <div class="col-lg-9">
 
-                            <input type="radio" id="address-1" onchange="setAddress(this)" name="address" value="-1">
-                            <label for="address-1" style="text-transform: capitalize;  cursor: pointer; ">
-                                Click here to use another address
-                            </label><br><br>
+                            <input type="radio" id="address-1" onchange="setAddress(this)" name="address" value="-1" <%
+                                if(locals?.address?.length){ %>
+                            <% }else{ %> checked <% }; %> >
+                                    <label for="address-1" style="text-transform: capitalize;  cursor: pointer; ">
+                                        Click here to type address
+                                    </label><br><br>
 
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <label class="labelInputForInput">First
-                                        Name * <span></span></label>
-                                    <input id="firstNameInput" type="text" class="form-control" required>
-                                </div><!-- End .col-sm-6 -->
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label class="labelInputForInput">First
+                                                Name * <span></span></label>
+                                            <input id="firstNameInput" type="text" class="form-control" required>
+                                        </div><!-- End .col-sm-6 -->
 
-                                <div class="col-sm-6">
-                                    <label class="labelInputForInput">Last
-                                        Name * <span></span></label>
-                                    <input id="lastNameInput" type="text" class="form-control" required>
-                                </div><!-- End .col-sm-6 -->
-                            </div><!-- End .row -->
+                                        <div class="col-sm-6">
+                                            <label class="labelInputForInput">Last
+                                                Name * <span></span></label>
+                                            <input id="lastNameInput" type="text" class="form-control" required>
+                                        </div><!-- End .col-sm-6 -->
+                                    </div><!-- End .row -->
 
-                            <div>
-                                <label class="labelInputForInput">State
-                                    * <span></span></label>
-                                <input id="stateInput" type="text" class="form-control" required>
-                            </div>
+                                    <div>
+                                        <label class="labelInputForInput">State
+                                            * <span></span></label>
+                                        <input id="stateInput" type="text" class="form-control" required>
+                                    </div>
 
-                            <div>
-                                <label class="labelInputForInput">Street
-                                    address * <span></span></label>
-                                <input id="streetNumber" type="text" class="form-control"
-                                    placeholder="Street number / name" required>
-                                <input id="houseNumber" type="text" class="form-control"
-                                    placeholder="Appartments, suite, House number etc ..." required>
-                            </div>
+                                    <div>
+                                        <label class="labelInputForInput">Street
+                                            address * <span></span></label>
+                                        <input id="streetNumber" type="text" class="form-control"
+                                            placeholder="Street number / name" required>
+                                        <input id="houseNumber" type="text" class="form-control"
+                                            placeholder="Appartments, suite, House number etc ..." required>
+                                    </div>
 
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <label class="labelInputForInput">Town
-                                        / City * <span></span> </label>
-                                    <input id="townInput" type="text" class="form-control" required>
-                                </div><!-- End .col-sm-6 -->
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label class="labelInputForInput">Town
+                                                / City * <span></span> </label>
+                                            <input id="townInput" type="text" class="form-control" required>
+                                        </div><!-- End .col-sm-6 -->
 
-                                <div class="col-sm-6">
-                                    <label class="labelInputForInput">Country
-                                        * <span></span></label>
-                                    <select class=" form-control" name="country" id="countryInput">
-                                        <option value="">--Select--</option>
-                                        <% locals?.country?.forEach(e=>{ %>
-                                            <option value="<%= e.code %>">
-                                                <%= e.name %>
-                                            </option>
-                                            <% }) %>
-                                    </select>
-                                </div><!-- End .col-sm-6 -->
-                            </div><!-- End .row -->
+                                        <div class="col-sm-6">
+                                            <label class="labelInputForInput">Country
+                                                * <span></span></label>
+                                            <select class=" form-control" name="country" id="countryInput">
+                                                <option value="">--Select--</option>
+                                                <% locals?.country?.forEach(e=>{ %>
+                                                    <option value="<%= e.code %>">
+                                                        <%= e.name %>
+                                                    </option>
+                                                    <% }) %>
+                                            </select>
+                                        </div><!-- End .col-sm-6 -->
+                                    </div><!-- End .row -->
 
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <label class="labelInputForInput">Postcode
-                                        / ZIP * <span></span></label>
-                                    <input id="codeInput" type="text" class="form-control" required>
-                                </div><!-- End .col-sm-6 -->
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label class="labelInputForInput">Postcode
+                                                / ZIP * <span></span></label>
+                                            <input id="codeInput" type="text" class="form-control" required>
+                                        </div><!-- End .col-sm-6 -->
 
-                                <div class="col-sm-6">
-                                    <label class="labelInputForInput">Phone
-                                        * <span></span></label>
-                                    <input id="phoneInput" type="tel" class="form-control" required>
-                                </div><!-- End .col-sm-6 -->
-                            </div><!-- End .row -->
+                                        <div class="col-sm-6">
+                                            <label class="labelInputForInput">Phone
+                                                * <span></span></label>
+                                            <input id="phoneInput" type="tel" class="form-control" required>
+                                        </div><!-- End .col-sm-6 -->
+                                    </div><!-- End .row -->
 
-                            <div>
-                                <label class="labelInputForInput">Email
-                                    address * <span></span></label>
-                                <input id="emailInput" type="email" class="form-control" required>
-                            </div>
+                                    <div>
+                                        <label class="labelInputForInput">Email
+                                            address * <span></span></label>
+                                        <input id="emailInput" type="email" class="form-control" required>
+                                    </div>
 
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" id="saveConfirmInput" class="custom-control-input">
-                                <label class="custom-control-label" for="saveConfirmInput">
-                                    save this address ?
-                                </label>
-                            </div><!-- End .custom-checkbox -->
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" id="saveConfirmInput" class="custom-control-input">
+                                        <label class="custom-control-label" for="saveConfirmInput">
+                                            save this address ?
+                                        </label>
+                                    </div><!-- End .custom-checkbox -->
 
-                            <style>
-                                .labelInputForInput {
-                                    width: 100%;
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: space-between;
-                                }
+                                    <style>
+                                        .labelInputForInput {
+                                            width: 100%;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: space-between;
+                                        }
 
-                                .labelInputForInput span {
-                                    color: red;
-                                }
-                            </style>
+                                        .labelInputForInput span {
+                                            color: red;
+                                        }
+                                    </style>
 
                         </div><!-- End .col-lg-9 -->
                         <aside class="col-lg-3">
+
+                            <div class="checkout-discount">
+                                <form>
+                                    <input type="text" class="form-control" required id="checkout-discount-input">
+                                    <label for="checkout-discount-input" class="text-truncate">Have a coupon?
+                                        <span>Click here to enter your code</span></label>
+                                </form>
+                            </div><!-- End .checkout-discount -->
+
                             <div class="summary">
                                 <h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
 
@@ -207,13 +218,7 @@
                                     </button>
                                 </div><!-- End .accordion -->
                             </div><!-- End .summary -->
-                            <div class="checkout-discount">
-                                <form>
-                                    <input type="text" class="form-control" required id="checkout-discount-input">
-                                    <label for="checkout-discount-input" class="text-truncate">Have a coupon?
-                                        <span>Click here to enter your code</span></label>
-                                </form>
-                            </div><!-- End .checkout-discount -->
+                            
                         </aside><!-- End .col-lg-3 -->
                     </div><!-- End .row -->
                 </div>
@@ -280,11 +285,17 @@
                     error_disp.classList.add('show');
                     error_disp.querySelector('span').innerText = res.message;
                 } else {
-                    if (res.action) {
-                        window.location.href = res.action;
-                    } else {
-                        window.location.href = '/orders';
-                    };
+                    Swal.fire({
+                        title: 'Order succes !',
+                        icon: 'success',
+                        confirmButtonText: 'Go to orders',
+                    }).then(result => {
+                        if (res.action) {
+                            window.location.href = res.action;
+                        } else {
+                            window.location.href = '/dashboard/orders';
+                        };
+                    })
                 };
             })
             .catch(err => console.log(err));
@@ -410,7 +421,7 @@
                             houseNumber: houseNumberInput?.value?.trim() ? houseNumberInput?.value?.trim() : null,
                             town: townInput?.value?.trim() ? townInput?.value?.trim() : null,
                             country: countryInput?.value?.trim() ? countryInput?.value?.trim() : null,
-                            code: codeInput?.value ? codeInput?.value : null,
+                            postalCode: codeInput?.value ? codeInput?.value : null,
                             phone: phoneInput?.value ? phoneInput.value : null,
                             email: emailInput?.value?.trim() ? emailInput?.value?.trim() : null,
                             save: saveConfirmInput?.checked ? true : false,
