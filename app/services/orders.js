@@ -4,9 +4,32 @@ import * as db from './schema.js';
 import * as util from './util.js';
 import * as cart from './cart.js';
 import * as address from './address.js';
+import * as pay from './razorpay.js';
 
+const ORDERID_LENGTH = 20;
 
+const createOrderID = async () => {
+    let orderID = '';
+
+    // check for the duplication of orderID
+    async function checkForExistance() {
+        const data = await db.orders.find({ 'orders.orderID': orderID });
+        if (data.length > 0) return true;
+        return false;
+    };
+
+    //...
+    do {
+        orderID = util.randomId(ORDERID_LENGTH);
+    } while (await checkForExistance());
+
+    // result orderID
+    return orderID;
+};
 const addTODB = (UID, addressFrom, type, save) => {
+
+    save = 'YES';
+
     return new Promise(async (resolve, reject) => {
         try {
             // get all products from cart
@@ -14,102 +37,210 @@ const addTODB = (UID, addressFrom, type, save) => {
 
             // check for products existence
             if (products.length == 0) throw 'Nothing to checkout';
-
+            // sets evey product status
             products?.map(e => e['status'] = 'pending');
 
             try {
                 // 
                 const checkForExistingCollection = await db.orders.find({ UID: UID });
+                const userDataForCheckout = await db.users.find({ UID: UID }, {
+                    _id: 0,
+                    password: 0,
+                    loginProvider: 0,
+                    __v: 0,
+                    blocked: 0,
+                    lastLogin: 0,
+                    creationTime: 0,
+                    UID: 0
+                });
 
-                if (checkForExistingCollection.length > 0) {
-                    // order collection exists for this user
+                let paymentDetails = {};
+                let addressDetails = {};
 
-                    const data = await db.orders.updateOne({ UID: UID }, {
-                        $push: {
+                // cheks and saves address accordingly
+                if (save == "YES") {
+                    try {
+                        const saveAddress = await address.save(UID, addressFrom);
+                        addressDetails.id = saveAddress._id + "";
+                    } catch (error) {
+                        console.log(error) // TODO remove log
+                        reject(error); return 0;
+                    };
+                };
+
+                //... PAYMENT
+                if (type == 'online') {
+                    try {
+                        // total amount to pay
+                        const orderTotalAmount = products[0].subTotal;
+                        // creating order in razorpay
+                        paymentDetails = await pay.createOrder(UID, await createOrderID(), orderTotalAmount);
+
+                    } catch (error) {
+                        console.log("ERROR => ", error); // TODO: remove log
+                        reject('Error creating order');
+                    };
+                } else if (type == 'COD') {
+                    // place order and save to db
+
+                    paymentDetails = {
+                        type: 'COD',
+                        orderID: await createOrderID()
+                    };
+
+                    //...
+                    if (checkForExistingCollection.length > 0) {
+                        // order collection exists for this user
+                        const data = await db.orders.updateOne({ UID: UID }, {
+                            $push: {
+                                orders: [
+                                    {
+                                        orderID: paymentDetails?.receipt ? paymentDetails.receipt?.split('_')[1] : paymentDetails.orderID,
+                                        paymentDetails: paymentDetails,
+                                        products: products,
+                                        address: addressFrom,
+                                        paymentType: type,
+                                        status: 'pending'
+                                    }
+                                ]
+                            }
+                        });
+                    } else {
+                        // order collection not exists for this user
+                        const data = await db.orders({
+                            UID: UID,
                             orders: [
                                 {
+                                    orderID: paymentDetails?.receipt ? paymentDetails.receipt?.split('_')[1] : paymentDetails.orderID,
+                                    paymentDetails: paymentDetails,
                                     products: products,
                                     address: addressFrom,
                                     paymentType: type,
                                     status: 'pending'
                                 }
                             ]
-                        }
-                    });
+                        });
+                        data.save();
+                    };
 
+                    // clear cart
                     const cartDataRemoveStatus = await db.cart.updateOne({ UID: UID }, {
                         $set: {
                             products: []
                         }
                     });
 
-                    if (save == "YES") {
+                    resolve({
+                        id: paymentDetails.orderID,
+                        amount: products[0].subTotal,
+                        user: userDataForCheckout[0],
+                        status: 'created',
+                        message: 'Order successfully rejested'
+                    });
+                };
 
-                        const dataToSave = {};
-                        const keys = Object.keys(addressFrom);
+                if (type == 'online') resolve({
+                    address: addressDetails,
+                    id: paymentDetails.id,
+                    amount: paymentDetails.amount,
+                    receipt: paymentDetails.receipt,
+                    status: paymentDetails.status,
+                    user: userDataForCheckout[0],
+                    message: 'Order successfully initiated'
+                });
 
-                        keys.forEach(e => {
-                            if (addressFrom[e]) {
-                                dataToSave[e] = addressFrom[e];
-                            };
-                        });
+                //...
 
-                        try {
-                            const saveAddress = await address.add(UID, dataToSave);
-                        } catch (error) {
-                            reject("Faild to save address"); return 0;
-                        };
+            } catch (error) {
+                console.log("Error => ", error);
+                reject('Error initiating address');
+            };
+        } catch (error) {
+            reject(error);
+        };
+    });
+};
+const addTODBOnline = (UID, addressFrom) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // get all products from cart
+            const products = await cart.getAllProductsWithTotal(UID);
+            // check for products existence
+            if (products.length == 0) throw 'Nothing to checkout';
+            // sets evey product status
+            products?.map(e => e['status'] = 'paid');
 
-                    };
+            try {
+                // 
+                const checkForExistingCollection = await db.orders.find({ UID: UID });
+                const userDataForCheckout = await db.users.find({ UID: UID }, {
+                    _id: 0,
+                    password: 0,
+                    loginProvider: 0,
+                    __v: 0,
+                    blocked: 0,
+                    lastLogin: 0,
+                    creationTime: 0,
+                    UID: 0
+                });
 
-                    //...
-                    resolve("Order successfully rejested");
+                // place order and save to db
+                let paymentDetails = {
+                    type: 'online',
+                    orderID: await createOrderID(),
+                    amount: products[0].subTotal
+                };
+
+                //...
+                if (checkForExistingCollection.length > 0) {
+                    // order collection exists for this user
+                    const data = await db.orders.updateOne({ UID: UID }, {
+                        $push: {
+                            orders: [
+                                {
+                                    orderID: paymentDetails?.orderID ? paymentDetails.orderID : await createOrderID(),
+                                    paymentDetails: paymentDetails,
+                                    products: products,
+                                    address: addressFrom,
+                                    paymentType: 'online',
+                                    status: 'paid'
+                                }
+                            ]
+                        }
+                    });
                 } else {
                     // order collection not exists for this user
-
                     const data = await db.orders({
                         UID: UID,
                         orders: [
                             {
+                                orderID: paymentDetails?.orderID ? paymentDetails.orderID : await createOrderID(),
+                                paymentDetails: paymentDetails,
                                 products: products,
                                 address: addressFrom,
-                                paymentType: type,
-                                status: 'pending'
+                                paymentType: 'online',
+                                status: 'paid'
                             }
                         ]
                     });
-
                     data.save();
-
-                    const cartDataRemoveStatus = await db.cart.updateOne({ UID: UID }, {
-                        $set: {
-                            products: []
-                        }
-                    });
-
-                    if (save == "YES") {
-
-                        const dataToSave = {};
-                        const keys = Object.keys(addressFrom);
-
-                        keys.forEach(e => {
-                            if (addressFrom[e]) {
-                                dataToSave[e] = addressFrom[e];
-                            };
-                        });
-
-                        try {
-                            const saveAddress = await address.add(UID, dataToSave);
-                        } catch (error) {
-                            reject("Faild to save address"); return 0;
-                        };
-
-                    };
-
-                    //...
-                    resolve("Order successfully rejested");
                 };
 
+                // clear cart
+                const cartDataRemoveStatus = await db.cart.updateOne({ UID: UID }, {
+                    $set: {
+                        products: []
+                    }
+                });
+
+                resolve({
+                    amount: products[0].subTotal,
+                    status: 'paid',
+                    user: userDataForCheckout[0],
+                    message: 'Order successfully initiated'
+                });
+
+                //...
             } catch (error) {
                 console.log("Error => ", error);
                 reject('Error initiating address');
@@ -166,12 +297,7 @@ export const checkout = (UID, body) => {
 
                 } else {
                     // place order by new address
-
-                    // validate address
-                    const addressOutput = await address.validator(UID, body.address);
-
-                    // place order
-                    const data = await addTODB(userOutput.UID, addressOutput, method, body?.address?.save ? 'YES' : 'NO');
+                    const data = await addTODB(userOutput.UID, body.address, method, body?.address?.save ? 'YES' : 'NO');
                     resolve(data);
                 };
 
@@ -265,6 +391,50 @@ export const cancelOrderProductWithUID = (UID, orderID, PID) => {
                 reject('Error cancelling order');
             };
             //...
+        } catch (error) {
+            reject(error);
+        };
+    });
+};
+export const paymentConfirmRazorpay = (UID, body) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // valdiating userID
+            const userOutput = await auth.validatior({ UID: UID }, { UIDRequired: true });
+            // validating payment signature
+            const validatePayment = pay.verifyPurchace(body.keys.paymentID, body.keys.orderID, body.keys.signature);
+            if (!validatePayment) throw 'Error validating payment';
+
+            // find address form db
+            try {
+                const address = await db.address.findOne({ UID: userOutput.UID });
+                let output = {};
+
+                // matching address
+                address?.address?.forEach(e => {
+                    if (e._id == body?.address?.id ? body.address.id : body?.address) {
+                        output = e;
+                    };
+                });
+
+                if (address) {
+                    try {
+                        // place order
+                        const data = await addTODBOnline(userOutput.UID, output);
+                        resolve(data);
+
+                    } catch (error) {
+                        reject(error);
+                    };
+                } else {
+                    reject("Plz select address");
+                };
+
+            } catch (error) {
+                console(error)
+                reject('Error fetching address form db');
+            };
+
         } catch (error) {
             reject(error);
         };

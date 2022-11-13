@@ -309,7 +309,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
         if (phone || phoneRequired) {
             if (phone.length == 0) {
                 reject('Phone number required'); return 0;
-            } else if ((phone + "").length >= 10) {
+            } else if ((phone + "").length == 10) {
 
                 if ((phone + "").match(/^\+?[1-9][0-9]{7,14}$/)) {
 

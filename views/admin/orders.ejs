@@ -4,98 +4,96 @@
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
-    <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">All Products</h1>
-    <p class="mb-4">View, Update, Create, and delete products
-        <br>Some fields can be updated within this page those fields are highlighted
-    </p>
+  <!-- Page Heading -->
+  <h1 class="h3 mb-2 text-gray-800">All Products</h1>
+  <p class="mb-4">View, Update, Create, and delete products
+    <br>Some fields can be updated within this page those fields are highlighted
+  </p>
 
-    <!-- DataTales Example -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">All users</h6>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered table_for_orders" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>status</th>
-                            <th>Orderd by user</th>
-                            <th>Purchased</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
-                            <th>Date</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% locals?.orders?.forEach((order,index,array)=>{ %>
-                            <tr>
-                                <td>
-                                    <%=index+1%>
-                                </td>
-                                <td class="status <%=order?.orders?.status%>">
-                                    <%=order?.orders?.status%>
-                                </td>
-                                <td>
-                                    <%=order?.user[0]?.email?order?.user[0].email:order?.user[0].phone%>
-                                </td>
-                                <td>
-                                    <%=order?.orders?.products?.length%> Items
-                                </td>
-                                <td>
-                                    <%=order?.orders?.products[0]?.totalCount%> pcs
-                                </td>
-                                <td>
-                                    ₹ <%=order?.orders?.products[0]?.subTotal%>
-                                </td>
-                                <td>
-                                    <%=order?.orders?.dateOFOrder%>
-                                </td>
-                                <td style="cursor: pointer; text-align: center; color: white;" class="bg-dark"
-                                    onclick="window.location.href='/admin_panel/orders/<%=order?.orders?._id%>'">
-                                    view
-                                </td>
-                                <td class="status <%=order?.orders?.status=='cancelled'?'err':'cancelled'%> " style="cursor: pointer;"
-                                    onclick="cancelOrder('<%=order?.orders?._id%>',this)">
-                                    <!-- more&nbsp;<i class="fas fa-cog"></i> -->
-                                    Cancel
-                                </td>
-                            </tr>
-                            <% }); %>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">All users</h6>
     </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table_for_orders" id="dataTable" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>status</th>
+              <th>Orderd by user</th>
+              <th>Purchased</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Date</th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% locals?.orders?.forEach((order,index,array)=>{ %>
+            <tr>
+              <td>
+                <%=index+1%>
+              </td>
+              <td class="status <%=order?.orders?.status%>">
+                <%=order?.orders?.status%>
+              </td>
+              <td>
+                <%=order?.user[0]?.email?order?.user[0].email:order?.user[0].phone%>
+              </td>
+              <td>
+                <%=order?.orders?.products?.length%> Items
+              </td>
+              <td>
+                <%=order?.orders?.products[0]?.totalCount%> pcs
+              </td>
+              <td>
+                ₹ <%=order?.orders?.products[0]?.subTotal%>
+              </td>
+              <td>
+                <%=order?.orders?.dateOFOrder%>
+              </td>
+              <td style="cursor: pointer; text-align: center; color: white;" class="bg-dark" onclick="window.location.href='/admin_panel/orders/<%=order?.orders?._id%>'">
+                view
+              </td>
+              <td class="status <%=order?.orders?.status=='cancelled'?'err':'cancelled'%> " style="cursor: pointer;" onclick="cancelOrder('<%=order?.orders?._id%>',this)">
+                <!-- more&nbsp;<i class="fas fa-cog"></i> -->
+                Cancel
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
 <!-- /.container-fluid -->
 
 <script>
-    function cancelOrder(orderID, tdBtn) {
-        console.log(tdBtn)
-        const td = tdBtn.parentElement.querySelector('td.status');
+  function cancelOrder(orderID, tdBtn) {
+    console.log(tdBtn)
+    const td = tdBtn.parentElement.querySelector('td.status');
 
-        fetch('/admin_panel/orders/cancel', {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                orderID: orderID
-            })
+    fetch('/admin_panel/orders/cancel', {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          orderID: orderID
         })
-            .then(res => res.json())
-            .then(res => {
-                if (res.status == 'error') {
-                    tdBtn.setAttribute('class','status err');
-                } else {
-                    td.setAttribute('class', 'status cancelled');
-                };
-            })
-            .catch(error => console.log('Error => ', error));
-    }
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.status == 'error') {
+          tdBtn.setAttribute('class', 'status err');
+        } else {
+          td.setAttribute('class', 'status cancelled');
+        };
+      })
+      .catch(error => console.log('Error => ', error));
+  }
 </script>

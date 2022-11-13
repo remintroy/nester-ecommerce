@@ -36,6 +36,10 @@ app.put('/user_address', auth.mustLoginAsUserAPI, users.updateUserAddressAPI);
 app.delete('/user_address', auth.mustLoginAsUserAPI, users.deleteUserAddressAPI);
 // api place order
 app.post('/checkout', auth.mustLoginAsUserAPI, users.checkoutCartProductsAPI);
+// api veryfy payment
+app.post('/checkout/verify', auth.mustLoginAsUserAPI, users.checkOutVerifyRazorpayAPI);
+// api to get address by addressID
+app.post('/checkout/address', auth.mustLoginAsUserAPI, users.getAddressByAddressID);
 // api for cancel order
 app.post('/orders/cancel/', auth.mustLoginAsUserAPI, users.cancelOrderAPI);
 

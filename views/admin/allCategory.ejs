@@ -4,302 +4,299 @@
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
-    <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">All Catogory's</h1>
-    <p class="mb-4">
-        Edit, add and Update category's
-        <br>Some fields can be updated within this page those fields are highlighted
-    </p>
+  <!-- Page Heading -->
+  <h1 class="h3 mb-2 text-gray-800">All Catogory's</h1>
+  <p class="mb-4">
+    Edit, add and Update category's
+    <br>Some fields can be updated within this page those fields are highlighted
+  </p>
 
-    <!-- Collapsable Card Example -->
-    <div class="card shadow mb-4">
-        <!-- Card Header - Accordion -->
-        <a href="#collapseCardExample" class="d-block card-header py-3 collapsed" data-toggle="collapse" role="button"
-            aria-expanded="true" aria-controls="collapseCardExample">
-            <h6 class="m-0 font-weight-bold text-primary">Add new category (New)</h6>
-        </a>
-        <!-- Card Content - Collapse -->
-        <div class="collapse" id="collapseCardExample">
-            <div class="card-body">
+  <!-- Collapsable Card Example -->
+  <div class="card shadow mb-4">
+    <!-- Card Header - Accordion -->
+    <a href="#collapseCardExample" class="d-block card-header py-3 collapsed" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
+      <h6 class="m-0 font-weight-bold text-primary">Add new category (New)</h6>
+    </a>
+    <!-- Card Content - Collapse -->
+    <div class="collapse" id="collapseCardExample">
+      <div class="card-body">
 
-                <div class="input-cont horz">
-                    <div class="input-cont">
-                        <label for="category">New category <span></span></label>
-                        <input type="text" name="category" id="categoryInput" autocomplete="off"
-                            placeholder="Enter new catogery">
-                    </div>
-                </div>
-
-                <div id="disp_state"
-                    style="padding: 10px 15px; display: none; text-transform: capitalize; background-color: rgb(255, 206, 206); box-sizing: border-box; margin: 10px; color: black;"
-                    class="mt-2 rounded">
-                    error
-                </div>
-
-                <button class="btn" onclick="addCatogery()">Confirm</button><br><br>
-            </div>
+        <div class="input-cont horz">
+          <div class="input-cont">
+            <label for="category">New category <span></span></label>
+            <input type="text" name="category" id="categoryInput" autocomplete="off" placeholder="Enter new catogery">
+          </div>
         </div>
+
+        <div id="disp_state" style="padding: 10px 15px; display: none; text-transform: capitalize; background-color: rgb(255, 206, 206); box-sizing: border-box; margin: 10px; color: black;" class="mt-2 rounded">
+          error
+        </div>
+
+        <button class="btn" onclick="addCatogery()">Confirm</button><br><br>
+      </div>
     </div>
+  </div>
 
-    <!-- DataTales Example -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">All users</h6>
-        </div>
-        <div class="card-body">
-            <div class="mb-1 small" id="progressDisp"></div>
-            <div class="progress progress-sm mb-2" style="background-color: transparent;">
-                <div class="progress-bar" id="progressBar" role="progressbar" style="width: 0%" aria-valuenow="75"
-                    aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>ID</th>
-                            <th>Created</th>
-                            <th>status</th>
-                            <!-- <th style="cursor: pointer; text-align: center;">Disable / Enable</th> -->
-                            <th style="cursor: pointer; text-align: center;">Delete </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% categorys.forEach((category,index,array)=>{ %>
-                            <tr>
-                                <td>
-                                    <%=index+1%>
-                                </td>
-                                <td class="tabe_editable_TD" title="Click To edit"
-                                    onclick="categoryName('<%=category._id%>',this)">
-                                    <input class="input_editable" type="text" data-id="<%=category._id%>" disabled
-                                        value="<%=category.category%>">
-                                </td>
-                                <td>
-                                    <%=category._id%>
-                                </td>
-                                <td>
-                                    <%=category.creationTime%>
-                                </td>
-                                <td style="text-transform:capitalize;">
-                                    <%if(category.status){%>
-                                        &nbsp;<i class="fas fa-exclamation-circle"></i> disabled
-                                        <%}else{%>
-                                            &nbsp;<i class="fas fa-check-circle"></i> active
-                                            <%};%>
-                                </td>
-                                <!-- <td style="cursor: pointer; text-align: center;"
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">All users</h6>
+    </div>
+    <div class="card-body">
+      <div class="mb-1 small" id="progressDisp"></div>
+      <div class="progress progress-sm mb-2" style="background-color: transparent;">
+        <div class="progress-bar" id="progressBar" role="progressbar" style="width: 0%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>ID</th>
+              <th>Created</th>
+              <th>status</th>
+              <!-- <th style="cursor: pointer; text-align: center;">Disable / Enable</th> -->
+              <th style="cursor: pointer; text-align: center;">Delete </th>
+            </tr>
+          </thead>
+          <tbody>
+            <% categorys.forEach((category,index,array)=>{ %>
+            <tr>
+              <td>
+                <%=index+1%>
+              </td>
+              <td class="tabe_editable_TD" title="Click To edit" onclick="categoryName('<%=category._id%>',this)">
+                <input class="input_editable" type="text" data-id="<%=category._id%>" disabled value="<%=category.category%>">
+              </td>
+              <td>
+                <%=category._id%>
+              </td>
+              <td>
+                <%=category.creationTime%>
+              </td>
+              <td style="text-transform:capitalize;">
+                <%if(category.status){%>
+                &nbsp;<i class="fas fa-exclamation-circle"></i> disabled
+                <%}else{%>
+                &nbsp;<i class="fas fa-check-circle"></i> active
+                <%};%>
+              </td>
+              <!-- <td style="cursor: pointer; text-align: center;"
                                     onclick="window.location.href='/admin_panel/products/<%=category.UID%>'">
                                     <i class="fas fa-minus-circle"></i>&nbsp;&nbsp;Disable
                                 </td> -->
 
-                                <td style="cursor: pointer; text-align: center;"
-                                    onclick="deleteCategory('<%=category._id%>')">
-                                    <i class="fas fa-trash-alt"></i>&nbsp;&nbsp;Delete
-                                </td>
-                            </tr>
-                            <% }); %>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+              <td style="cursor: pointer; text-align: center;" onclick="deleteCategory('<%=category._id%>')">
+                <i class="fas fa-trash-alt"></i>&nbsp;&nbsp;Delete
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
 </div>
 <!-- /.container-fluid -->
 
 <script>
+  const disp = ({
+    message,
+    isGood,
+    returnVal
+  }) => {
+    let disp_state = document.getElementById("disp_state");
+    disp_state.style.backgroundColor = isGood ? 'rgb(205 255 196 / 56%)' : 'rgb(255 203 203 / 56%)';
+    disp_state.style.display = message || returnVal == false ? 'flex' : 'none';
+    disp_state.innerText = message ? message : disp_state.innerText;
+    return isGood || message == '' ? true : returnVal;
+  };
 
-    const disp = ({ message, isGood, returnVal }) => {
-        let disp_state = document.getElementById("disp_state");
-        disp_state.style.backgroundColor = isGood ? 'rgb(205 255 196 / 56%)' : 'rgb(255 203 203 / 56%)';
-        disp_state.style.display = message || returnVal == false ? 'flex' : 'none';
-        disp_state.innerText = message ? message : disp_state.innerText;
-        return isGood || message == '' ? true : returnVal;
-    };
+  function addCatogery() {
+    const category = document.getElementById("categoryInput");
+    const errDisp = category.parentElement.querySelector("span");
+    errDisp.innerText = '';
 
-    function addCatogery() {
-        const category = document.getElementById("categoryInput");
-        const errDisp = category.parentElement.querySelector("span");
-        errDisp.innerText = '';
-
-        if (category.value.length > 2) {
-            fetch('/admin_panel/products/add_category', {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                method: "POST",
-                body: JSON.stringify({
-                    category: category.value ? category.value : null
-                })
-            })
-                .then(res => res.json())
-                .then(res => {
-                    disp({
-                        message: res.message,
-                        isGood: res.status == 'error' ? false : true
-                    });
-                    if (res.status == 'good') {
-                        if (res?.action) {
-                            window.location.href = res.action;
-                        } else {
-                            window.location.reload();
-                        };
-                    };
-                })
-                .catch(error => {
-                    disp({
-                        message: "Error connecting to server"
-                    });
-                });
-        } else {
-            errDisp.innerText = 'Enter a valid category';
-        };
-    };
-
-    function categoryName(ID, td) {
-        const categoryInput = td.querySelector('input');
-        categoryInput.removeAttribute('disabled');
-        categoryInput.focus();
-    };
-
-    const inputCollection = document.querySelectorAll('input.input_editable');
-
-    inputCollection.forEach(element => {
-        element.addEventListener('keyup', e => {
-            if (e.keyCode == 13) {
-                const value = e.target.value;
-                const ID = e.target.getAttribute('data-id');
-                const input = e.target;
-                saveCurrentValue(ID, value, input);
+    if (category.value.length > 2) {
+      fetch('/admin_panel/products/add_category', {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          method: "POST",
+          body: JSON.stringify({
+            category: category.value ? category.value : null
+          })
+        })
+        .then(res => res.json())
+        .then(res => {
+          disp({
+            message: res.message,
+            isGood: res.status == 'error' ? false : true
+          });
+          if (res.status == 'good') {
+            if (res?.action) {
+              window.location.href = res.action;
+            } else {
+              window.location.reload();
             };
+          };
+        })
+        .catch(error => {
+          disp({
+            message: "Error connecting to server"
+          });
         });
-        element.addEventListener('focusout', e => {
-            const value = e.target.value;
-            const ID = e.target.getAttribute('data-id');
-            const input = e.target;
-            saveCurrentValue(ID, value, input);
-        });
+    } else {
+      errDisp.innerText = 'Enter a valid category';
+    };
+  };
+
+  function categoryName(ID, td) {
+    const categoryInput = td.querySelector('input');
+    categoryInput.removeAttribute('disabled');
+    categoryInput.focus();
+  };
+
+  const inputCollection = document.querySelectorAll('input.input_editable');
+
+  inputCollection.forEach(element => {
+    element.addEventListener('keyup', e => {
+      if (e.keyCode == 13) {
+        const value = e.target.value;
+        const ID = e.target.getAttribute('data-id');
+        const input = e.target;
+        saveCurrentValue(ID, value, input);
+      };
     });
+    element.addEventListener('focusout', e => {
+      const value = e.target.value;
+      const ID = e.target.getAttribute('data-id');
+      const input = e.target;
+      saveCurrentValue(ID, value, input);
+    });
+  });
 
-    const xhtml = new XMLHttpRequest();
+  const xhtml = new XMLHttpRequest();
 
-    function saveCurrentValue(ID, value, input, isDelete) {
+  function saveCurrentValue(ID, value, input, isDelete) {
 
-        const progress_bar = document.getElementById('progressBar');
-        const progress_disp = document.getElementById('progressDisp');
+    const progress_bar = document.getElementById('progressBar');
+    const progress_disp = document.getElementById('progressDisp');
 
-        progress_disp.style.color = '';
-        progress_bar.parentElement.style.filter = 'opacity(100)';
-        progress_bar.style.width = '0';
-        progress_bar.style.transition = 'all 0s ease 0s';
-        progress_bar.parentElement.style.backgroundColor = '#eaecf4';
+    progress_disp.style.color = '';
+    progress_bar.parentElement.style.filter = 'opacity(100)';
+    progress_bar.style.width = '0';
+    progress_bar.style.transition = 'all 0s ease 0s';
+    progress_bar.parentElement.style.backgroundColor = '#eaecf4';
 
-        input.style.borderColor = 'black';
+    input.style.borderColor = 'black';
 
 
-        if (value?.length > 2) {
+    if (value?.length > 2) {
 
-            xhtml.abort();
-            xhtml.open('PUT', '/admin_panel/products/edit_category');
+      xhtml.abort();
+      xhtml.open('PUT', '/admin_panel/products/edit_category');
 
-            const formData = new FormData();
+      const formData = new FormData();
 
-            formData.append('ID',ID ? ID : null);
-            formData.append('category',value ? value : null);
+      formData.append('ID', ID ? ID : null);
+      formData.append('category', value ? value : null);
 
-            xhtml.upload.addEventListener('progress', ({ loaded, total }) => {
+      xhtml.upload.addEventListener('progress', ({
+        loaded,
+        total
+      }) => {
 
-                const status = Math.floor((loaded / total) * 100);
+        const status = Math.floor((loaded / total) * 100);
 
-                progress_bar.parentElement.style.display = '';
-                progress_disp.style.display = '';
+        progress_bar.parentElement.style.display = '';
+        progress_disp.style.display = '';
 
-                progress_bar.style.width = `${status}%`;
-                progress_disp.innerText = 'Uploading...';
+        progress_bar.style.width = `${status}%`;
+        progress_disp.innerText = 'Uploading...';
 
-                if (status == 100) {
-                    progress_disp.innerText = 'Processing...';
-                };
+        if (status == 100) {
+          progress_disp.innerText = 'Processing...';
+        };
 
-            });
+      });
 
-            xhtml.onreadystatechange = (e) => {
-                if (xhtml.readyState === 4) {
-                    if (xhtml.status == 200) {
-                        const res = JSON.parse(xhtml.response);
+      xhtml.onreadystatechange = (e) => {
+        if (xhtml.readyState === 4) {
+          if (xhtml.status == 200) {
+            const res = JSON.parse(xhtml.response);
 
-                        if (res.status == 'error') {
-                            progress_disp.style.color = 'red';
-                            progress_disp.innerText = res.message;
-                            input.style.borderColor = 'red';
-                        } else {
-                            progress_disp.style.color = '';
-                            input.style.borderColor = '';
-                            progress_disp.innerText = res.message;
-                            input.setAttribute('disabled', '');
-                        };
-
-                    } else {
-                        progress_disp.style.color = 'red';
-                        progress_disp.innerText = 'Error connecting to server';
-                    };
-                };
+            if (res.status == 'error') {
+              progress_disp.style.color = 'red';
+              progress_disp.innerText = res.message;
+              input.style.borderColor = 'red';
+            } else {
+              progress_disp.style.color = '';
+              input.style.borderColor = '';
+              progress_disp.innerText = res.message;
+              input.setAttribute('disabled', '');
             };
 
-            xhtml.send(formData);
-
-            // fetch('/admin_panel/products/edit_category', {
-            //     method: 'PUT',
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify(data)
-            // })
-            //     .then(res => res.json())
-            //     .then(res => {
-            //         if (res.status == 'error') {
-            //             input.style.borderColor = 'red';
-            //         } else {
-            //             input.style.borderColor = '';
-            //             input.setAttribute('disabled', '');
-            //         }
-            //     })
-            //     .catch(error => {
-            //         console.error(error);
-            //         input.style.borderColor = 'red';
-            //     });
-
-        } else {
-            input.style.borderColor = 'red';
+          } else {
+            progress_disp.style.color = 'red';
+            progress_disp.innerText = 'Error connecting to server';
+          };
         };
+      };
+
+      xhtml.send(formData);
+
+      // fetch('/admin_panel/products/edit_category', {
+      //     method: 'PUT',
+      //     headers: {
+      //         'Content-Type': 'application/json'
+      //     },
+      //     body: JSON.stringify(data)
+      // })
+      //     .then(res => res.json())
+      //     .then(res => {
+      //         if (res.status == 'error') {
+      //             input.style.borderColor = 'red';
+      //         } else {
+      //             input.style.borderColor = '';
+      //             input.setAttribute('disabled', '');
+      //         }
+      //     })
+      //     .catch(error => {
+      //         console.error(error);
+      //         input.style.borderColor = 'red';
+      //     });
+
+    } else {
+      input.style.borderColor = 'red';
     };
+  };
 
-    function deleteCategory(ID) {
+  function deleteCategory(ID) {
 
-        if (prompt('Delete Category ? Type yes to confirm', 'yes')?.trim() == 'yes') {
+    if (prompt('Delete Category ? Type yes to confirm', 'yes')?.trim() == 'yes') {
 
-            fetch('/admin_panel/products/delete_category', {
-                method: "DELETE",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    ID: ID
-                })
-            })
-                .then(res => res.json())
-                .then(res => {
-                    if (res.status == 'error') {
-                        console.log(res.message);
-                    } else {
-                        window.location.reload();
-                    };
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-        };
+      fetch('/admin_panel/products/delete_category', {
+          method: "DELETE",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            ID: ID
+          })
+        })
+        .then(res => res.json())
+        .then(res => {
+          if (res.status == 'error') {
+            console.log(res.message);
+          } else {
+            window.location.reload();
+          };
+        })
+        .catch(error => {
+          console.log(error);
+        });
     };
-
+  };
 </script>

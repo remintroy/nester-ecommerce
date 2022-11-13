@@ -60,4 +60,3 @@ app.use((req,res)=>{
 app.listen(appConfig.port,()=>{
     console.log(`[-] Server started on port : ${appConfig.port}`);
 });
-

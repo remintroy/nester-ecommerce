@@ -15,7 +15,7 @@ export const ObjectID = mongoose.Types.ObjectId;
 export const users = db.model("user", new mongoose.Schema({
     name: String,
     email: String,
-    displayName:String,
+    displayName: String,
     phone: Number,
     phoneVerified: {
         type: Boolean,
@@ -111,6 +111,11 @@ export const cart = db.model("cart", new mongoose.Schema({
                 type: Date,
                 default: new Date()
             },
+            status:{
+                type:String,
+                default:'cart'
+            },
+            orderID:String
         }
     ]
 }));
@@ -119,6 +124,7 @@ export const orders = db.model("orders", new mongoose.Schema({
     UID: String,
     orders: [
         {
+            orderID:String,
             products: Array,
             address: Object,
             trackingID: String,
@@ -127,6 +133,12 @@ export const orders = db.model("orders", new mongoose.Schema({
                 default: 'pending'
             },
             paymentType: String,
+            paymentDate: {
+                type:Date,
+                default:new Date()
+            },
+            paymentError: Object,
+            paymentDetails: Object,
             paymentStatus: {
                 type: String,
                 default: 'pending'

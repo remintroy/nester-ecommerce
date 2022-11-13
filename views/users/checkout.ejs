@@ -1,442 +1,625 @@
 <main class="main">
-    <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
-        <div class="container">
-            <h1 class="page-title">Checkout<span>Shop</span></h1>
-        </div><!-- End .container -->
-    </div><!-- End .page-header -->
-    <nav aria-label="breadcrumb" class="breadcrumb-nav">
-        <div class="container">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Shop</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Checkout</li>
-            </ol>
-        </div><!-- End .container -->
-    </nav><!-- End .breadcrumb-nav -->
+  <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+    <div class="container">
+      <h1 class="page-title">Checkout<span>Shop</span></h1>
+    </div><!-- End .container -->
+  </div><!-- End .page-header -->
+  <nav aria-label="breadcrumb" class="breadcrumb-nav">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Shop</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+      </ol>
+    </div><!-- End .container -->
+  </nav><!-- End .breadcrumb-nav -->
 
-    <div class="page-content">
-        <div class="checkout">
-            <div class="container">
-                <h2 class="checkout-title">Your address<small>&nbsp;( by default your primary adderss is selected
-                        )</small>
-                </h2><!-- End .checkout-title -->
+  <div class="page-content">
+    <div class="checkout">
+      <div class="container">
+        <h2 class="checkout-title">Your address<small>&nbsp;( by default your primary adderss is selected
+            )</small>
+        </h2><!-- End .checkout-title -->
 
-                <div>
-                    <% locals?.address?.forEach((e,i)=>{ %>
-                        <input type="radio" id="address<%= i %>" onchange="setAddress(this)" name="address"
-                            value="<%=e._id%>" <% if(i==0){ %>
-                        checked <% } %>
-                            data-ID="<%= e._id %> ">
-                                <label for="address<%= i %>" style="text-transform: capitalize;  cursor: pointer; ">
-                                    <%=e.name%>, <%=e.town%>, <%=e.state%>, <%=e.country%> - <%=e.phone%> ,
-                                                        <span style="text-transform: lowercase;">
-                                                            <%=e.email%>
-                                                        </span>
-                                </label><br>
-                                <% }) %>
-                </div> <br>
-                <div>
-                    <div class="row">
-                        <div class="col-lg-9">
+        <div>
+          <% locals?.address?.forEach((e,i)=>{ %>
 
-                            <input type="radio" id="address-1" onchange="setAddress(this)" name="address" value="-1" <%
-                                if(locals?.address?.length){ %>
-                            <% }else{ %> checked <% }; %> >
-                                    <label for="address-1" style="text-transform: capitalize;  cursor: pointer; ">
-                                        Click here to type address
-                                    </label><br><br>
+          <input type="radio" id="address<%= i %>" name="address" value="<%=e._id%>" <% if(i==0){ %> checked <% } %> data-ID="<%= e._id %> ">
+          <label for="address<%= i %>" style="text-transform: capitalize;  cursor: pointer; ">
+            <%=e.name%>, <%=e.town%>, <%=e.state%>, <%=e.country%> - <%=e.phone%> ,
+            <span style="text-transform: lowercase;">
+              <%=e.email%>
+            </span>
+          </label><br>
 
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <label class="labelInputForInput">First
-                                                Name * <span></span></label>
-                                            <input id="firstNameInput" type="text" class="form-control" required>
-                                        </div><!-- End .col-sm-6 -->
+          <% }); %>
 
-                                        <div class="col-sm-6">
-                                            <label class="labelInputForInput">Last
-                                                Name * <span></span></label>
-                                            <input id="lastNameInput" type="text" class="form-control" required>
-                                        </div><!-- End .col-sm-6 -->
-                                    </div><!-- End .row -->
+        </div> <br>
+        <div>
+          <div class="row">
+            <div class="col-lg-9">
 
-                                    <div>
-                                        <label class="labelInputForInput">State
-                                            * <span></span></label>
-                                        <input id="stateInput" type="text" class="form-control" required>
-                                    </div>
+              <input type="radio" id="address-1" name="address" value="-1" <%if(locals?.address?.length){ %> <% }else{ %> checked <% }; %>>
+              <label for="address-1" style="text-transform: capitalize;  cursor: pointer; ">
+                Click here to type new address
+              </label><br><br>
 
-                                    <div>
-                                        <label class="labelInputForInput">Street
-                                            address * <span></span></label>
-                                        <input id="streetNumber" type="text" class="form-control"
-                                            placeholder="Street number / name" required>
-                                        <input id="houseNumber" type="text" class="form-control"
-                                            placeholder="Appartments, suite, House number etc ..." required>
-                                    </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <label class="labelInputForInput">First
+                    Name * <span></span></label>
+                  <input id="firstNameInput" type="text" class="form-control" value="<%= locals?.address[0]?.name?.split(' ')[0] %>" required>
+                </div><!-- End .col-sm-6 -->
 
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <label class="labelInputForInput">Town
-                                                / City * <span></span> </label>
-                                            <input id="townInput" type="text" class="form-control" required>
-                                        </div><!-- End .col-sm-6 -->
+                <div class="col-sm-6">
+                  <label class="labelInputForInput">Last
+                    Name * <span></span></label>
+                  <input id="lastNameInput" type="text" class="form-control" value="<%= locals?.address[0]?.name?.split(' ')?.slice(1)?.join(" ") %>" required>
+                </div><!-- End .col-sm-6 -->
+              </div><!-- End .row -->
 
-                                        <div class="col-sm-6">
-                                            <label class="labelInputForInput">Country
-                                                * <span></span></label>
-                                            <select class=" form-control" name="country" id="countryInput">
-                                                <option value="">--Select--</option>
-                                                <% locals?.country?.forEach(e=>{ %>
-                                                    <option value="<%= e.code %>">
-                                                        <%= e.name %>
-                                                    </option>
-                                                    <% }) %>
-                                            </select>
-                                        </div><!-- End .col-sm-6 -->
-                                    </div><!-- End .row -->
+              <div>
+                <label class="labelInputForInput">State
+                  * <span></span></label>
+                <input id="stateInput" type="text" class="form-control" value="<%= locals?.address[0]?.state %>" required>
+              </div>
 
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <label class="labelInputForInput">Postcode
-                                                / ZIP * <span></span></label>
-                                            <input id="codeInput" type="text" class="form-control" required>
-                                        </div><!-- End .col-sm-6 -->
+              <div>
+                <label class="labelInputForInput">Street
+                  address * <span></span></label>
+                <input id="streetNumber" type="text" class="form-control" value="<%= locals?.address[0]?.streetNumber %>" placeholder="Street number / name" required>
+                <input id="houseNumber" type="text" class="form-control" value="<%= locals?.address[0]?.houseNumber%>" placeholder="Appartments, suite, House number etc ..." required>
+              </div>
 
-                                        <div class="col-sm-6">
-                                            <label class="labelInputForInput">Phone
-                                                * <span></span></label>
-                                            <input id="phoneInput" type="tel" class="form-control" required>
-                                        </div><!-- End .col-sm-6 -->
-                                    </div><!-- End .row -->
+              <div class="row">
+                <div class="col-sm-6">
+                  <label class="labelInputForInput">Town
+                    / City * <span></span> </label>
+                  <input id="townInput" type="text" class="form-control" value="<%= locals?.address[0]?.town%>" required>
+                </div><!-- End .col-sm-6 -->
 
-                                    <div>
-                                        <label class="labelInputForInput">Email
-                                            address * <span></span></label>
-                                        <input id="emailInput" type="email" class="form-control" required>
-                                    </div>
+                <div class="col-sm-6">
+                  <label class="labelInputForInput">Country
+                    * <span></span></label>
+                  <select class=" form-control" name="country" id="countryInput">
+                    <option value="<%=locals?.address[0]?.countryCode%>"><%= locals?.address[0]?.country?locals?.address[0]?.country:'Select you country'%></option>
+                    <% locals?.country?.forEach(e=>{ %>
+                    <option value="<%= e.code %>">
+                      <%- e.name %>
+                    </option>
+                    <% }) %>
+                  </select>
+                </div><!-- End .col-sm-6 -->
+              </div><!-- End .row -->
 
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" id="saveConfirmInput" class="custom-control-input">
-                                        <label class="custom-control-label" for="saveConfirmInput">
-                                            save this address ?
-                                        </label>
-                                    </div><!-- End .custom-checkbox -->
+              <div class="row">
+                <div class="col-sm-6">
+                  <label class="labelInputForInput">Postcode
+                    / ZIP * <span></span></label>
+                  <input id="codeInput" type="text" class="form-control" value="<%= locals?.address[0]?.postalCode%>" required>
+                </div><!-- End .col-sm-6 -->
 
-                                    <style>
-                                        .labelInputForInput {
-                                            width: 100%;
-                                            display: flex;
-                                            align-items: center;
-                                            justify-content: space-between;
-                                        }
+                <div class="col-sm-6">
+                  <label class="labelInputForInput">Phone
+                    * <span></span></label>
+                  <input id="phoneInput" type="tel" class="form-control" value="<%= locals?.address[0]?.phone%>" required>
+                </div><!-- End .col-sm-6 -->
+              </div><!-- End .row -->
 
-                                        .labelInputForInput span {
-                                            color: red;
-                                        }
-                                    </style>
+              <div>
+                <label class="labelInputForInput">Email
+                  address * <span></span></label>
+                <input id="emailInput" type="email" class="form-control" value="<%= locals?.address[0]?.email%>" required>
+              </div>
 
-                        </div><!-- End .col-lg-9 -->
-                        <aside class="col-lg-3">
+              <style>
+                .labelInputForInput {
+                  width: 100%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                }
 
-                            <div class="checkout-discount">
-                                <form>
-                                    <input type="text" class="form-control" required id="checkout-discount-input">
-                                    <label for="checkout-discount-input" class="text-truncate">Have a coupon?
-                                        <span>Click here to enter your code</span></label>
-                                </form>
-                            </div><!-- End .checkout-discount -->
+                .labelInputForInput span {
+                  color: red;
+                }
+              </style>
 
-                            <div class="summary">
-                                <h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
+            </div><!-- End .col-lg-9 -->
+            <aside class="col-lg-3">
 
-                                <table class="table table-summary">
-                                    <thead>
-                                        <tr>
-                                            <th>Product</th>
-                                            <th>Total</th>
-                                        </tr>
-                                    </thead>
+              <div class="checkout-discount">
+                <form>
+                  <input type="text" class="form-control" required id="checkout-discount-input">
+                  <label for="checkout-discount-input" class="text-truncate">Have a coupon?
+                    <span>Click here to enter your code</span></label>
+                </form>
+              </div><!-- End .checkout-discount -->
 
-                                    <tbody>
-                                        <% locals?.cartProducts.forEach(product=>{ %>
-                                            <tr>
-                                                <td><a href="/product/<%=product?.PID%>">
-                                                        <%= product?.title?.slice(0,50)+"..." %>
-                                                    </a></td>
-                                                <td>₹ <%= product.total %>
-                                                </td>
-                                            </tr>
-                                            <% }); %>
+              <div class="summary">
+                <h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
 
-                                                <!-- <tr class="summary-subtotal">
-                                                    <td>Subtotal:</td>
-                                                    <td>₹ <%= locals?.cartProducts[0]?.subTotal %>
-                                                    </td>
-                                                </tr>-->
-                                                <!-- End .summary-subtotal -->
-                                                <!-- <tr>
-                                                    <td>Shipping:</td>
-                                                    <td>Free shipping</td>
-                                                </tr>  -->
-                                                <tr class="summary-total">
-                                                    <td>Total:</td>
-                                                    <td>₹ <%=
-                                                            locals?.cartProducts[0]?.subTotal?locals?.cartProducts[0]?.subTotal:0
-                                                            %>
-                                                    </td>
-                                                </tr><!-- End .summary-total -->
-                                    </tbody>
-                                </table><!-- End .table table-summary -->
+                <table class="table table-summary">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Total</th>
+                    </tr>
+                  </thead>
 
-                                <div class="accordion-summary" id="accordion-payment">
+                  <tbody>
+                    <% locals?.cartProducts.forEach(product=>{ %>
+                    <tr>
+                      <td><a href="/product/<%=product?.PID%>">
+                          <%= product?.title?.slice(0,50)+"..." %>
+                        </a></td>
+                      <td>₹ <%= product.total %>
+                      </td>
+                    </tr>
+                    <% }); %>
 
-                                    <input type="radio" id="typeOfOrderCOD" onchange="setAddress(this)"
-                                        name="typeOfOrder" value="COD" checked>
-                                    <label for="typeOfOrderCOD" style="text-transform: capitalize;  cursor: pointer; ">
-                                        COD (cash on delevery)
-                                    </label><br>
-                                    <input type="radio" id="typeOfOrderOnline" onchange="setAddress(this)"
-                                        name="typeOfOrder" value="online">
-                                    <label for="typeOfOrderOnline"
-                                        style="text-transform: capitalize;  cursor: pointer; ">
-                                        Online Payment
-                                    </label> <br>
+                    <!-- <tr class="summary-subtotal">
+                      <td>Subtotal:</td>
+                      <td>₹ <%= locals?.cartProducts[0]?.subTotal %>
+                      </td>
+                    </tr> -->
+                    <!-- End .summary-subtotal -->
+                    <!-- <tr>
+                      <td>Shipping:</td>
+                      <td>Free shipping</td>
+                    </tr> -->
+                    <tr class="summary-total">
+                      <td>Total:</td>
+                      <td>₹ <%= locals?.cartProducts[0]?.subTotal?locals?.cartProducts[0]?.subTotal:0  %>
+                      </td>
+                    </tr><!-- End .summary-total -->
+                  </tbody>
+                </table><!-- End .table table-summary -->
 
-                                    <div class=" mt-2 alert alert-danger alert-dismissible fade" id="error_disp"
-                                        role="alert">
-                                        <strong>Error : </strong><span>cannot checkout</span>
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <br>
-                                    <button onclick="finalSubmit()" type="button"
-                                        class="btn btn-outline-primary-2 btn-order btn-block">
-                                        <span class="btn-text">Place Order</span>
-                                        <span class="btn-hover-text">Proceed to Payment</span>
-                                    </button>
-                                </div><!-- End .accordion -->
-                            </div><!-- End .summary -->
-                            
-                        </aside><!-- End .col-lg-3 -->
-                    </div><!-- End .row -->
-                </div>
-            </div><!-- End .container -->
-        </div><!-- End .checkout -->
-    </div><!-- End .page-content -->
+                <div class="accordion-summary" id="accordion-payment">
+
+                  <input type="radio" id="typeOfOrderCOD" name="typeOfOrder" value="COD" checked>
+                  <label for="typeOfOrderCOD" style="text-transform: capitalize;  cursor: pointer; ">
+                    COD (cash on delevery)
+                  </label><br>
+                  <input type="radio" id="typeOfOrderOnline" name="typeOfOrder" value="online">
+                  <label for="typeOfOrderOnline" style="text-transform: capitalize;  cursor: pointer; ">
+                    Online Payment
+                  </label> <br>
+
+                  <div class=" mt-2 alert alert-danger alert-dismissible fade" id="error_disp" role="alert">
+                    <strong>Error : </strong><span>cannot checkout</span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <br>
+                  <button onclick="finalSubmit()" type="button" class="btn btn-outline-primary-2 btn-order btn-block">
+                    <span class="btn-text">Place Order</span>
+                    <span class="btn-hover-text">Proceed to Payment</span>
+                  </button>
+                </div><!-- End .accordion -->
+              </div><!-- End .summary -->
+
+            </aside><!-- End .col-lg-3 -->
+          </div><!-- End .row -->
+        </div>
+      </div><!-- End .container -->
+    </div><!-- End .checkout -->
+  </div><!-- End .page-content -->
 </main><!-- End .main -->
 
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
+  const address = '<%=locals?.address?.length%>';
 
-    const address = '<%=locals?.address?.length%>';
+  const inputActions = (type, data) => {
 
-    const setAddress = () => {
-        if (checkAddress() != -1) inputActions('disable');
-        else inputActions('enable');
-    };
+    const inputsIDS = [{
+        fNameInput: 'firstNameInput'
+      },
+      {
+        lNameInput: 'lastNameInput'
+      },
+      {
+        stateInput: 'stateInput'
+      },
+      {
+        streetNumberInput: 'streetNumber'
+      },
+      {
+        houseNumberInput: 'houseNumber'
+      },
+      {
+        townInput: 'townInput'
+      },
+      {
+        countryInput: 'countryInput'
+      },
+      {
+        codeInput: 'codeInput'
+      },
+      {
+        phoneInput: 'phoneInput'
+      },
+      {
+        emailInput: 'emailInput'
+      }
+    ];
 
-    const checkAddress = () => {
-        const addresses = document.querySelectorAll('input[type=radio][name=address]');
-        let output = '';
-        addresses.forEach(e => {
-            if (e.checked) {
-                output = e.value;
-            };
+    const inputFields = {};
+    const inputFieldErrs = {};
+
+    inputsIDS.forEach((e, i) => {
+      inputFields[Object.keys(e)[0]] = document.getElementById(e[Object.keys(e)[0]]);
+    });
+
+    Object.keys(inputFields).forEach((e, i) => {
+      inputFieldErrs[e + "Err"] = inputFields[e].parentElement.querySelector('span');
+    });
+
+    const {
+      fNameInput,
+      lNameInput,
+      stateInput,
+      streetNumberInput,
+      houseNumberInput,
+      townInput,
+      countryInput,
+      codeInput,
+      phoneInput,
+      emailInput
+    } = inputFields;
+
+    const {
+      fNameInputErr,
+      lNameInputErr,
+      stateInputErr,
+      streetNumberInputErr,
+      houseNumberInputErr,
+      townInputErr,
+      countryInputErr,
+      codeInputErr,
+      phoneInputErr,
+      emailInputErr
+    } = inputFieldErrs;
+
+    Object.keys(inputFieldErrs).forEach(e => {
+      inputFieldErrs[e].innerText = '';
+    })
+
+    switch (type) {
+      case 'disable': {
+        Object.keys(inputFields).forEach(e => {
+          inputFields[e].setAttribute('disabled', '');
         });
-        return (output);
+        return true;
+        break;
+      };
+    case 'enable': {
+      Object.keys(inputFields).forEach(e => {
+        inputFields[e].removeAttribute('disabled');
+      });
+      return true;
+      break;
     };
-
-    const checkPayment = () => {
-        const method = document.querySelectorAll('input[type=radio][name=typeOfOrder]');
-        let output = '';
-        method.forEach(e => {
-            if (e.checked) {
-                output = e.value;
-            };
-        });
-        return (output);
+    case 'clear': {
+      Object.keys(inputFields).forEach(e => {
+        inputFields[e].value = '';
+      })
+      return true;
+      break;
     }
+    case 'set': {
+      Object.keys(inputFields).forEach(e => {
+        inputFields[e].value = data[e];
+      });
+      return true;
+      break;
+    }
+    case 'validate': {
 
-    const finalSubmit = () => {
-        if (checkAddress() != -1) {
-            finalSubmitToServer({
-                type: 'id',
-                address: checkAddress(),
-                method: checkPayment()
-            });
-        } else {
-            inputActions('validate');
-        };
+      let flag = true;
+
+      if ((fNameInput.value?.trim()?.match(/^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$/g)) == null) {
+        flag = false;
+        fNameInputErr.innerText = 'Enter a valid name';
+      };
+      if ((lNameInput.value?.trim()?.match(/^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$/g)) == null) {
+        flag = false;
+        lNameInputErr.innerText = 'Enter a valid name';
+      };
+      if ((stateInput.value?.trim()?.match(/^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$/g)) == null) {
+        flag = false;
+        stateInputErr.innerText = 'Enter a valid state';
+      };
+      if (streetNumberInput?.value?.trim().length == 0) {
+        flag = false;
+        streetNumberInputErr.innerText = 'Plz fill out address fields';
+      };
+      if (houseNumberInput?.value?.trim().length == 0) {
+        flag = false;
+        houseNumberInputErr.innerText = 'Plz fill out address fields';
+      };
+      if (townInput?.value?.trim().length == 0) {
+        flag = false;
+        townInputErr.innerText = 'Town is required';
+      };
+      if (countryInput?.value?.trim().length == 0) {
+        flag = false;
+        countryInputErr.innerText = 'Select you country';
+      };
+      if (isNaN(Number(codeInput.value))) {
+        flag = false;
+        codeInputErr.innerText = 'Enter a valid code';
+      };
+      if ((phoneInput.value + "").trim().match(/^\+?[1-9][0-9]{7,14}$/) == null) {
+        flag = false;
+        phoneInputErr.innerText = 'Enter a valid phone number';
+      };
+      if ((emailInput.value + "").trim().match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) == null) {
+        flag = false;
+        emailInputErr.innerText = 'Enter a valid email';
+      };
+
+      if (flag) {
+        finalSubmitToServer({
+          type: 'address',
+          address: {
+            name: fNameInput?.value?.trim() + " " + lNameInput?.value?.trim(),
+            state: stateInput?.value?.trim() ? stateInput?.value?.trim() : null,
+            streetNumber: streetNumberInput?.value?.trim() ? streetNumberInput?.value?.trim() : null,
+            houseNumber: houseNumberInput?.value?.trim() ? houseNumberInput?.value?.trim() : null,
+            town: townInput?.value?.trim() ? townInput?.value?.trim() : null,
+            country: countryInput?.value?.trim() ? countryInput?.value?.trim() : null,
+            postalCode: codeInput?.value ? codeInput?.value : null,
+            phone: phoneInput?.value ? phoneInput.value : null,
+            email: emailInput?.value?.trim() ? emailInput?.value?.trim() : null
+          },
+          method: checkPayment()
+        })
+      } else {
+        Swal.fire({
+          title: 'Plz fillout address',
+        })
+      };
+
     };
+    };
+  };
 
-    const finalSubmitToServer = (data) => {
+  (function checkEventSetter() {
+    const addresses = document.querySelectorAll('input[type=radio][name=address]');
+    addresses.forEach(e => {
+      if (e.value != '-1') {
+        e.addEventListener("change", ev => {
+          fetch('/checkout/address', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                addressID: e.value
+              })
+            })
+            .then(res => res.json())
+            .then(res => {
+              if (res.status == 'error') {
+                console.log('Error => ', error);
+              } else {
+                const outputData = {
+                  fNameInput: res.message?.name?.split(' ')[0],
+                  lNameInput: res.message?.name?.split(' ')?.slice(1).join(' '),
+                  stateInput: res.message?.state,
+                  streetNumberInput: res.message?.streetNumber,
+                  houseNumberInput: res.message?.houseNumber,
+                  townInput: res.message?.town,
+                  countryInput: res.message?.countryCode,
+                  codeInput: res.message?.postalCode,
+                  phoneInput: res.message?.phone,
+                  emailInput: res.message?.email
+                };
+                inputActions('set', outputData);
+              };
+            })
+            .catch(err => console.log(err));
+        });
+      } else {
+        e.addEventListener('change', e => {
+          inputActions('clear');
+        });
+      };
+    });
+  }());
+
+  const checkAddress = () => {
+    const addresses = document.querySelectorAll('input[type=radio][name=address]');
+    let output = '';
+    addresses.forEach(e => {
+      if (e.checked) {
+        output = e.value;
+      };
+    });
+    return (output);
+  };
+
+  const checkPayment = () => {
+    const method = document.querySelectorAll('input[type=radio][name=typeOfOrder]');
+    let output = '';
+    method.forEach(e => {
+      if (e.checked) {
+        output = e.value;
+      };
+    });
+    return (output);
+  }
+
+  const finalSubmit = () => {
+    // if (checkAddress() != -1) {
+    //     finalSubmitToServer({
+    //         type: 'id',
+    //         address: checkAddress(),
+    //         method: checkPayment()
+    //     });
+    // } else {
+    //     inputActions('validate');
+    // };
+    inputActions('validate');
+  };
+
+  const paySubmit = (data) => {
+    window.checkOutData.keys = data;
+    window.checkOutData.typeOfRequest = "verify";
+
+    Swal.fire({
+      title: 'Processing payment',
+      html: 'Connecting to server ...',
+      didOpen: () => {
+        Swal.showLoading();
+
+        fetch('/checkout/verify', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(window.checkOutData)
+          })
+          .then(res => res.json())
+          .then(res => {
+            if (res.status == 'error') {
+              Swal.fire({
+                title: res.message,
+                icon: 'error',
+              });
+            } else {
+              Swal.fire({
+                title: "Payment success !",
+                html: 'Order success',
+                icon: 'success',
+              }).then(result => {
+                if (res?.action) {
+                  window.location.href = res.action;
+                } else {
+                  window.location.href = '/dashboard/orders';
+                };
+              });
+            };
+          })
+          .catch(error => {
+            console.log("error =>", error);
+            Swal.fire({
+              title: "Error connecting to db",
+              icon: 'error',
+            });
+          });
+      }
+    });
+  };
+
+  const finalSubmitToServer = (data) => {
+
+    Swal.fire({
+      title: 'Processing Your order',
+      html: 'Connecting to server ...',
+      didOpen: () => {
+        Swal.showLoading();
+
         fetch('/checkout', {
             headers: {
-                'Content-Type': 'application/json'
+              'Content-Type': 'application/json'
             },
             method: 'POST',
             body: JSON.stringify(data)
-        })
-            .then(res => res.json())
-            .then(res => {
-                if (res.status == 'error') {
-                    const error_disp = document.getElementById("error_disp");
-                    error_disp.classList.add('show');
-                    error_disp.querySelector('span').innerText = res.message;
-                } else {
-                    Swal.fire({
-                        title: 'Order succes !',
-                        icon: 'success',
-                        confirmButtonText: 'Go to orders',
-                    }).then(result => {
-                        if (res.action) {
-                            window.location.href = res.action;
-                        } else {
-                            window.location.href = '/dashboard/orders';
-                        };
-                    })
+          })
+          .then(res => res.json())
+          .then(res => {
+            if (res.status == 'error') {
+              Swal.close();
+              Swal.fire({
+                title: 'Oops something went wrong !',
+                html: res.message,
+                icon: 'error',
+                confirmButtonText: 'Ok',
+              });
+            } else {
+
+              console.log(res);
+
+              window.checkOutData = data;
+
+              if (data.method == 'online') {
+
+                const options = {
+                  "key": "rzp_test_oRZSfNK6JdPa46",
+                  "name": res?.message?.user?.name ? res.message.user.name : res?.message?.user?.emali ? res?.message?.user?.emali : res?.message?.user?.phone,
+                  "description": "Pay online",
+                  "order_id": res.message.id,
+                  "handler": function(response) {
+
+                    paySubmit({
+                      orderID: response.razorpay_order_id,
+                      paymentID: response.razorpay_payment_id,
+                      signature: response.razorpay_signature
+                    });
+
+                  },
+                  "prefill": {
+                    "name": res?.message?.user?.name,
+                    "email": res?.message?.user?.email,
+                    "contact": "+91" + res?.message?.user?.phone
+                  },
+                  "notes": {
+                    "mail": res?.message?.user?.email
+                  },
+                  "theme": {
+                    "color": "#3399cc"
+                  }
                 };
-            })
-            .catch(err => console.log(err));
-    };
 
-    const inputActions = (type) => {
-        const fNameInput = document.getElementById('firstNameInput');
-        const lNameInput = document.getElementById('lastNameInput');
-        const stateInput = document.getElementById('stateInput');
-        const streetNumberInput = document.getElementById("streetNumber");
-        const houseNumberInput = document.getElementById("houseNumber");
-        const townInput = document.getElementById("townInput");
-        const countryInput = document.getElementById("countryInput");
-        const codeInput = document.getElementById("codeInput");
-        const phoneInput = document.getElementById("phoneInput");
-        const emailInput = document.getElementById("emailInput");
-        const saveConfirmInput = document.getElementById("saveConfirmInput");
+                const rzp1 = new Razorpay(options);
 
-        const fNameInputErr = fNameInput.parentElement.querySelector('span');
-        const lNameInputErr = lNameInput.parentElement.querySelector('span');
-        const stateInputErr = stateInput.parentElement.querySelector('span');
-        const streetNumberInputErr = streetNumberInput.parentElement.querySelector('span');
-        const houseNumberInputErr = houseNumberInput.parentElement.querySelector('span');
-        const townInputErr = townInput.parentElement.querySelector('span');
-        const countryInputErr = countryInput.parentElement.querySelector('span');
-        const codeInputErr = codeInput.parentElement.querySelector('span');
-        const phoneInputErr = phoneInput.parentElement.querySelector('span');
-        const emailInputErr = emailInput.parentElement.querySelector('span');
+                rzp1.on('payment.failed', function(response) {
+                  Swal.close();
+                  Swal.fire({
+                    title: "Error opening Razorpay",
+                    icon: "error",
+                    confirmButtonText: 'Ok'
+                  })
+                });
 
-        fNameInputErr.innerText = '';
-        lNameInputErr.innerText = '';
-        stateInputErr.innerText = '';
-        houseNumberInputErr.innerText = '';
-        townInputErr.innerText = '';
-        countryInputErr.innerText = '';
-        codeInputErr.innerText = '';
-        phoneInputErr.innerText = '';
-        emailInputErr.innerText = '';
+                Swal.close();
+                rzp1.open();
 
-        switch (type) {
-            case 'disable': {
-                fNameInput.setAttribute('disabled', '');
-                lNameInput.setAttribute('disabled', '');
-                stateInput.setAttribute('disabled', '');
-                streetNumberInput.setAttribute('disabled', '');
-                houseNumberInput.setAttribute('disabled', '');
-                townInput.setAttribute('disabled', '');
-                countryInput.setAttribute('disabled', '');
-                codeInput.setAttribute('disabled', '');
-                phoneInput.setAttribute('disabled', '');
-                emailInput.setAttribute('disabled', '');
-                saveConfirmInput.setAttribute('disabled', '');
-                return true;
-                break;
+                console.log(res);
+              } else {
+                Swal.close();
+                Swal.fire({
+                  title: 'Order succes !',
+                  icon: 'success',
+                  confirmButtonText: 'Go to orders',
+                }).then(result => {
+                  window.location.href = res?.action ? res.action : '/dashboard/orders';
+                });
+              };
             };
-            case 'enable': {
-                fNameInput.removeAttribute('disabled');
-                lNameInput.removeAttribute('disabled');
-                stateInput.removeAttribute('disabled');
-                streetNumberInput.removeAttribute('disabled');
-                houseNumberInput.removeAttribute('disabled');
-                townInput.removeAttribute('disabled');
-                countryInput.removeAttribute('disabled');
-                codeInput.removeAttribute('disabled');
-                phoneInput.removeAttribute('disabled');
-                emailInput.removeAttribute('disabled');
-                saveConfirmInput.removeAttribute('disabled');
-                return true;
-                break;
-            };
-            case 'validate': {
+          })
+          .catch(err => {
+            console.log("Error =>", err);
+            Swal.close();
+            Swal.fire({
+              title: 'Oops something went wrong !',
+              icon: 'error',
+              confirmButtonText: 'Ok',
+            });
+          });
 
-                let flag = true;
-
-                if ((fNameInput.value?.trim()?.match(/^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$/g)) == null) {
-                    flag = false;
-                    fNameInputErr.innerText = 'Enter a valid name';
-                };
-                if ((lNameInput.value?.trim()?.match(/^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$/g)) == null) {
-                    flag = false;
-                    lNameInputErr.innerText = 'Enter a valid name';
-                };
-                if ((stateInput.value?.trim()?.match(/^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$/g)) == null) {
-                    flag = false;
-                    stateInputErr.innerText = 'Enter a valid state';
-                };
-                if (streetNumberInput?.value?.trim().length == 0) {
-                    flag = false;
-                    streetNumberInputErr.innerText = 'Plz fill out address fields';
-                };
-                if (houseNumberInput?.value?.trim().length == 0) {
-                    flag = false;
-                    houseNumberInputErr.innerText = 'Plz fill out address fields';
-                };
-                if (townInput?.value?.trim().length == 0) {
-                    flag = false;
-                    townInputErr.innerText = 'Town is required';
-                };
-                if (countryInput?.value?.trim().length == 0) {
-                    flag = false;
-                    countryInputErr.innerText = 'Select you country';
-                };
-                if (isNaN(Number(codeInput.value))) {
-                    flag = false;
-                    codeInputErr.innerText = 'Enter a valid code';
-                };
-                if ((phoneInput.value + "").trim().match(/^\+?[1-9][0-9]{7,14}$/) == null) {
-                    flag = false;
-                    phoneInputErr.innerText = 'Enter a valid phone number';
-                };
-                if ((emailInput.value + "").trim().match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) == null) {
-                    flag = false;
-                    emailInputErr.innerText = 'Enter a valid email';
-                };
-
-                if (flag) {
-                    finalSubmitToServer({
-                        type: 'address',
-                        address: {
-                            name: fNameInput?.value?.trim() + " " + lNameInput?.value?.trim(),
-                            state: stateInput?.value?.trim() ? stateInput?.value?.trim() : null,
-                            streetNumber: streetNumberInput?.value?.trim() ? streetNumberInput?.value?.trim() : null,
-                            houseNumber: houseNumberInput?.value?.trim() ? houseNumberInput?.value?.trim() : null,
-                            town: townInput?.value?.trim() ? townInput?.value?.trim() : null,
-                            country: countryInput?.value?.trim() ? countryInput?.value?.trim() : null,
-                            postalCode: codeInput?.value ? codeInput?.value : null,
-                            phone: phoneInput?.value ? phoneInput.value : null,
-                            email: emailInput?.value?.trim() ? emailInput?.value?.trim() : null,
-                            save: saveConfirmInput?.checked ? true : false,
-                        },
-                        method: checkPayment()
-                    })
-                };
-
-            };
-        };
-    };
-
-    if (address.length > 0) {
-        inputActions('disable');
-    };
-
-
+      },
+      willClose: (e) => {
+        // console.log(e)
+        // Swal doc after close
+      }
+    }).then((result) => {
+      // closed response of Swal progress popup
+    });
+  };
 </script>

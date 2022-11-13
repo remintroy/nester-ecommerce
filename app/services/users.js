@@ -87,6 +87,16 @@ export const checkoutCart = (UID, body) => {
         };
     });
 };
+export const veryfyPayment = (UID, body) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const result = await orders.paymentConfirmRazorpay(UID, body);
+            resolve(result);
+        } catch (error) {
+            reject(error);
+        };
+    });
+};
 export const cancelOrder = (UID, orderID, PID) => {
     return new Promise(async (resolve, reject) => {
         try {

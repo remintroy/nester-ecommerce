@@ -1,48 +1,50 @@
 <!-- main containter -->
 <div class="login-container signup">
-    <h2>Register</h2>
+  <h2>Register</h2>
 
-        <div class="input-cont">
-            <div class="err_disp" id="err_disp" style="display: none;">-</div>
-            <div class="disp-state" style="display: none;" id="disp_state">error occured</div>
-            <div class="multi-line">
-                <div class="sub-input">
-                    <input type="text" name="name" id="nameInput" placeholder="Name">
-                </div>
-                <div class="sub-input">
-                    <input type="text" name="phone" id="phoneInput" placeholder="Phone">
-                </div>
-            </div>
-            <div class="sub-input">
-                <input type="email" name="email" id="emaliInput" placeholder="Email">
-            </div>
-            <div class="sub-input">
-                <span id="show" onclick="viewPassword(1)">Show</span>
-                <span id="hide" onclick="viewPassword()" style="display: none;">Hide</span>
-                <input type="password" name="password" id="passwordInput" placeholder="Password">
-            </div>
-            <div class="sub-input">
-                <input type="password" name="Confirm" id="confirmPasswordInput" placeholder="Confirm">
-            </div>
+  <div class="input-cont">
+    <div class="err_disp" id="err_disp" style="display: none;">-</div>
+    <div class="disp-state" style="display: none;" id="disp_state">error occured</div>
+    <div class="multi-line">
+      <div class="sub-input">
+        <input type="text" name="name" id="nameInput" placeholder="Name">
+      </div>
+      <div class="sub-input">
+        <input type="text" name="phone" id="phoneInput" placeholder="Phone">
+      </div>
+    </div>
+    <div class="sub-input">
+      <input type="email" name="email" id="emaliInput" placeholder="Email">
+    </div>
+    <div class="sub-input">
+      <span id="show" onclick="viewPassword(1)">Show</span>
+      <span id="hide" onclick="viewPassword()" style="display: none;">Hide</span>
+      <input type="password" name="password" id="passwordInput" placeholder="Password">
+    </div>
+    <div class="sub-input">
+      <input type="password" name="Confirm" id="confirmPasswordInput" placeholder="Confirm">
+    </div>
 
-        </div>
-        <div class="all_actions">
-            <button onclick="validator()">submit</button>
-            <p>Already have an account <b onclick="window.location.href='/user_signin'">Login</b></p>
-            <div class="or-container">
-                <div class="dash"></div>
-                <span>OR</span>
-                <div class="dash"></div>
-            </div>
-            <div class="ext-action">
-                <button id="googleLoginBtn"><img src="/icn/google.svg" alt=""> Google</button>
-                <button onclick="window.location.href='user_signin_phone'"><img src="/icn/phone.svg" alt=""> Phone</button>
-            </div>
-        </div>
+  </div>
+  <div class="all_actions">
+    <button onclick="validator()">submit</button>
+    <p>Already have an account <b onclick="window.location.href='/user_signin'">Login</b></p>
+    <div class="or-container">
+      <div class="dash"></div>
+      <span>OR</span>
+      <div class="dash"></div>
+    </div>
+    <div class="ext-action">
+      <button id="googleLoginBtn"><img src="/icn/google.svg" alt=""> Google</button>
+      <button onclick="window.location.href='user_signin_phone'"><img src="/icn/phone.svg" alt=""> Phone</button>
+    </div>
+  </div>
 </div>
 
 <script src="/js/login/auth.js" type="module"></script>
 <script type="module">
-    import { loginWithEmail } from '/js/login/auth.js';
-    window.loginWithEmail = loginWithEmail;
+  import {
+    loginWithEmail
+  } from '/js/login/auth.js';
+  window.loginWithEmail = loginWithEmail;
 </script>

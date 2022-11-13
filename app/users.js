@@ -273,7 +273,29 @@ export const checkoutCartProductsAPI = async (req, res) => {
         const UID = req.user.UID; // form session
         // adds product to cart or if exist updates the quantity
         const output = await userService.checkoutCart(UID, req.body);
-        res.send({ status: 'success', message: output, action: '/dashboard/orders' });
+        res.send({ status: 'good', message: output, action: '/dashboard/orders' });
+    } catch (error) {
+        console.log('error => ', error);
+        res.send({ status: 'error', message: error });
+    };
+};
+export const checkOutVerifyRazorpayAPI = async (req, res) => {
+    try {
+        const UID = req.user.UID; // form session
+        // adds product to cart or if exist updates the quantity
+        const output = await userService.veryfyPayment(UID, req.body);
+        res.send({ status: 'good', message: output, action: '/dashboard/orders' });
+    } catch (error) {
+        console.log('error => ', error);
+        res.send({ status: 'error', message: error });
+    };
+};
+export const getAddressByAddressID = async (req, res) => {
+    try {
+        const UID = req.user.UID; // form session
+        // adds product to cart or if exist updates the quantity
+        const output = await address.getByID(UID, req?.body?.addressID);
+        res.send({ status: 'good', message: output, action: '/dashboard/orders' });
     } catch (error) {
         console.log('error => ', error);
         res.send({ status: 'error', message: error });
