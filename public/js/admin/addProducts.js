@@ -2,67 +2,67 @@ const imgFiles = {};
 
 // start editing
 function cropperJS(id, btn, key) {
-    const img = document.getElementById(id);
-    window[id] = new Cropper(img, {
-      aspectRatio: 1 / 1
-    });
-    btn.innerText = 'Crop';
-    btn.setAttribute('onclick', "save('" + id + "',this,'" + key + "')");
-    btn.parentElement.parentElement.querySelectorAll('button.editAction').forEach(e => {
-      e.removeAttribute('disabled')
-    });
-  };
+  const img = document.getElementById(id);
+  window[id] = new Cropper(img, {
+    aspectRatio: 1 / 1
+  });
+  btn.innerText = 'Crop';
+  btn.setAttribute('onclick', "save('" + id + "',this,'" + key + "')");
+  btn.parentElement.parentElement.querySelectorAll('button.editAction').forEach(e => {
+    e.removeAttribute('disabled')
+  });
+};
 
-  // select image
-  function selectImage(id, btn, key) {
-    if (window[id]?.cropper) window[id]?.destroy();
-    btn.parentElement.querySelector('input').click();
-    btn.parentElement.querySelector('button').innerText = 'Edit image';
-    btn.parentElement.querySelector('button').setAttribute('onclick', "cropperJS('" + id + "',this,'" + key + "')");
-    btn.parentElement.parentElement.querySelectorAll('button.editAction').forEach(e => {
-      e.setAttribute('disabled', '');
-    });
-    // btn.setAttribute('onclick', "selectImageB('" + id + "',this)");
-  }
+// select image
+function selectImage(id, btn, key) {
+  if (window[id]?.cropper) window[id]?.destroy();
+  btn.parentElement.querySelector('input').click();
+  btn.parentElement.querySelector('button').innerText = 'Edit image';
+  btn.parentElement.querySelector('button').setAttribute('onclick', "cropperJS('" + id + "',this,'" + key + "')");
+  btn.parentElement.parentElement.querySelectorAll('button.editAction').forEach(e => {
+    e.setAttribute('disabled', '');
+  });
+  // btn.setAttribute('onclick', "selectImageB('" + id + "',this)");
+}
 
-  // crop and save result ot imgFIles
-  function save(id, btn, key) {
-    let data = window[id].getCroppedCanvas().toDataURL('image/jpeg');
-    let blob = window[id].getCroppedCanvas().toBlob(blob => {
-      imgFiles[key] = new File([blob], 'Edited.png', blob);
-    });
-    window[id].destroy();
-    btn.innerText = 'Edit image';
-    btn.setAttribute('onclick', "cropperJS('" + id + "',this,'" + key + "')");
-    document.getElementById(id).src = data;
-  }
+// crop and save result ot imgFIles
+function save(id, btn, key) {
+  let data = window[id].getCroppedCanvas().toDataURL('image/jpeg');
+  let blob = window[id].getCroppedCanvas().toBlob(blob => {
+    imgFiles[key] = new File([blob], 'Edited.png', blob);
+  });
+  window[id].destroy();
+  btn.innerText = 'Edit image';
+  btn.setAttribute('onclick', "cropperJS('" + id + "',this,'" + key + "')");
+  document.getElementById(id).src = data;
+}
 
-  //..
-  function flipImageXA(btn, id) {
-    window[id].scaleX(-1);
-    btn.setAttribute('onclick', "flipImageXB(this,'" + id + "')");
-  };
+//..
+function flipImageXA(btn, id) {
+  window[id].scaleX(-1);
+  btn.setAttribute('onclick', "flipImageXB(this,'" + id + "')");
+};
 
-  //..
-  function flipImageXB(btn, id) {
-    window[id].scaleX(1);
-    btn.setAttribute('onclick', "flipImageXA(this,'" + id + "')")
-  };
+//..
+function flipImageXB(btn, id) {
+  window[id].scaleX(1);
+  btn.setAttribute('onclick', "flipImageXA(this,'" + id + "')")
+};
 
-  //..
-  function flipImageYA(btn, id) {
-    window[id].scaleY(-1);
-    btn.setAttribute('onclick', "flipImageYB(this,'" + id + "')");
-  };
+//..
+function flipImageYA(btn, id) {
+  window[id].scaleY(-1);
+  btn.setAttribute('onclick', "flipImageYB(this,'" + id + "')");
+};
 
-  //..
-  function flipImageYB(btn, id) {
-    window[id].scaleY(1);
-    btn.setAttribute('onclick', "flipImageYA(this,'" + id + "')");
-  };
+//..
+function flipImageYB(btn, id) {
+  window[id].scaleY(1);
+  btn.setAttribute('onclick', "flipImageYA(this,'" + id + "')");
+};
 
 // add event listners to each input and saves the result in imgFiles object
-const attachEvenListners = () => {
+(function attachEvenListners() {
   const DOCS_TO_DISPLAY_IMG_IDS = ['imgA_DISP', 'imgB_DISP', 'imgC_DISP', 'imgD_DISP'];
   const IDS_OF_FILE_INPUT = ['imgA', 'imgB', 'imgC', 'imgD'];
   IDS_OF_FILE_INPUT.forEach((id, index, array) => {
@@ -76,9 +76,7 @@ const attachEvenListners = () => {
       }
     });
   });
-};
-
-attachEvenListners();
+})();
 
 const xmlRq = new XMLHttpRequest();
 
@@ -132,53 +130,53 @@ function updateUserData() {
         errorTitle.innerText = message;
         break;
       };
-    case 2: {
-      errorDescription.innerText = message;
-      break;
-    };
-    case 3: {
-      errorPrice.innerText = message;
-      break;
-    };
-    case 4: {
-      errorQuantity.innerText = message;
-      break;
-    };
-    case 5: {
-      errorOffer.innerText = message;
-      break;
-    };
-    case 6: {
-      errorCategory.innerText = message;
-      break;
-    };
-    case 7: {
-      errorimgA.innerText = message;
-      break;
-    };
-    case 8: {
-      errorimgB.innerText = message;
-      break;
-    };
-    case 9: {
-      errorimgC.innerText = message;
-      break;
-    };
-    case 10: {
-      errorimgD.innerText = message;
-      break;
-    };
-    case 11: {
-      let disp_state = document.getElementById("disp_state").style.display = 'none';
-      break;
-    }
-    default: {
-      let disp_state = document.getElementById("disp_state");
-      disp_state.style.backgroundColor = isGood ? 'rgb(205 255 196 / 56%)' : 'rgb(255 203 203 / 56%)';
-      disp_state.style.display = message || returnVal == false ? 'flex' : 'none';
-      disp_state.innerText = message ? message : disp_state.innerText;
-      break;
-    };
+      case 2: {
+        errorDescription.innerText = message;
+        break;
+      };
+      case 3: {
+        errorPrice.innerText = message;
+        break;
+      };
+      case 4: {
+        errorQuantity.innerText = message;
+        break;
+      };
+      case 5: {
+        errorOffer.innerText = message;
+        break;
+      };
+      case 6: {
+        errorCategory.innerText = message;
+        break;
+      };
+      case 7: {
+        errorimgA.innerText = message;
+        break;
+      };
+      case 8: {
+        errorimgB.innerText = message;
+        break;
+      };
+      case 9: {
+        errorimgC.innerText = message;
+        break;
+      };
+      case 10: {
+        errorimgD.innerText = message;
+        break;
+      };
+      case 11: {
+        let disp_state = document.getElementById("disp_state").style.display = 'none';
+        break;
+      }
+      default: {
+        let disp_state = document.getElementById("disp_state");
+        disp_state.style.backgroundColor = isGood ? 'rgb(205 255 196 / 56%)' : 'rgb(255 203 203 / 56%)';
+        disp_state.style.display = message || returnVal == false ? 'flex' : 'none';
+        disp_state.innerText = message ? message : disp_state.innerText;
+        break;
+      };
     };
     return isGood || message == '' ? true : returnVal;
   };
