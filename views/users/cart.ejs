@@ -106,7 +106,15 @@
 
 <script>
   function deleteFromCart(PID, deletable) {
-    updateProductQuantity(PID, 0, true, deletable);
+    Swal.fire({
+        title: 'Delete product ?',
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonText: 'Delete',
+      })
+      .then(result => {
+        if (result?.isConfirmed) updateProductQuantity(PID, 0, true, deletable);
+      });
   };
   const updateProductQuantity = (PID, quantityToSet, isDeleteFromCart, deletable) => {
 

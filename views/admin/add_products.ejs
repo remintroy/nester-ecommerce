@@ -57,66 +57,257 @@
           </select>
         </div>
       </div>
-      <!-- 
-            <div class="img-input-cont">
-                <div class="card mb-3">
-                    <img class="card-img-top" src="/product_images/Xa3aTKovaH_bFJ7OxS091.jpg" alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Main image *</h5>
-                        <p class="card-text"><small class="text-muted">Uploaded</small></p>
-                    </div>
-                </div>
-                <div class="card mb-3">
-                    <img class="card-img-top" src="/product_images/Xa3aTKovaH_bFJ7OxS091.jpg" alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Required *</h5>
-                        <p class="card-text"><small class="text-muted">Uploaded</small></p>
-                    </div>
-                </div>
-                <div class="card mb-3">
-                    <img class="card-img-top" src="/product_images/Xa3aTKovaH_bFJ7OxS091.jpg" alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Required *</h5>
-                        <p class="card-text"><small class="text-muted">Uploaded</small></p>
-                    </div>
-                </div>
-                <div class="card mb-3">
-                    <img class="card-img-top" src="/product_images/Xa3aTKovaH_bFJ7OxS091.jpg" alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Required *</h5>
-                        <p class="card-text"><small class="text-muted">Uploaded</small></p>
-                        <button class="btn btn-primary">Edit</button>
-                    </div>
-                </div>
-            </div> -->
 
       <div class="input-cont horz">
-        <div class="input-cont">
-          <label for="imgA">Main Image of product * <span></span></label>
-          <img id="imgA_DISP" src="" alt="">
 
-          <input type="file" accept="image/jpeg" name="imgA" id="imgA">
+        <div class="input-cont img card">
+          <% let id = 'imgA_DISP'; let idA = 'imgA';%>
+          <div class="card-header">
+            <label for="<%=idA%>">Main display image <span></span></label>
+          </div>
+          <div class="card-body d-flex justify-content-between">
+            <div class="img-from-cont">
+              <img id="<%=id%>" src="" class="img-cont" alt="">
+              <span class="choose">Select image</span>
+            </div>
+            <div class="edit-action-cont ml-3">
+              <p class="mb-0">Tools</p>
+              <div class="icons">
+                <button class="editAction" disabled onclick="window['<%=id%>'].setDragMode('move');">
+                  <img src="/icn/move.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].setDragMode('crop');">
+                  <img src="/icn/plus.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].move(0,-10)">
+                  <img src="/icn/up.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].move(0,10)">
+                  <img src="/icn/down.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].move(-10,0)">
+                  <img src="/icn/left.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].move(10,0)">
+                  <img src="/icn/right.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].rotate(-45)">
+                  <img src="/icn/rotate-left.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].rotate(45)">
+                  <img src="/icn/rotate-right.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="flipImageXA(this,'<%=id%>')">
+                  <img src="/icn/horz-flip.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="flipImageYA(this,'<%=id%>')">
+                  <img src="/icn/vert-flip.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].zoom(0.1)">
+                  <img src="/icn/zoom-in.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].zoom(-0.1)">
+                  <img src="/icn/zoom-out.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].reset()">
+                  <img src="/icn/reset.svg" aria-disabled="true" alt="">
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-primary rounded ml-0" onclick="cropperJS('<%=id%>',this, 'img1')" disabled>Edit image</button>
+            <button class="btn btn-primary rounded" onclick="selectImage('<%=id%>',this, 'img1')">Select image</button>
+            <input type="file" accept="image/jpeg" name="<%=idA%>" id="<%=idA%>" hidden>
+          </div>
         </div>
-        <div class="input-cont">
-          <label for="imgB">Second image of product * <span></span></label>
-          <img id="imgB_DISP" src="" alt="">
 
-          <input type="file" accept="image/jpeg" name="imgB" id="imgB">
+        <div class="input-cont img card">
+          <% id = 'imgB_DISP'; idA='imgB'%>
+          <div class="card-header">
+            <label for="<%=idA%>">Feature image <span></span></label>
+          </div>
+          <div class="card-body d-flex justify-content-between">
+            <div class="img-from-cont">
+              <img id="<%=id%>" src="" class="img-cont" alt="">
+              <span class="choose">Select image</span>
+            </div>
+            <div class="edit-action-cont ml-3">
+              <p class="mb-0">Tools</p>
+              <div class="icons">
+                <button class="editAction" disabled onclick="window['<%=id%>'].setDragMode('move');">
+                  <img src="/icn/move.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].setDragMode('crop');">
+                  <img src="/icn/plus.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].move(0,-10)">
+                  <img src="/icn/up.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].move(0,10)">
+                  <img src="/icn/down.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].move(-10,0)">
+                  <img src="/icn/left.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].move(10,0)">
+                  <img src="/icn/right.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].rotate(-45)">
+                  <img src="/icn/rotate-left.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].rotate(45)">
+                  <img src="/icn/rotate-right.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="flipImageXA(this,'<%=id%>')">
+                  <img src="/icn/horz-flip.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="flipImageYA(this,'<%=id%>')">
+                  <img src="/icn/vert-flip.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].zoom(0.1)">
+                  <img src="/icn/zoom-in.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].zoom(-0.1)">
+                  <img src="/icn/zoom-out.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].reset()">
+                  <img src="/icn/reset.svg" aria-disabled="true" alt="">
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-primary rounded ml-0" onclick="cropperJS('<%=id%>',this, 'img2')" disabled>Edit image</button>
+            <button class="btn btn-primary rounded" onclick="selectImage('<%=id%>',this, 'img2')">Select image</button>
+            <input type="file" accept="image/jpeg" name="<%=idA%>" id="<%=idA%>" hidden>
+          </div>
         </div>
-      </div>
-      <div class="input-cont horz">
-        <div class="input-cont">
-          <label for="imgC">Third image of product * <span></span></label>
-          <img id="imgC_DISP" src="" alt="">
 
-          <input type="file" accept="image/jpeg" name="imgC" id="imgC">
+        <div class="input-cont img card">
+          <% id = 'imgC_DISP'; idA='imgC'%>
+          <div class="card-header">
+            <label for="<%=idA%>">Additional image<span></span></label>
+          </div>
+          <div class="card-body d-flex justify-content-between">
+            <div class="img-from-cont">
+              <img id="<%=id%>" src="" class="img-cont" alt="">
+              <span class="choose">Select image</span>
+            </div>
+            <div class="edit-action-cont ml-3">
+              <p class="mb-0">Tools</p>
+              <div class="icons">
+                <button class="editAction" disabled onclick="window['<%=id%>'].setDragMode('move');">
+                  <img src="/icn/move.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].setDragMode('crop');">
+                  <img src="/icn/plus.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].move(0,-10)">
+                  <img src="/icn/up.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].move(0,10)">
+                  <img src="/icn/down.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].move(-10,0)">
+                  <img src="/icn/left.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].move(10,0)">
+                  <img src="/icn/right.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].rotate(-45)">
+                  <img src="/icn/rotate-left.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].rotate(45)">
+                  <img src="/icn/rotate-right.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="flipImageXA(this,'<%=id%>')">
+                  <img src="/icn/horz-flip.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="flipImageYA(this,'<%=id%>')">
+                  <img src="/icn/vert-flip.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].zoom(0.1)">
+                  <img src="/icn/zoom-in.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].zoom(-0.1)">
+                  <img src="/icn/zoom-out.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].reset()">
+                  <img src="/icn/reset.svg" aria-disabled="true" alt="">
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-primary rounded ml-0" onclick="cropperJS('<%=id%>',this, 'img3')" disabled>Edit image</button>
+            <button class="btn btn-primary rounded" onclick="selectImage('<%=id%>',this, 'img3')">Select image</button>
+            <input type="file" accept="image/jpeg" name="<%=idA%>" id="<%=idA%>" hidden>
+          </div>
         </div>
-        <div class="input-cont">
-          <label for="imgD">Fourth image of product * <span></span></label>
-          <img id="imgD_DISP" src="" alt="">
 
-          <input type="file" accept="image/jpeg" name="imgD" id="imgD">
+        <div class="input-cont img card">
+          <% id = 'imgD_DISP'; idA='imgD'%>
+          <div class="card-header">
+            <label for="<%=idA%>">Additional image 2<span></span></label>
+          </div>
+          <div class="card-body d-flex justify-content-between">
+            <div class="img-from-cont">
+              <img id="<%=id%>" src="" class="img-cont" alt="">
+              <span class="choose">Select image</span>
+            </div>
+            <div class="edit-action-cont ml-3">
+              <p class="mb-0">Tools</p>
+              <div class="icons">
+                <button class="editAction" disabled onclick="window['<%=id%>'].setDragMode('move');">
+                  <img src="/icn/move.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].setDragMode('crop');">
+                  <img src="/icn/plus.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].move(0,-10)">
+                  <img src="/icn/up.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].move(0,10)">
+                  <img src="/icn/down.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].move(-10,0)">
+                  <img src="/icn/left.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].move(10,0)">
+                  <img src="/icn/right.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].rotate(-45)">
+                  <img src="/icn/rotate-left.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].rotate(45)">
+                  <img src="/icn/rotate-right.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="flipImageXA(this,'<%=id%>')">
+                  <img src="/icn/horz-flip.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="flipImageYA(this,'<%=id%>')">
+                  <img src="/icn/vert-flip.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].zoom(0.1)">
+                  <img src="/icn/zoom-in.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].zoom(-0.1)">
+                  <img src="/icn/zoom-out.svg" aria-disabled="true" alt="">
+                </button>
+                <button class="editAction" disabled onclick="window['<%=id%>'].reset()">
+                  <img src="/icn/reset.svg" aria-disabled="true" alt="">
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-primary rounded ml-0" onclick="cropperJS('<%=id%>',this, 'img4')" disabled>Edit image</button>
+            <button class="btn btn-primary rounded" onclick="selectImage('<%=id%>',this, 'img4')">Select image</button>
+            <input type="file" accept="image/jpeg" name="<%=idA%>" id="<%=idA%>" hidden>
+          </div>
         </div>
+
       </div>
 
       <div id="disp_state" style="
@@ -131,306 +322,7 @@
     </div>
   </div>
 
-  <script>
-    const imgFiles = {};
-
-    // add event listners to each input and saves the result in imgFiles object
-    const attachEvenListners = () => {
-      const DOCS_TO_DISPLAY_IMG_IDS = ['imgA_DISP', 'imgB_DISP', 'imgC_DISP', 'imgD_DISP'];
-      const IDS_OF_FILE_INPUT = ['imgA', 'imgB', 'imgC', 'imgD'];
-      IDS_OF_FILE_INPUT.forEach((id, index, array) => {
-        document.getElementById(id).addEventListener('change', (e) => {
-          imgFiles['img' + (index + 1)] = e.target.files;
-          document.getElementById(DOCS_TO_DISPLAY_IMG_IDS[index]).src = URL.createObjectURL(e.target.files[0]);
-          document.getElementById(DOCS_TO_DISPLAY_IMG_IDS[index]).classList.add('changed');
-        });
-      });
-    };
-    attachEvenListners();
-
-    const xmlRq = new XMLHttpRequest();
-
-    function updateUserData() {
-
-      const provider = '';
-      const UID = ''
-
-      const title = document.getElementById("titleInput");
-      const description = document.getElementById("descriptionInput");
-      const price = document.getElementById("priceInput");
-      const quantity = document.getElementById("quantityInput");
-      const offer = document.getElementById('offerInput');
-      const category = document.getElementById('categoryInput');
-      const imgA = document.getElementById('imgA');
-      const imgB = document.getElementById('imgB');
-      const imgC = document.getElementById('imgC');
-      const imgD = document.getElementById('imgD');
-
-      const errorTitle = title.parentElement.querySelector("span");
-      const errorDescription = description.parentElement.querySelector("span");
-      const errorPrice = price.parentElement.querySelector("span");
-      const errorQuantity = quantity.parentElement.querySelector("span");
-      const errorOffer = offer.parentElement.querySelector("span");
-      const errorCategory = category.parentElement.querySelector("span");
-      const errorimgA = imgA.parentElement.querySelector("span");
-      const errorimgB = imgB.parentElement.querySelector("span");
-      const errorimgC = imgC.parentElement.querySelector("span");
-      const errorimgD = imgD.parentElement.querySelector("span");
-
-      errorTitle.innerHTML = '';
-      errorDescription.innerHTML = '';
-      errorPrice.innerHTML = '';
-      errorQuantity.innerHTML = '';
-      errorOffer.innerHTML = '';
-      errorCategory.innerHTML = '';
-      errorimgA.innerHTML = '';
-      errorimgB.innerHTML = '';
-      errorimgC.innerHTML = '';
-      errorimgD.innerHTML = '';
-
-      const disp = ({
-        message,
-        isGood,
-        returnVal,
-        errI
-      }) => {
-        switch (errI) {
-          case 1: {
-            errorTitle.innerText = message;
-            break;
-          };
-        case 2: {
-          errorDescription.innerText = message;
-          break;
-        };
-        case 3: {
-          errorPrice.innerText = message;
-          break;
-        };
-        case 4: {
-          errorQuantity.innerText = message;
-          break;
-        };
-        case 5: {
-          errorOffer.innerText = message;
-          break;
-        };
-        case 6: {
-          errorCategory.innerText = message;
-          break;
-        };
-        case 7: {
-          errorimgA.innerText = message;
-          break;
-        };
-        case 8: {
-          errorimgB.innerText = message;
-          break;
-        };
-        case 9: {
-          errorimgC.innerText = message;
-          break;
-        };
-        case 10: {
-          errorimgD.innerText = message;
-          break;
-        };
-        case 11: {
-          let disp_state = document.getElementById("disp_state").style.display = 'none';
-          break;
-        }
-        default: {
-          let disp_state = document.getElementById("disp_state");
-          disp_state.style.backgroundColor = isGood ? 'rgb(205 255 196 / 56%)' : 'rgb(255 203 203 / 56%)';
-          disp_state.style.display = message || returnVal == false ? 'flex' : 'none';
-          disp_state.innerText = message ? message : disp_state.innerText;
-          break;
-        };
-        };
-        return isGood || message == '' ? true : returnVal;
-      };
-
-      disp({
-        errI: 11
-      });
-
-      let thereIsNoError = true;
-
-      let imgChecker = 0;
-
-      imgChecker = imgFiles?.img1?.length > 0 ?
-        ++imgChecker :
-        disp({
-          message: 'This image is required',
-          returnVal: imgChecker,
-          errI: 7
-        });
-      imgChecker = imgFiles?.img2?.length > 0 ?
-        ++imgChecker :
-        disp({
-          message: 'This image is required',
-          returnVal: imgChecker,
-          errI: 8
-        });
-      imgChecker = imgFiles?.img3?.length > 0 ?
-        ++imgChecker :
-        disp({
-          message: 'This image is required',
-          returnVal: imgChecker,
-          errI: 9
-        });
-      imgChecker = imgFiles?.img4?.length > 0 ?
-        ++imgChecker :
-        disp({
-          message: 'This image is required',
-          returnVal: imgChecker,
-          errI: 10
-        });
-
-      thereIsNoError = imgChecker === 4 ? thereIsNoError : false;
-
-
-      thereIsNoError = category.value.length > 0 ?
-        disp({
-          returnVal: thereIsNoError
-        }) :
-        disp({
-          message: 'Select catogery',
-          returnVal: false,
-          errI: 6
-        });
-
-      thereIsNoError = isNaN(offer.value) && offer.value.length > 0 ?
-        disp({
-          message: 'Enter a valid Discount amount',
-          returnVal: false,
-          errI: 5
-        }) :
-        disp({
-          returnVal: thereIsNoError
-        });
-
-      thereIsNoError = isNaN(quantity.value) || quantity.value.length == 0 ?
-        disp({
-          message: 'Enter a valid Quantity amount',
-          returnVal: false,
-          errI: 4
-        }) :
-        disp({
-          returnVal: thereIsNoError
-        });
-
-      thereIsNoError = isNaN(price.value) || price.value.length == 0 ?
-        disp({
-          message: 'Enter a valid Price amount',
-          returnVal: false,
-          errI: 3
-        }) :
-        disp({
-          returnVal: thereIsNoError
-        });
-
-      thereIsNoError = description.value.length < 20 ?
-        disp({
-          message: `Description must contain ${20 - description.value.length} more characters`,
-          returnVal: false,
-          errI: 2
-        }) :
-        disp({
-          returnVal: thereIsNoError
-        });
-
-      thereIsNoError = title.value.length < 10 ?
-        disp({
-          message: `Title must contain ${10 - title.value.length} more characters`,
-          returnVal: false,
-          errI: 1
-        }) :
-        disp({
-          returnVal: thereIsNoError
-        });
-
-      if (thereIsNoError) {
-
-        const formData = new FormData();
-
-        const data = {
-          title: title.value ? title.value : null,
-          description: description.value ? description.value : null,
-          price: price.value ? price.value : null,
-          quantity: quantity.value ? quantity.value : null,
-          offer: offer.value ? offer.value : null,
-          category: category.value ? category.value : null
-        };
-
-        formData.append('img1', imgFiles.img1[0]);
-        formData.append('img2', imgFiles.img2[0]);
-        formData.append('img3', imgFiles.img3[0]);
-        formData.append('img4', imgFiles.img4[0]);
-        formData.append("data", JSON.stringify(data));
-
-        xmlRq.abort();
-        xmlRq.open('POST', '/admin_panel/products/add_product');
-
-        xmlRq.upload.addEventListener('progress', ({
-          loaded,
-          total
-        }) => {
-
-          let status = Math.floor((loaded / total) * 100);
-
-          disp({
-            message: `Uploading ${status}%`,
-            isGood: true
-          });
-          if (status == 100) {
-            disp({
-              message: `Processing...`,
-              isGood: true
-            });
-          };
-        });
-
-        xmlRq.onreadystatechange = (e) => {
-          if (xmlRq.readyState === 4) {
-            if (xmlRq.status == 200) {
-              let res = JSON.parse(xmlRq.response);
-
-              disp({
-                message: res.message,
-                isGood: res.status == 'error' ? false : true
-              });
-
-              if (res.status == 'good') {
-                if (res?.action) {
-                  window.location.href = action;
-                } else {
-                  window.location.reload();
-                };
-              };
-
-            } else {
-              disp({
-                message: 'Error connecting to server'
-              });
-            };
-          };
-        };
-
-
-        xmlRq.addEventListener('error', (error) => {
-          disp({
-            message: "Error connecting to server"
-          });
-          console.error(error);
-        });
-
-        xmlRq.send(formData);
-
-      };
-    };
-  </script>
+  <script src="/js/addProducts.js"></script>
 
 
 </div>
-<!-- /.container-fluid -->

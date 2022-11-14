@@ -73,6 +73,8 @@ app.get(['/dashboard', '/dashboard.html'], auth.mustLoginAsUser, users.dashboard
 app.get('/dashboard/orders', auth.mustLoginAsUser, users.ordersPg);
 // address page
 app.get('/dashboard/address', auth.mustLoginAsUser, users.addressPg);
+// account page 
+app.get('/dashboard/account', auth.mustLoginAsUser, users.accountPg);
 // checkout page
 app.get(['/checkout', '/checkout.html'], auth.mustLoginAsUser, users.checkout);
 

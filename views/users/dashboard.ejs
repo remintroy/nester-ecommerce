@@ -1,7 +1,10 @@
 <main class="main">
   <div class="page-header text-center" style="background-image: url('/assets/images/page-header-bg.jpg')">
     <div class="container">
-      <h1 class="page-title">My Account<span>Shop</span></h1>
+      <h1 class="page-title animate__animated animate__fadeIn" style="text-transform: capitalize;">
+        <%= locals.currentPage %>
+        <span>Shop</span>
+      </h1>
     </div><!-- End .container -->
   </div><!-- End .page-header -->
   <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
@@ -28,8 +31,8 @@
               <li class="nav-item " onclick="window.location.href='/dashboard/address'">
                 <a class="nav-link <%=locals?.currentPage=='address'?'active':''%>" id="tab-address-link" data-toggle="tab" href="#tab-address" role="tab" aria-controls="tab-address" aria-selected="false">Adresses</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#tab-account" role="tab" aria-controls="tab-account" aria-selected="false">Account Details</a>
+              <li class="nav-item" onclick="window.location.href='/dashboard/account'">
+                <a class="nav-link <%=locals?.currentPage=='account'?'active':''%>" id="tab-account-link" data-toggle="tab" href="#tab-account" role="tab" aria-controls="tab-account" aria-selected="false">Account Details</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" onclick="logout()" href="#">Sign Out</a>
@@ -39,6 +42,7 @@
 
           <div class="col-md-8 col-lg-9">
             <div class="tab-content">
+
               <div class="tab-pane fade  <%=locals?.currentPage=='dashboard'?'show active':''%>" id="tab-dashboard" role="tabpanel" aria-labelledby="tab-dashboard-link">
                 <p>Hello <span class="font-weight-normal text-dark">User</span> (not <span class="font-weight-normal text-dark">User</span>? <a href="#">Log out</a>)
                   <br>
@@ -48,12 +52,8 @@
                 </p>
               </div><!-- .End .tab-pane -->
 
-
-              <div class="tab-pane fade <%=locals?.currentPage=='orders'?'active show':''%>" id="tab-orders" role="tabpanel" aria-labelledby="tab-orders-link">
-
-
+              <div class="tab-pane  animate__animated animate__fadeIn fade <%=locals?.currentPage=='orders'?'active show':''%>" id="tab-orders" role="tabpanel" aria-labelledby="tab-orders-link">
                 <% locals?.orders?.forEach((e,i)=>{ %>
-
                 <div class="border rounded mt-2 p-5">
                   <div class="row">
                     <div class="col-2">
@@ -68,7 +68,8 @@
                       </h6>
                       <p>Order ID : <%= e?.orders?.orderID %></p>
                       <p> ₹ <%= e?.orders?.products?.price %> &times; <%= e?.orders?.products?.quantity %> pcs = ₹ <%=  e?.orders?.products?.total %> <br>
-                        <span class="order_status_info" style="text-transform: capitalize;">Status : <%= e?.orders?.products?.status %></span> <br>
+                        <span class="order_status_info" style="text-transform: capitalize;">Order Status : <%= e?.orders?.products?.status %></span> <br>
+                        <span class="order_status_info" style="text-transform: capitalize;">Payment Status : <%= e?.orders?.products?.paymentStatus %></span> <br>
                         <span style="text-transform: capitalize ;">
                           <%=e?.orders?.address?.houseNumber?e?.orders?.address?.houseNumber:''%>
                           <%=e?.orders?.address?.town?', '+e?.orders?.address?.town:''%>
@@ -99,8 +100,7 @@
                     SHOP</span><i class="icon-long-arrow-right"></i></a>
               </div><!-- .End .tab-pane -->
 
-
-              <div class="tab-pane fade <%=locals?.currentPage=='address'?'active show':''%>" id="tab-address" role="tabpanel" aria-labelledby="tab-address-link">
+              <div class="tab-pane  animate__animated animate__fadeIn fade <%=locals?.currentPage=='address'?'active show':''%>" id="tab-address" role="tabpanel" aria-labelledby="tab-address-link">
                 <p>The following addresses will be used on the checkout page by default.</p>
 
                 <div class="row">
@@ -110,7 +110,7 @@
                   <div class="col-lg-6">
                     <div class="card card-dashboard">
                       <div class="card-body">
-                        <h3 class="card-title" style="text-transform: capitalize;"><%=e.type%></h3>
+                        <h3 class="card-title" style="text-transform: capitalize;"><%=e.name%></h3>
                         <!-- End .card-title -->
 
                         <p><%= e?.name %> <br>
@@ -130,28 +130,28 @@
                 </div><!-- End .row -->
               </div><!-- .End .tab-pane -->
 
-              <div class="tab-pane fade" id="tab-account" role="tabpanel" aria-labelledby="tab-account-link">
+              <div class="tab-pane  animate__animated animate__fadeIn fade <%=locals?.currentPage=='account'?'active show':''%>" id="tab-account" role="tabpanel" aria-labelledby="tab-account-link">
                 <form action="#">
                   <div class="row">
                     <div class="col-sm-6">
                       <label>First Name *</label>
-                      <input type="text" class="form-control" required>
+                      <input type="text" class="form-control" value="<%= locals?.user?.name %>" required>
                     </div><!-- End .col-sm-6 -->
 
                     <div class="col-sm-6">
                       <label>Last Name *</label>
-                      <input type="text" class="form-control" required>
+                      <input type="text" class="form-control" value="<%= locals?.user?.name %>" required>
                     </div><!-- End .col-sm-6 -->
                   </div><!-- End .row -->
 
                   <label>Display Name *</label>
-                  <input type="text" class="form-control" required>
+                  <input type="text" class="form-control" value="<%= locals?.user?.displayName %>" required>
                   <small class="form-text">This will be how your name will be displayed in
                     the account
                     section and in reviews</small>
 
                   <label>Email address *</label>
-                  <input type="email" class="form-control" required>
+                  <input type="email" class="form-control" value="<%= locals?.user?.email %>" required>
 
                   <label>Current password (leave blank to leave unchanged)</label>
                   <input type="password" class="form-control">
@@ -168,6 +168,7 @@
                   </button>
                 </form>
               </div><!-- .End .tab-pane -->
+
             </div>
           </div><!-- End .col-lg-9 -->
         </div><!-- End .row -->

@@ -1,88 +1,167 @@
+body{
+    font-size: small;
+}
 .card {
-    .card-body {
-        .input-cont {
-            max-width: 100%;
-            padding: 10px;
-            width: 100%;
+  .card-body {
+    .input-cont {
+      max-width: 100%;
+      padding: 10px;
+      width: 100%;
 
-            input,
-            select,
-            textarea {
-                width: 100%;
-                padding: 10px 15px;
-                border-radius: 5px;
-                border: 1px solid rgb(156, 156, 156);
-            }
+      --border: #c4c4c4;
 
-            label {
-                position: relative;
-                width: 100%;
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 10px 15px;
+        border-radius: 5px;
+        border: 1px solid var(--border);
+      }
 
-                span {
-                    position: absolute;
-                    right: 0;
-                    color: red;
+      label {
+        position: relative;
+        width: 100%;
+
+        span {
+          position: absolute;
+          right: 0;
+          color: red;
+        }
+      }
+
+      img {
+        width: 100%;
+        object-fit: scale-down;
+        border: 1px dashed #d3d3d3;
+        max-height: 300px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+      }
+      img.changed {
+        border: 1px dashed var(--border);
+      }
+    }
+
+    .input-cont.horz {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 20px;
+
+      .input-cont {
+        padding: 0;
+        height: 100%;
+
+        .img-cont {
+          border: 1px dashed var(--border);
+          padding: 5px;
+          border-radius: 5px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 350px;
+          width: 350px;
+          background-color: rgb(224, 224, 224);
+        }
+
+        .edit-action-cont{
+            min-width: 100px;
+            border-radius: 5px;
+            border: 1px solid var(--border);
+            box-sizing: border-box;
+            padding: 5px;
+            height: 350px;
+            text-align: center;
+            .icons{
+                margin-top: 0;
+                display: grid;
+                grid-template-columns: auto auto;
+                justify-content: center;
+                column-gap: 10px;
+                
+                button{
+                    background-color: transparent;
+                    padding: 0;
+                    margin: 0;
+                    border: none;
+                    width: min-content;
+                    height: min-content;
+                }
+                button:disabled{
+                    cursor: default;
+                    img{
+                        filter: opacity(50%);
+                    }
+                }
+                img{
+                    width: 30px;
+                    height: 30px;
+                    object-fit: scale-down;
+                    background-color: rgb(205, 205, 255);
+                    padding: 5px;
+                    margin-top: 5px;
+                    border: none;
                 }
             }
-
-            img{
-                width: 100%;
-                object-fit: scale-down;
-                border:1px dashed #d3d3d3;
-                max-height: 300px;
-                margin-bottom: 10px;
-                border-radius: 5px;
-            }
-            img.changed{
-                border:1px dashed gray;
-            }
         }
-
-        .input-cont.horz {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-
-            .input-cont {
-                padding: 0;
-            }
-        }
-
-
 
         button {
-            padding: 10px 40px;
-            margin-left: 10px;
-            margin-top: 20px;
-            color: white;
-            cursor: pointer;
-            background-color: rgb(101, 101, 101);
+          font-size: 14px;
         }
-
-        .input-img {
-            box-sizing: border-box;
-            padding: 10px 15px;
-            margin: 10px;
-            border: 1px solid #9c9c9c;
-        }
-        
-        .img-input-cont{
-            box-sizing: border-box;
-            padding: 10px;
-            position: relative;
-            display: grid;
-            grid-template-columns: auto auto auto auto;
-            gap: 10px;
-        }
-
-        @media screen and (max-width:1024px) {
-            .input-cont.horz {
-                flex-direction: column;
-            }
-        }
+      }
     }
-}
 
+    .img-from-cont{
+        position: relative;
+    }
+    .choose{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        font-size: larger;
+        color: rgb(30, 30, 30);
+    }
+
+    .input-cont.horz .input-cont.img {
+      border: 1px solid var(--border);
+      box-sizing: border-box;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 40px;
+      margin-left: 10px;
+      margin-top: 20px;
+      color: white;
+      cursor: pointer;
+      background-color: rgb(101, 101, 101);
+    }
+
+    .input-img {
+      box-sizing: border-box;
+      padding: 10px 15px;
+      margin: 10px;
+      border: 1px solid #9c9c9c;
+    }
+
+    .img-input-cont {
+      box-sizing: border-box;
+      padding: 10px;
+      position: relative;
+      display: grid;
+      grid-template-columns: auto auto auto auto;
+      gap: 10px;
+    }
+
+    @media screen and (max-width: 1324px) {
+      .input-cont.horz {
+        grid-template-columns: 1fr;
+      }
+    }
+  }
+}
 
 // .tabe_editable_TD {
 //     text-transform: capitalize;
@@ -101,67 +180,66 @@
 // }
 
 .tabe_editable_TD {
+  position: relative;
+  text-transform: capitalize;
+  padding: 0 !important;
+  height: auto;
+  position: relative;
+  min-width: 100px;
+  width: min-content;
+
+  input {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    position: absolute;
+    outline: none;
+    padding: 5px 15px;
+    height: 100%;
+  }
+
+  .width-helper {
     position: relative;
-    text-transform: capitalize;
-    padding: 0 !important;
-    height: auto;
-    position: relative;
-    min-width: 100px;
-    width: min-content;
-
-    input {
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        width: 100%;
-        position: absolute;
-        outline: none;
-        padding: 5px 15px;
-        height: 100%;
-    }
-
-    .width-helper{
-        position: relative;
-        height: 100%;
-        width: 100%;
-        box-sizing: border-box;
-        padding: 5px 20px;
-        color:transparent
-    }
-
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px 20px;
+    color: transparent;
+  }
 }
 
-.table_for_orders{
-    tbody{
-        tr{
-            position: relative;
-            td.status{
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: white;
-            }
-            td.status.pending{
-                background-color: #edae77;
-            }
-            td.status.success{
-                background-color: #9cdaa5;
-            }
-            td.status.processing{
-                background-color: #aab6ea;
-            }
-            td.status.shipped{
-                background-color: #f698ff;
-            }
-            td.status.cancelled{
-                background-color: #ff6666;
-            }
-            td.status.err{
-                background-color: transparent;
-                border: 1px solid red;
-                color: red;
-            }
-        }
+.table_for_orders {
+  tbody {
+    tr {
+      position: relative;
+      td.status {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+      }
+      td.status.pending {
+        background-color: #edae77;
+      }
+      td.status.success {
+        background-color: #9cdaa5;
+      }
+      td.status.processing {
+        background-color: #aab6ea;
+      }
+      td.status.shipped {
+        background-color: #f698ff;
+      }
+      td.status.cancelled {
+        background-color: #ff6666;
+      }
+      td.status.err {
+        background-color: transparent;
+        border: 1px solid red;
+        color: red;
+      }
     }
+  }
 }

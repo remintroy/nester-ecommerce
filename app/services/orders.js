@@ -168,7 +168,8 @@ const addTODBOnline = (UID, addressFrom) => {
             // check for products existence
             if (products.length == 0) throw 'Nothing to checkout';
             // sets evey product status
-            products?.map(e => e['status'] = 'paid');
+            products?.map(e => e['paymentStatus'] = 'paid');
+            products?.map(e => e['status'] = 'orderd');
 
             try {
                 // 
@@ -203,7 +204,7 @@ const addTODBOnline = (UID, addressFrom) => {
                                     products: products,
                                     address: addressFrom,
                                     paymentType: 'online',
-                                    status: 'paid'
+                                    paymentStatus: 'paid'
                                 }
                             ]
                         }
@@ -219,7 +220,7 @@ const addTODBOnline = (UID, addressFrom) => {
                                 products: products,
                                 address: addressFrom,
                                 paymentType: 'online',
-                                status: 'paid'
+                                paymentStatus: 'paid'
                             }
                         ]
                     });
@@ -485,7 +486,7 @@ export const getAllWithFromattedDate = () => {
                 keys.forEach((k, j, array) => {
                     output[keys[j]] = e[keys[j]];
                     if (keys[j] == 'orders') output[keys[j]].dateOFOrder = util.dataToReadable(e[keys[j]].dateOFOrder);
-                    if (keys[j] == 'user') output[keys[j]][0].creationTime = util.dataToReadable(e[keys[j]][0].creationTime);
+                    if (keys[j] == 'user') output[keys[j]][0].creationTime = util.dataToReadable(e[keys[j]][0]?.creationTime);
                     if (keys[j] == 'user') output[keys[j]][0].lastLogin = util.dataToReadable(e[keys[j]][0].lastLogin);
                     if (keys[j] == 'orders') output[keys[j]].products.forEach((ee, ii, aa) => {
                         output[keys[j]].products[ii].creationTime = util.dataToReadable(e[keys[j]].products[ii].creationTime);

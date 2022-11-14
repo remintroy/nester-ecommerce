@@ -1,7 +1,12 @@
+body {
+  font-size: small;
+}
+
 .card .card-body .input-cont {
   max-width: 100%;
   padding: 10px;
   width: 100%;
+  --border: #c4c4c4;
 }
 .card .card-body .input-cont input,
 .card .card-body .input-cont select,
@@ -9,7 +14,7 @@
   width: 100%;
   padding: 10px 15px;
   border-radius: 5px;
-  border: 1px solid rgb(156, 156, 156);
+  border: 1px solid var(--border);
 }
 .card .card-body .input-cont label {
   position: relative;
@@ -30,15 +35,92 @@
   border-radius: 5px;
 }
 .card .card-body .input-cont img.changed {
-  border: 1px dashed gray;
+  border: 1px dashed var(--border);
 }
 .card .card-body .input-cont.horz {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
   gap: 20px;
 }
 .card .card-body .input-cont.horz .input-cont {
   padding: 0;
+  height: 100%;
+}
+.card .card-body .input-cont.horz .input-cont .img-cont {
+  border: 1px dashed var(--border);
+  padding: 5px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 350px;
+  width: 350px;
+  background-color: rgb(224, 224, 224);
+}
+.card .card-body .input-cont.horz .input-cont .edit-action-cont {
+  min-width: 100px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  box-sizing: border-box;
+  padding: 5px;
+  height: 350px;
+  text-align: center;
+}
+.card .card-body .input-cont.horz .input-cont .edit-action-cont .icons {
+  margin-top: 0;
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: center;
+  -moz-column-gap: 10px;
+       column-gap: 10px;
+}
+.card .card-body .input-cont.horz .input-cont .edit-action-cont .icons button {
+  background-color: transparent;
+  padding: 0;
+  margin: 0;
+  border: none;
+  width: -webkit-min-content;
+  width: -moz-min-content;
+  width: min-content;
+  height: -webkit-min-content;
+  height: -moz-min-content;
+  height: min-content;
+}
+.card .card-body .input-cont.horz .input-cont .edit-action-cont .icons button:disabled {
+  cursor: default;
+}
+.card .card-body .input-cont.horz .input-cont .edit-action-cont .icons button:disabled img {
+  filter: opacity(50%);
+}
+.card .card-body .input-cont.horz .input-cont .edit-action-cont .icons img {
+  width: 30px;
+  height: 30px;
+  -o-object-fit: scale-down;
+     object-fit: scale-down;
+  background-color: rgb(205, 205, 255);
+  padding: 5px;
+  margin-top: 5px;
+  border: none;
+}
+.card .card-body .input-cont.horz .input-cont button {
+  font-size: 14px;
+}
+.card .card-body .img-from-cont {
+  position: relative;
+}
+.card .card-body .choose {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: larger;
+  color: rgb(30, 30, 30);
+}
+.card .card-body .input-cont.horz .input-cont.img {
+  border: 1px solid var(--border);
+  box-sizing: border-box;
+  border-radius: 5px;
 }
 .card .card-body button {
   padding: 10px 40px;
@@ -62,9 +144,9 @@
   grid-template-columns: auto auto auto auto;
   gap: 10px;
 }
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1324px) {
   .card .card-body .input-cont.horz {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 }
 

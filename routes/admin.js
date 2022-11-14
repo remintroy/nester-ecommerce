@@ -48,6 +48,9 @@ adminApp.get('/orders', admin.ordres);
 // order full data page
 adminApp.get('/orders/:id', admin.ordres);
 
+// test page 
+adminApp.get('/test', admin.test);
+
 // edit user
 // adminApp.get('/user_management/edit_user/:UID', admin.editUser); // this route is disabled due to sequrity
 

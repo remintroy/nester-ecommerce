@@ -370,6 +370,10 @@ export const editUserAPI = async (req, res) => {
     };
 };
 
-export const productHome = async (req, res)=>{
+export const productHome = async (req, res) => {
     res.render('admin/productsHome');
 };
+
+export const test = async (req, res) => {
+    res.render('admin/test');
+}

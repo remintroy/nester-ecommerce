@@ -9,22 +9,22 @@ const razorpay = new Razorpay({
 export const createOrder = (UID, orderID, amount) => {
     return new Promise((resolve, reject) => {
 
+        // order id 
         orderID = (orderID + "").trim();
 
+        //..
         const options = {
             amount: Number(amount) * 100,
             currency: "INR",
             receipt: `RECEIPT_${orderID}`
         };
-
+        //..
         razorpay.orders.create(options, (err, order) => {
             if (err) reject(err);
             resolve(order);
         });
     });
 };
-
-
 export const verifyPurchace = (paymentID, orderID, signature) => {
     const Hmac = crypto.createHmac('sha256', process.env.RAZPRPAY_KEY_SECRET);
     Hmac.update(orderID + "|" + paymentID);
