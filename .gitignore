@@ -4,3 +4,5 @@
 /uploads
 /public/banners
 vs_code.code-workspace
+/keys
+FIREBASE_ADMIN.json
