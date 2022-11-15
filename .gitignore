@@ -1,8 +1,7 @@
 /node_modules
 .env
+/keys
 /public/product_images
 /uploads
 /public/banners
 vs_code.code-workspace
-/keys
-FIREBASE_ADMIN.json
