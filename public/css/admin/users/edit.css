@@ -193,7 +193,7 @@ body {
 .table_for_orders tbody tr td.status.pending {
   background-color: #edae77;
 }
-.table_for_orders tbody tr td.status.success {
+.table_for_orders tbody tr td.status.success, .table_for_orders tbody tr td.status.paid {
   background-color: #9cdaa5;
 }
 .table_for_orders tbody tr td.status.processing {

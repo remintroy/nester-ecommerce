@@ -11,8 +11,8 @@
   </p>
 
   <!-- DataTales Example -->
-  <div class="card shadow mb-4">
-    <div class="card-header py-3">
+  <div class=" mb-4">
+    <div class=" py-3">
       <h6 class="m-0 font-weight-bold text-primary">All users</h6>
     </div>
     <div class="card-body">
@@ -41,7 +41,7 @@
                 <%=order?.orders?.status%>
               </td>
               <td>
-                <%=order?.user[0]?.email?order?.user[0].email:order?.user[0].phone%>
+                <%=order?.user[0]?.email?order?.user[0].email:order?.user[0]?.phone%>
               </td>
               <td>
                 <%=order?.orders?.products?.length%> Items
@@ -55,13 +55,19 @@
               <td>
                 <%=order?.orders?.dateOFOrder%>
               </td>
-              <td style="cursor: pointer; text-align: center; color: white;" class="bg-dark" onclick="window.location.href='/admin_panel/orders/<%=order?.orders?._id%>'">
+              <td style="cursor: pointer; text-align: center; color: white;" class="bg-dark" onclick="window.location.href='/admin_panel/orders/<%=order?.orders?.orderID%>'">
                 view
               </td>
+              <% if(order?.orders?.status=='paid'){%>
+              <td class="status <%=order?.orders?.status%>" style="cursor: pointer;">
+                <%=order?.orders?.status%>
+              </td>
+              <%}else{%>
               <td class="status <%=order?.orders?.status=='cancelled'?'err':'cancelled'%> " style="cursor: pointer;" onclick="cancelOrder('<%=order?.orders?._id%>',this)">
                 <!-- more&nbsp;<i class="fas fa-cog"></i> -->
-                Cancel
+                <%=order?.orders?.status=='cancelled'?'Cancelled':'Cancel'%>
               </td>
+              <%};%>
             </tr>
             <% }); %>
           </tbody>
@@ -92,6 +98,8 @@
           tdBtn.setAttribute('class', 'status err');
         } else {
           td.setAttribute('class', 'status cancelled');
+          td.innerText = 'cancelled';
+          tdBtn.setAttribute('class', 'status err');
         };
       })
       .catch(error => console.log('Error => ', error));

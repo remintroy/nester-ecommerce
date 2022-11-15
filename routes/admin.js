@@ -21,6 +21,8 @@ adminApp.delete('/products/delete_category', auth.mustLoginAsAdminAPI, admin.del
 adminApp.delete('/products/delete_product/', auth.mustLoginAsAdminAPI, admin.deleteProductAPI);
 // api for cancell orders
 adminApp.put('/orders/cancel/', auth.mustLoginAsAdminAPI, admin.cancelOrderAPI);
+// api for update order status
+adminApp.put('/orders/update_status', auth.mustLoginAsAdminAPI, admin.updateStatusOrderAPI);
 
 // auth checker 
 adminApp.use(auth.mustLoginAsAdmin);
@@ -46,7 +48,7 @@ adminApp.get('/products/edit_product/:id', admin.editProduct);
 // all orders
 adminApp.get('/orders', admin.ordres);
 // order full data page
-adminApp.get('/orders/:id', admin.ordres);
+adminApp.get('/orders/:id', admin.ordresFromID);
 
 // test page 
 adminApp.get('/test', admin.test);

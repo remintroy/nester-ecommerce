@@ -7,6 +7,7 @@ import * as address from './address.js';
 import * as pay from './razorpay.js';
 
 const ORDERID_LENGTH = 20;
+const ALL_ORDER_STATUS = ['orderd', 'packed', 'arriving today', 'out for delivery', 'delivered', 'cancelled'];
 
 const createOrderID = async () => {
     let orderID = '';
@@ -38,7 +39,8 @@ const addTODB = (UID, addressFrom, type, save) => {
             // check for products existence
             if (products.length == 0) throw 'Nothing to checkout';
             // sets evey product status
-            products?.map(e => e['status'] = 'pending');
+            products?.map(e => e['paymentStatus'] = 'pending');
+            products?.map(e => e['status'] = 'orderd');
 
             try {
                 // 
@@ -63,7 +65,6 @@ const addTODB = (UID, addressFrom, type, save) => {
                         const saveAddress = await address.save(UID, addressFrom);
                         addressDetails.id = saveAddress._id + "";
                     } catch (error) {
-                        console.log(error) // TODO remove log
                         reject(error); return 0;
                     };
                 };
@@ -77,7 +78,6 @@ const addTODB = (UID, addressFrom, type, save) => {
                         paymentDetails = await pay.createOrder(UID, await createOrderID(), orderTotalAmount);
 
                     } catch (error) {
-                        console.log("ERROR => ", error); // TODO: remove log
                         reject('Error creating order');
                     };
                 } else if (type == 'COD') {
@@ -100,7 +100,8 @@ const addTODB = (UID, addressFrom, type, save) => {
                                         products: products,
                                         address: addressFrom,
                                         paymentType: type,
-                                        status: 'pending'
+                                        status: 'pending',
+                                        paymentStatus: 'pending'
                                     }
                                 ]
                             }
@@ -116,7 +117,9 @@ const addTODB = (UID, addressFrom, type, save) => {
                                     products: products,
                                     address: addressFrom,
                                     paymentType: type,
-                                    status: 'pending'
+                                    status: 'pending',
+                                    paymentType: 'online',
+                                    paymentStatus: 'pending'
                                 }
                             ]
                         });
@@ -465,7 +468,7 @@ export const getAll = () => {
                 },
                 {
                     $project: {
-                        _id: 0
+                        _id: 0,
                     }
                 }
             ]);
@@ -484,11 +487,11 @@ export const getAllWithFromattedDate = () => {
                 const output = {};
                 const keys = Object.keys(e);
                 keys.forEach((k, j, array) => {
-                    output[keys[j]] = e[keys[j]];
-                    if (keys[j] == 'orders') output[keys[j]].dateOFOrder = util.dataToReadable(e[keys[j]].dateOFOrder);
-                    if (keys[j] == 'user') output[keys[j]][0].creationTime = util.dataToReadable(e[keys[j]][0]?.creationTime);
-                    if (keys[j] == 'user') output[keys[j]][0].lastLogin = util.dataToReadable(e[keys[j]][0].lastLogin);
-                    if (keys[j] == 'orders') output[keys[j]].products.forEach((ee, ii, aa) => {
+                    output[k] = e[k];
+                    if (k == 'orders') output[k].dateOFOrder = util.dataToReadable(e[keys[j]].dateOFOrder);
+                    if (k == 'user' && output[k][0]) output[k][0].creationTime = util.dataToReadable(e[keys[j]][0]?.creationTime);
+                    if (k == 'user' && output[k][0]) output[k][0].lastLogin = util.dataToReadable(e[keys[j]][0].lastLogin);
+                    if (k == 'orders') output[k].products.forEach((ee, ii, aa) => {
                         output[keys[j]].products[ii].creationTime = util.dataToReadable(e[keys[j]].products[ii].creationTime);
                         output[keys[j]].products[ii].updated = util.dataToReadable(e[keys[j]].products[ii].updated);
                     });
@@ -501,6 +504,7 @@ export const getAllWithFromattedDate = () => {
         }
     });
 };
+
 export const cancelOrder = (orderID) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -580,14 +584,106 @@ export const getByUIDEach = (UID) => {
         };
     });
 };
+export const getByOrderID = (orderID) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const orderData = await db.orders.aggregate([
+                {
+                    $match: {
+                        'orders.orderID': orderID
+                    }
+                },
+                {
+                    $unwind: '$orders'
+                },
+                {
+                    $match: {
+                        'orders.orderID': orderID
+                    }
+                },
+                {
+                    $lookup: {
+                        localField: 'UID',
+                        foreignField: 'UID',
+                        from: 'users',
+                        as: "user"
+                    }
+                },
+                {
+                    $unwind: '$orders.products'
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        UID: '$UID',
+                        order: '$orders',
+                        user: {
+                            $arrayElemAt: ['$user', 0]
+                        }
+                    }
+                }
+            ]);
+            resolve(orderData);
+        } catch (error) {
+            console.log(error);
+            reject("Error fetching order data from db");
+        };
+    });
+};
+export const updateOrderStatus = (PID, orderID, status) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const productOutput = await products.validatior({ PID: PID }, { PID: true }, 'updateproduct');
+            try {
+
+                // order data to find index and check for existence
+                const existingData = await db.orders.find({ 'orders.orderID': orderID });
+
+                if (existingData.length > 0) {
+
+                    const indexOrder = existingData[0].orders.map(e => e.orderID == (orderID + "").trim()).indexOf(true);
+                    const indexProduct = existingData[0].orders[indexOrder].products.map(e => e.PID == (productOutput.PID + "").trim()).indexOf(true);
+
+                    if (indexOrder == -1) reject('Order not found');
+                    else
+                        if (indexProduct == -1) reject("Order not found");
+                        else {
+
+                            const statusChecker = ALL_ORDER_STATUS.indexOf((status + "").trim().toLowerCase());
+                            if (statusChecker == -1) reject('Invalid status');
+                            else{
+                                const updated = await db.orders.updateOne({ 'orders.orderID': orderID }, {
+                                    $set: {
+                                        [`orders.${indexOrder}.products.${indexProduct}.status`]: ALL_ORDER_STATUS[statusChecker]
+                                    }
+                                });
+                                resolve("Order successfully updated");
+                            };
+                        };
+
+                } else {
+                    reject('Nothing to update');
+                };
+
+                //...
+            } catch (error) {
+                console.log('error => ', error);
+                reject('Error updating order');
+            };
+            //...
+        } catch (error) {
+            reject(error);
+        };
+    })
+};
 
 const test = async () => {
     try {
-        const data = await getByUIDEach('6pxw23gPVG0AlKh3IE6or782V');
+        const data = await getByOrderID('WJWVC3QKbiKDdS3WeyYH');
 
         // data.map(e=>e['status']='pending');
 
-        console.log('Result => ', data[0]);
+        console.log('Result => ', data);
     } catch (error) {
         console.log('TEST Err => ', error);
     };

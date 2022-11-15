@@ -224,11 +224,11 @@ export const save = (UID, address) => {
             try {
                 // result filterd address
                 const addressToSave = {};
-                const keys = Object.keys(address);
+                const keys = Object.keys(addressOutput);
                 keys.forEach(async e => {
-                    if (address[e]) addressToSave[e] = address[e];
-                    if (e == 'country' && address[e]?.length == 2) {
-                        let code = await util.getCountryBycode(address[e]);
+                    if (addressOutput[e]) addressToSave[e] = addressOutput[e];
+                    if (e == 'country' && addressOutput[e]?.length == 2) {
+                        let code = await util.getCountryBycode(addressOutput[e]);
                         addressToSave[e] = code.name;
                     }
                 });

@@ -223,7 +223,7 @@ body{
       td.status.pending {
         background-color: #edae77;
       }
-      td.status.success {
+      td.status.success, td.status.paid {
         background-color: #9cdaa5;
       }
       td.status.processing {

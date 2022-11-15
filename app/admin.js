@@ -236,11 +236,36 @@ export const ordres = async (req, res) => {
         res.render('admin/404');
     };
 };
+export const ordresFromID = async (req, res) => {
+    try {
+        const orderID = req?.params?.id;
+        res.locals.orders = await orders.getByOrderID(orderID);
+        res.locals.currentPage = 'viewOrder';
+        res.locals.currentPageA = 'orders';
+        res.render('admin/viewOrder');
+    } catch (error) {
+        console.log('ALL_ORDERS_PAGE_DB => ', error);
+        res.locals.message = `Can't get order's from db `;
+        res.locals.code = 500;
+        res.render('admin/404');
+    };
+};
 // api for cancel order
 export const cancelOrderAPI = async (req, res) => {
     try {
         const resp = await orders.cancelOrder(req.body.orderID);
-        res.send({ status: "success", message: "Order cancelled" });
+        res.send({ status: "good", message: "Order cancelled" });
+    } catch (error) {
+        res.send({ status: "error", message: error });
+    };
+};
+export const updateStatusOrderAPI = async (req, res) => {
+    try {
+        const PID = req?.body?.PID;
+        const orderID = req?.body?.orderID;
+        const status = req?.body?.status;
+        const resp = await orders.updateOrderStatus(PID, orderID, status);
+        res.send({ status: "good", message: "Order cancelled" });
     } catch (error) {
         res.send({ status: "error", message: error });
     };

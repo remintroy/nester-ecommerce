@@ -196,7 +196,6 @@ export const deleteProduct = (UID, PID) => {
                 };
 
             } catch (error) {
-                console.log(error) // TODO : remove log
                 reject('Oops something went wrong');
             };
         } catch (error) {

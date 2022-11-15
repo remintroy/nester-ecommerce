@@ -108,10 +108,10 @@ export function validatior(data, requiredIn, typeOfValidation) {
         if (offer?.length || offerRequired) {
             if (offer.length == 0) {
                 reject("Offer required"); return 0;
-            } else if (offer < 0) {
+            } else if (offer < 0 || isNaN(Number(offer))) {
                 reject("Enter a valid offer"); return 0;
             } else {
-                output.offer = offer;
+                output.offer = Number(offer);
             };
         };
         // stock validation
@@ -378,7 +378,7 @@ export const editProduct = (body, files) => {
                         description: output.description ? output.description : ExistingData.description,
                         category: output.category ? output.category : ExistingData.category,
                         price: output.price ? output.price : ExistingData?.price ? ExistingData.price : 0,
-                        offer: output.offer ? output.offer < output.price ? output.offer : output.price : ExistingData?.offer ? ExistingData.offer : 0,
+                        offer: output.offer ? Number(output.offer) < Number(output.price) ? output.offer : output.price : ExistingData?.offer ? ExistingData.offer : 0,
                         stock: output.stock ? output.stock : ExistingData?.stock ? ExistingData.stock : 0,
                     }
                 });
