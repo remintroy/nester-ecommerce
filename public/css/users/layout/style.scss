@@ -3,4 +3,12 @@
     bottom: 0;
     z-index: 100;
 }
-
+.inputContainerForUerDataUpdate{
+    label{
+        display: block;
+        span{
+            float:right;
+            color: red;
+        }
+    }
+}

@@ -75,6 +75,16 @@ export const products = db.model("products", new mongoose.Schema({
     description: String,
     category: Array,
     price: Number,
+    views: { type: Number, min: 0 },
+    addedToCart: { type: Number, min: 0 },
+    interactions: Number,
+    reachedCheckout: Number,
+    productsListingViews: Number,
+    impressions: Number,
+    purchased: Number,
+    cancelled: Number,
+    purchaseCompleted: Number,
+    lastPurchased: Date,
     creationTime: {
         type: Date,
         default: new Date()
@@ -111,11 +121,11 @@ export const cart = db.model("cart", new mongoose.Schema({
                 type: Date,
                 default: new Date()
             },
-            status:{
-                type:String,
-                default:'cart'
+            status: {
+                type: String,
+                default: 'cart'
             },
-            orderID:String
+            orderID: String
         }
     ]
 }));
@@ -124,7 +134,7 @@ export const orders = db.model("orders", new mongoose.Schema({
     UID: String,
     orders: [
         {
-            orderID:String,
+            orderID: String,
             products: Array,
             address: Object,
             trackingID: String,
@@ -134,11 +144,15 @@ export const orders = db.model("orders", new mongoose.Schema({
             },
             paymentType: String,
             paymentDate: {
-                type:Date,
-                default:new Date()
+                type: Date,
+                default: new Date()
             },
             paymentError: Object,
             paymentDetails: Object,
+            update: {
+                type: Date,
+                default: new Date()
+            },
             paymentStatus: {
                 type: String,
                 default: 'pending'

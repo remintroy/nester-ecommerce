@@ -1,0 +1,76 @@
+<!-- Custom styles for this page -->
+<link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+  <!-- Page Heading -->
+  <h1 class="h3 mb-2 text-gray-800">All Users</h1>
+  <div class="btn-cont mt-4">
+    <a class="btn btn-inverse-info my-2 <%=locals.currentPage=='users'?'active':'';%>" href="/user_management">All users</a>
+    <a class="btn btn-inverse-info my-2 mx-1 <%=locals.currentPage=='activeUsers'?'active':'';%>" href="/user_management/active_users">Active users</a>
+    <a class="btn btn-inverse-info my-2 mx-0 <%=locals.currentPage=='diabledUsers'?'active':'';%>" href="/user_management/disabled_users">Disabled users</a>
+  </div>
+
+  <div class="table-responsive bg-white p-2 rounded mt-4">
+    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Provider</th>
+          <th>Created</th>
+          <th>Lastlogin</th>
+          <th style="cursor: pointer; text-align: center;">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% users.forEach((user,index,array)=>{ %>
+        <tr>
+          <td> <%=index+1%> </td>
+          <td style="text-transform:capitalize;"> <%=user.name%> </td>
+          <td> <%=user.email%> </td>
+          <td> <%=user.phone%> </td>
+          <td style="text-transform:capitalize;"> <%=user.loginProvider%> </td>
+          <td> <%=user.creationTime%> </td>
+          <td> <%=user.lastLogin%> </td>
+          <td>
+            <div class="form-check form-switch p-0 m-0 d-flex justify-content-center">
+              <input class="form-check-input p-0 m-0" type="checkbox" id="flexSwitchCheckChecked" onclick="changeStateOfUser('<%=user.UID%>',this)" <%if(!user?.blocked){%> checked <%};%>>
+            </div>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+<!-- /.container-fluid -->
+<script>
+  function changeStateOfUser(UID, btn) {
+    fetch('/user_management/edit_user', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          UID: UID ? UID : null,
+          state: !btn.checked ? 'disabled' : 'enable'
+        })
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (!btn.checked) {
+          btn.checked = false;
+        } else {
+          btn.checked = true;
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
+</script>

@@ -1,4 +1,4 @@
-<main class="main">
+<main class="main animate__animated animate__fadeIn">
   <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
     <div class="container">
       <h1 class="page-title">Explore the products for your bike<span>Shop</span></h1>
@@ -45,7 +45,7 @@
 
           <% locals?.products?.forEach((product,index)=>{ %>
 
-          <div class="col-6 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+          <div class="col-6 col-md-4 col-lg-4 col-xl-3 col-xxl-2 mt-1">
             <div class="product">
               <figure class="product-media rounded">
                 <span class="product-label label-new">New</span>
@@ -88,7 +88,7 @@
         </div><!-- End .row -->
 
         <div class="load-more-container text-center">
-          <a href="#" class="btn btn-outline-darker btn-load-more">More Products <i class="icon-refresh"></i></a>
+          <a href="#" class="btn btn-outline btn-load-more">More Products <i class="icon-refresh"></i></a>
         </div><!-- End .load-more-container -->
       </div><!-- End .products -->
 

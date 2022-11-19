@@ -68,7 +68,29 @@
                       </h6>
                       <p>Order ID : <%= e?.orders?.orderID %></p>
                       <p> ₹ <%= e?.orders?.products?.price %> &times; <%= e?.orders?.products?.quantity %> pcs = ₹ <%=  e?.orders?.products?.total %> <br>
-                        <span class="order_status_info" style="text-transform: capitalize;">Order Status : <%= e?.orders?.products?.status %></span> <br>
+                        <span style="text-transform: capitalize;" class="d-flex align-items-center">
+                          Order Status :
+                          <!-- <%= e?.orders?.products?.status %> -->
+                          <% if(e?.orders?.products?.status=='orderd') {%>
+                          <span class="badge badge-warning ml-2 mr-2" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.orders?.products?.update)%>"><%=e?.orders?.products?.status%></span>
+                          <!-- <div class="spinner-grow spinner-grow-sm text-warning"></div> -->
+                          <% }else if(e?.orders?.products?.status=='packed'){ %>
+                          <span class="badge badge-info ml-2 mr-2" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.orders?.products?.update)%>"><%=e?.orders?.products?.status%></span>
+                          <!-- <div class="spinner-grow spinner-grow-sm text-info"></div> -->
+                          <% }else if(e?.orders?.products?.status=='arriving today'){ %>
+                          <span class="badge badge-primary ml-2 mr-2" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.orders?.products?.update)%>"><%=e?.orders?.products?.status%></span>
+                          <!-- <div class="spinner-grow spinner-grow-sm text-primary"></div> -->
+                          <% }else if(e?.orders?.products?.status=='out for delivery'){ %>
+                          <span class="badge badge-secondary ml-2 mr-2" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.orders?.products?.update)%>"><%=e?.orders?.products?.status%></span>
+                          <!-- <div class="spinner-grow spinner-grow-sm text-secondary"></div> -->
+                          <% }else if(e?.orders?.products?.status=='delivered'){ %>
+                          <span class="badge badge-success ml-2 mr-2" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.orders?.products?.update)%>"><%=e?.orders?.products?.status%></span>
+                          <!-- <div class="spinner-grow spinner-grow-sm text-success"></div> -->
+                          <% }else if(e?.orders?.products?.status=='cancelled'){ %>
+                          <span class="badge badge-danger ml-2 mr-2" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.orders?.products?.update)%>"><%=e?.orders?.products?.status%></span>
+                          <!-- <div class="spinner-grow spinner-grow-sm text-danger"></div> -->
+                          <% } %>
+                        </span>
                         <span class="order_status_info" style="text-transform: capitalize;">Payment Status : <%= e?.orders?.products?.paymentStatus %></span> <br>
                         <span style="text-transform: capitalize ;">
                           <%=e?.orders?.address?.houseNumber?e?.orders?.address?.houseNumber:''%>
@@ -84,7 +106,7 @@
                   <div class="mt-3">
                     <button class="btn btn-primary rounded" onclick="window.location.href='/product/<%=e?.orders?.products?.PID%>'">View
                       Product</button>
-                    <% if(e?.orders?.products?.status!="cancelled"){ %>
+                    <% if(e?.orders?.products?.status!="cancelled" && e?.orders?.products?.status!="delivered"){ %>
                     <button class="btn rounded" onclick="cancelOrder('<%=e?.orders?._id%>','<%=e?.orders?.products?.PID%>',this)">Cancel
                       Order</button>
                     <% }; %>
@@ -99,6 +121,77 @@
                 <a href="/shop" class="btn btn-outline-primary-2"><span>GO TO
                     SHOP</span><i class="icon-long-arrow-right"></i></a>
               </div><!-- .End .tab-pane -->
+
+              <!-- The Modal -->
+              <div class="modal fade" id="myModal">
+                <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                  <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                      <h4 class="modal-title">Edit address</h4>
+                      <button type="button" class="close" data-dismiss="modal">×</button>
+                    </div>
+                    <!-- Modal body -->
+                    <div class="modal-body inputContainerForUerDataUpdate">
+                      <div class="container-fluid mt-2">
+                        <p>
+                          <b>Note :</b> A reload is required to reflect the changes across the page
+                        </p> <br>
+
+                        <div class="form-group">
+                          <label for="nameInputAdd">Name : <span></span></label>
+                          <input type="text" class="form-control" id="nameInputAdd">
+                        </div>
+                        <div class="form-group">
+                          <label for="houseNumberAdd">House number / House name : <span></span></label>
+                          <input type="text" class="form-control" id="houseNumberAdd">
+                        </div>
+                        <div class="form-group">
+                          <label for="streetNumberAdd">Street number / Street name : <span></span></label>
+                          <input type="text" class="form-control" id="streetNumberAdd">
+                        </div>
+                        <div class="form-group">
+                          <label for="stateInputAdd">State : <span></span></label>
+                          <input type="text" class="form-control" id="stateInputAdd">
+                        </div>
+                        <div class="form-group">
+                          <label for="townInputAdd">Town : <span></span></label>
+                          <input type="text" class="form-control" id="townInputAdd">
+                        </div>
+                        <div class="form-group">
+                          <label class="labelInputForInput" for="countryInputAdd">Country * <span></span></label>
+                          <select class=" form-control" name="country" id="countryInputAdd">
+                            <% locals?.country?.forEach(e=>{ %>
+                            <option value="<%= e.code %>">
+                              <%- e.name %>
+                            </option>
+                            <% }); %>
+                          </select>
+                        </div>
+                        <div class="form-group">
+                          <label for="codeInputAdd">Postal code : <span></span></label>
+                          <input type="text" class="form-control" id="codeInputAdd">
+                        </div>
+                        <div class="form-group">
+                          <label for="phoneInputAdd">Phone : <span></span></label>
+                          <input type="text" class="form-control" id="phoneInputAdd">
+                        </div>
+                        <div class="form-group">
+                          <label for="emailInputAdd">Email : <span></span></label>
+                          <input type="email" class="form-control" id="emailInputAdd">
+                        </div>
+
+                      </div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary" onclick="updateAddresData()">Update</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               <div class="tab-pane  animate__animated animate__fadeIn fade <%=locals?.currentPage=='address'?'active show':''%>" id="tab-address" role="tabpanel" aria-labelledby="tab-address-link">
                 <p>The following addresses will be used on the checkout page by default.</p>
@@ -118,7 +211,7 @@
                           <span style="text-transform: capitalize;"><%= e?.state %>, <%= e?.country%>, <%= e?.postalCode %></span>
                           <%= e?.phone %><br>
                           <%= e?.email %><br>
-                          <a href="#">Edit <i class="icon-edit"></i></a>
+                          <a onclick="getAddressForm('<%=e._id%>')" style="cursor: pointer;">Edit <i class="icon-edit"></i></a>
                         </p>
                       </div><!-- End .card-body -->
                     </div><!-- End .card-dashboard -->
@@ -130,43 +223,54 @@
                 </div><!-- End .row -->
               </div><!-- .End .tab-pane -->
 
-              <div class="tab-pane  animate__animated animate__fadeIn fade <%=locals?.currentPage=='account'?'active show':''%>" id="tab-account" role="tabpanel" aria-labelledby="tab-account-link">
-                <form action="#">
+              <div class="tab-pane inputContainerForUerDataUpdate animate__animated animate__fadeIn fade <%=locals?.currentPage=='account'?'active show':''%>" id="tab-account" role="tabpanel" aria-labelledby="tab-account-link">
+                <div>
                   <div class="row">
                     <div class="col-sm-6">
-                      <label>First Name *</label>
-                      <input type="text" class="form-control" value="<%= locals?.user?.name %>" required>
+                      <label>First Name * <span></span></label>
+                      <input type="text" id="nameInput" class="form-control" value="<%= locals?.user?.name?.split(' ')[0] %>">
                     </div><!-- End .col-sm-6 -->
 
                     <div class="col-sm-6">
-                      <label>Last Name *</label>
-                      <input type="text" class="form-control" value="<%= locals?.user?.name %>" required>
+                      <label>Last Name * <span></span></label>
+                      <input type="text" id="lNameInput" class="form-control" value="<%= locals?.user?.name?.split(' ').slice(1)?.join(" ")%>">
                     </div><!-- End .col-sm-6 -->
                   </div><!-- End .row -->
+                  <div>
+                    <label>Display Name * <span></span></label>
+                    <input type="text" id="displayName" class="form-control" value="<%= locals?.user?.displayName %>">
+                    <small class="form-text">This will be how your name will be displayed in the account section and in reviews</small>
+                  </div>
+                  <div>
+                    <label>Email address * <span></span></label>
+                    <input type="email" id="emailInput" class="form-control" value="<%= locals?.user?.email %>">
+                  </div>
+                  <div>
+                    <label>Phone * <span></span></label>
+                    <input type="text" id="phoneInput" class="form-control" value="<%= locals?.user?.phone %>">
+                  </div>
 
-                  <label>Display Name *</label>
-                  <input type="text" class="form-control" value="<%= locals?.user?.displayName %>" required>
-                  <small class="form-text">This will be how your name will be displayed in
-                    the account
-                    section and in reviews</small>
+                  <% if(locals?.user?.loginProvider !='google'&& locals?.user?.loginProvider != 'phone'){ %>
+                  <div>
+                    <label>Current password (leave blank to leave unchanged) <span></span></label>
+                    <input id="currentPassword" type="password" class="form-control">
+                  </div>
+                  <div>
+                    <label>New password (leave blank to leave unchanged) <span></span></label>
+                    <input id="newPassword" type="password" class="form-control">
+                  </div>
+                  <div>
+                    <label>Confirm new password <span></span></label>
+                    <input id="confirmPassword" type="password" class="form-control mb-2">
+                  </div>
+                  <p><a href="#">Forgot password ?</a></p>
+                  <% } %>
 
-                  <label>Email address *</label>
-                  <input type="email" class="form-control" value="<%= locals?.user?.email %>" required>
-
-                  <label>Current password (leave blank to leave unchanged)</label>
-                  <input type="password" class="form-control">
-
-                  <label>New password (leave blank to leave unchanged)</label>
-                  <input type="password" class="form-control">
-
-                  <label>Confirm new password</label>
-                  <input type="password" class="form-control mb-2">
-
-                  <button type="submit" class="btn btn-outline-primary-2">
+                  <button type="button" onclick="updaeUserData()" class="btn btn-outline-primary-2 mt-2">
                     <span>SAVE CHANGES</span>
                     <i class="icon-long-arrow-right"></i>
                   </button>
-                </form>
+                </div>
               </div><!-- .End .tab-pane -->
 
             </div>
@@ -178,108 +282,4 @@
 </main><!-- End .main -->
 
 
-<script>
-  function logout() {
-
-    fetch('/user_logout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          message: "log me out"
-        })
-      })
-      .then(res => res.json())
-      .then(res => {
-        if (res.status == 'error') {
-          disp({
-            message: res.message,
-            isGood: false
-          })
-        } else {
-          window.location.href = res.action;
-        };
-      })
-      .catch(error => {
-        disp({
-          message: error,
-          isGood: false
-        });
-      });
-  };
-  async function cancelOrder(orderID, PID, statusDisp) {
-
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, cancel it!'
-    }).then((result) => {
-
-      if (result.isConfirmed) {
-
-        Swal.fire({
-          title: 'Cancelling your order',
-          html: 'Plz wait while processing...',
-          didOpen: () => {
-            Swal.showLoading();
-
-            fetch('/orders/cancel/', {
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                method: "POST",
-                body: JSON.stringify({
-                  orderID: orderID,
-                  PID: PID
-                })
-              })
-              .then(res => res.json())
-              .then(res => {
-                console.log("RSULT => ", res);
-                if (res.status == 'error') {
-                  // error...
-                  Swal.close();
-                  Swal.fire({
-                    title: res.message,
-                    icon: 'error',
-                    confirmButtonText: 'Contnue shopping'
-                  });
-                } else {
-                  // cancelled...
-                  statusDisp.parentElement.parentElement.querySelector('.order_status_info').innerText = 'Status : Cancelled';
-                  statusDisp.remove();
-                  Swal.close();
-                  Swal.fire({
-                    title: res.message,
-                    icon: 'success',
-                    confirmButtonText: 'Contnue shopping'
-                  });
-                };
-              })
-              .catch(error => {
-                // error...
-                Swal.close();
-                Swal.fire({
-                  title: error,
-                  icon: 'error',
-                  confirmButtonText: 'Contnue shopping'
-                });
-              });
-
-          }
-        }).then((result) => {
-          /* Read more about handling dismissals below */
-          if (result.dismiss === Swal.DismissReason.timer) {
-            console.log('I was closed by the timer')
-          };
-        });
-
-      };
-    });
-  };
-</script>
+<script src="/js/user/dashboard.js"></script>

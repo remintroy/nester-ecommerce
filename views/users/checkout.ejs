@@ -178,26 +178,31 @@
 
                 <div class="accordion-summary" id="accordion-payment">
 
-                  <input type="radio" id="typeOfOrderCOD" name="typeOfOrder" value="COD" checked>
+                  <!-- <input type="radio" id="typeOfOrderCOD" name="typeOfOrder" value="COD" checked>
                   <label for="typeOfOrderCOD" style="text-transform: capitalize;  cursor: pointer; ">
                     COD (cash on delevery)
                   </label><br>
                   <input type="radio" id="typeOfOrderOnline" name="typeOfOrder" value="online">
                   <label for="typeOfOrderOnline" style="text-transform: capitalize;  cursor: pointer; ">
                     Online Payment
-                  </label> <br>
+                  </label> <br> -->
 
-                  <div class=" mt-2 alert alert-danger alert-dismissible fade" id="error_disp" role="alert">
+                  <!-- <div class=" mt-2 alert alert-danger alert-dismissible fade" id="error_disp" role="alert">
                     <strong>Error : </strong><span>cannot checkout</span>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
+                  </div> -->
+                  <div class="mt-3">
+                    <div class="btn btn-light w-100 text-dark mb-2" onclick="finalSubmit('COD')" style="cursor:pointer; color: black !important; font-weight: bold; border-radius: 5px;">
+                      COD <small>&nbsp; cash on delevery </small>
+                    </div>
+                    <div class="btn btn-light w-100 text-dark" onclick="finalSubmit('online')" style="cursor:pointer; color: black !important; font-weight: bold; border-radius: 5px;">
+                      Razorpay
+                    </div>
+                    <div class="text-center my-2">OR</div>
+                    <div id="paypal-button-container" style="background-color: white !important; padding: 10px; border-radius: 5px;"></div>
                   </div>
-                  <br>
-                  <button onclick="finalSubmit()" type="button" class="btn btn-outline-primary-2 btn-order btn-block">
-                    <span class="btn-text">Place Order</span>
-                    <span class="btn-hover-text">Proceed to Payment</span>
-                  </button>
                 </div><!-- End .accordion -->
               </div><!-- End .summary -->
 
@@ -209,417 +214,66 @@
   </div><!-- End .page-content -->
 </main><!-- End .main -->
 
+<script src="https://www.paypal.com/sdk/js?client-id=ATcPF7a4UqXClozwCABrTfuWMFHTCcLOn4tCYU6oKkPSEGCM2Kd7oiXKaX7VCeNdQEQI73eJH8yjxFBQ"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="/js/user/checkout.js"></script>
+
+
 <script>
-  const address = '<%=locals?.address?.length%>';
+  paypal.Buttons({
+    // Sets up the transaction when a payment button is clicked
+    createOrder: (data, actions) => {
+      try {
+        window.typeOfPayment = 'paypal'
 
-  const inputActions = (type, data) => {
-
-    const inputsIDS = [{
-        fNameInput: 'firstNameInput'
-      },
-      {
-        lNameInput: 'lastNameInput'
-      },
-      {
-        stateInput: 'stateInput'
-      },
-      {
-        streetNumberInput: 'streetNumber'
-      },
-      {
-        houseNumberInput: 'houseNumber'
-      },
-      {
-        townInput: 'townInput'
-      },
-      {
-        countryInput: 'countryInput'
-      },
-      {
-        codeInput: 'codeInput'
-      },
-      {
-        phoneInput: 'phoneInput'
-      },
-      {
-        emailInput: 'emailInput'
-      }
-    ];
-
-    const inputFields = {};
-    const inputFieldErrs = {};
-
-    inputsIDS.forEach((e, i) => {
-      inputFields[Object.keys(e)[0]] = document.getElementById(e[Object.keys(e)[0]]);
-    });
-
-    Object.keys(inputFields).forEach((e, i) => {
-      inputFieldErrs[e + "Err"] = inputFields[e].parentElement.querySelector('span');
-    });
-
-    const {
-      fNameInput,
-      lNameInput,
-      stateInput,
-      streetNumberInput,
-      houseNumberInput,
-      townInput,
-      countryInput,
-      codeInput,
-      phoneInput,
-      emailInput
-    } = inputFields;
-
-    const {
-      fNameInputErr,
-      lNameInputErr,
-      stateInputErr,
-      streetNumberInputErr,
-      houseNumberInputErr,
-      townInputErr,
-      countryInputErr,
-      codeInputErr,
-      phoneInputErr,
-      emailInputErr
-    } = inputFieldErrs;
-
-    Object.keys(inputFieldErrs).forEach(e => {
-      inputFieldErrs[e].innerText = '';
-    })
-
-    switch (type) {
-      case 'disable': {
-        Object.keys(inputFields).forEach(e => {
-          inputFields[e].setAttribute('disabled', '');
-        });
-        return true;
-        break;
-      };
-    case 'enable': {
-      Object.keys(inputFields).forEach(e => {
-        inputFields[e].removeAttribute('disabled');
-      });
-      return true;
-      break;
-    };
-    case 'clear': {
-      Object.keys(inputFields).forEach(e => {
-        inputFields[e].value = '';
-      })
-      return true;
-      break;
-    }
-    case 'set': {
-      Object.keys(inputFields).forEach(e => {
-        inputFields[e].value = data[e];
-      });
-      return true;
-      break;
-    }
-    case 'validate': {
-
-      let flag = true;
-
-      if ((fNameInput.value?.trim()?.match(/^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$/g)) == null) {
-        flag = false;
-        fNameInputErr.innerText = 'Enter a valid name';
-      };
-      if ((lNameInput.value?.trim()?.match(/^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$/g)) == null) {
-        flag = false;
-        lNameInputErr.innerText = 'Enter a valid name';
-      };
-      if ((stateInput.value?.trim()?.match(/^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$/g)) == null) {
-        flag = false;
-        stateInputErr.innerText = 'Enter a valid state';
-      };
-      if (streetNumberInput?.value?.trim().length == 0) {
-        flag = false;
-        streetNumberInputErr.innerText = 'Plz fill out address fields';
-      };
-      if (houseNumberInput?.value?.trim().length == 0) {
-        flag = false;
-        houseNumberInputErr.innerText = 'Plz fill out address fields';
-      };
-      if (townInput?.value?.trim().length == 0) {
-        flag = false;
-        townInputErr.innerText = 'Town is required';
-      };
-      if (countryInput?.value?.trim().length == 0) {
-        flag = false;
-        countryInputErr.innerText = 'Select you country';
-      };
-      if (isNaN(Number(codeInput.value))) {
-        flag = false;
-        codeInputErr.innerText = 'Enter a valid code';
-      };
-      if ((phoneInput.value + "").trim().match(/^\+?[1-9][0-9]{7,14}$/) == null) {
-        flag = false;
-        phoneInputErr.innerText = 'Enter a valid phone number';
-      };
-      if ((emailInput.value + "").trim().match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) == null) {
-        flag = false;
-        emailInputErr.innerText = 'Enter a valid email';
-      };
-
-      if (flag) {
-        finalSubmitToServer({
-          type: 'address',
-          address: {
-            name: fNameInput?.value?.trim() + " " + lNameInput?.value?.trim(),
-            state: stateInput?.value?.trim() ? stateInput?.value?.trim() : null,
-            streetNumber: streetNumberInput?.value?.trim() ? streetNumberInput?.value?.trim() : null,
-            houseNumber: houseNumberInput?.value?.trim() ? houseNumberInput?.value?.trim() : null,
-            town: townInput?.value?.trim() ? townInput?.value?.trim() : null,
-            country: countryInput?.value?.trim() ? countryInput?.value?.trim() : null,
-            postalCode: codeInput?.value ? codeInput?.value : null,
-            phone: phoneInput?.value ? phoneInput.value : null,
-            email: emailInput?.value?.trim() ? emailInput?.value?.trim() : null
-          },
-          method: checkPayment()
-        })
-      } else {
-        Swal.fire({
-          title: 'Plz fillout address',
-        })
-      };
-
-    };
-    };
-  };
-
-  (function checkEventSetter() {
-    const addresses = document.querySelectorAll('input[type=radio][name=address]');
-    addresses.forEach(e => {
-      if (e.value != '-1') {
-        e.addEventListener("change", ev => {
-          fetch('/checkout/address', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                addressID: e.value
-              })
-            })
-            .then(res => res.json())
-            .then(res => {
-              if (res.status == 'error') {
-                console.log('Error => ', error);
-              } else {
-                const outputData = {
-                  fNameInput: res.message?.name?.split(' ')[0],
-                  lNameInput: res.message?.name?.split(' ')?.slice(1).join(' '),
-                  stateInput: res.message?.state,
-                  streetNumberInput: res.message?.streetNumber,
-                  houseNumberInput: res.message?.houseNumber,
-                  townInput: res.message?.town,
-                  countryInput: res.message?.countryCode,
-                  codeInput: res.message?.postalCode,
-                  phoneInput: res.message?.phone,
-                  emailInput: res.message?.email
-                };
-                inputActions('set', outputData);
-              };
-            })
-            .catch(err => console.log(err));
-        });
-      } else {
-        e.addEventListener('change', e => {
-          inputActions('clear');
-        });
-      };
-    });
-  }());
-
-  const checkAddress = () => {
-    const addresses = document.querySelectorAll('input[type=radio][name=address]');
-    let output = '';
-    addresses.forEach(e => {
-      if (e.checked) {
-        output = e.value;
-      };
-    });
-    return (output);
-  };
-
-  const checkPayment = () => {
-    const method = document.querySelectorAll('input[type=radio][name=typeOfOrder]');
-    let output = '';
-    method.forEach(e => {
-      if (e.checked) {
-        output = e.value;
-      };
-    });
-    return (output);
-  }
-
-  const finalSubmit = () => {
-    // if (checkAddress() != -1) {
-    //     finalSubmitToServer({
-    //         type: 'id',
-    //         address: checkAddress(),
-    //         method: checkPayment()
-    //     });
-    // } else {
-    //     inputActions('validate');
-    // };
-    inputActions('validate');
-  };
-
-  const paySubmit = (data) => {
-    window.checkOutData.keys = data;
-    window.checkOutData.typeOfRequest = "verify";
-
-    Swal.fire({
-      title: 'Processing payment',
-      html: 'Connecting to server ...',
-      didOpen: () => {
-        Swal.showLoading();
-
-        fetch('/checkout/verify', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(window.checkOutData)
-          })
-          .then(res => res.json())
-          .then(res => {
-            if (res.status == 'error') {
-              Swal.fire({
-                title: res.message,
-                icon: 'error',
-              });
-            } else {
-              Swal.fire({
-                title: "Payment success !",
-                html: 'Order success',
-                icon: 'success',
-              }).then(result => {
-                if (res?.action) {
-                  window.location.href = res.action;
-                } else {
-                  window.location.href = '/dashboard/orders';
-                };
-              });
-            };
-          })
-          .catch(error => {
-            console.log("error =>", error);
-            Swal.fire({
-              title: "Error connecting to db",
-              icon: 'error',
-            });
-          });
-      }
-    });
-  };
-
-  const finalSubmitToServer = (data) => {
-
-    Swal.fire({
-      title: 'Processing Your order',
-      html: 'Connecting to server ...',
-      didOpen: () => {
-        Swal.showLoading();
-
-        fetch('/checkout', {
+        const submit = async () => {
+          const data = await inputActions('validate');
+          const resp = await fetch('/checkout', {
             headers: {
               'Content-Type': 'application/json'
             },
             method: 'POST',
             body: JSON.stringify(data)
-          })
-          .then(res => res.json())
-          .then(res => {
-            if (res.status == 'error') {
-              Swal.close();
-              Swal.fire({
-                title: 'Oops something went wrong !',
-                html: res.message,
-                icon: 'error',
-                confirmButtonText: 'Ok',
-              });
-            } else {
-
-              console.log(res);
-
-              window.checkOutData = data;
-
-              if (data.method == 'online') {
-
-                const options = {
-                  "key": "rzp_test_oRZSfNK6JdPa46",
-                  "name": res?.message?.user?.name ? res.message.user.name : res?.message?.user?.emali ? res?.message?.user?.emali : res?.message?.user?.phone,
-                  "description": "Pay online",
-                  "order_id": res.message.id,
-                  "handler": function(response) {
-
-                    paySubmit({
-                      orderID: response.razorpay_order_id,
-                      paymentID: response.razorpay_payment_id,
-                      signature: response.razorpay_signature
-                    });
-
-                  },
-                  "prefill": {
-                    "name": res?.message?.user?.name,
-                    "email": res?.message?.user?.email,
-                    "contact": "+91" + res?.message?.user?.phone
-                  },
-                  "notes": {
-                    "mail": res?.message?.user?.email
-                  },
-                  "theme": {
-                    "color": "#3399cc"
-                  }
-                };
-
-                const rzp1 = new Razorpay(options);
-
-                rzp1.on('payment.failed', function(response) {
-                  Swal.close();
-                  Swal.fire({
-                    title: "Error opening Razorpay",
-                    icon: "error",
-                    confirmButtonText: 'Ok'
-                  })
-                });
-
-                Swal.close();
-                rzp1.open();
-
-                console.log(res);
-              } else {
-                Swal.close();
-                Swal.fire({
-                  title: 'Order succes !',
-                  icon: 'success',
-                  confirmButtonText: 'Go to orders',
-                }).then(result => {
-                  window.location.href = res?.action ? res.action : '/dashboard/orders';
-                });
-              };
-            };
-          })
-          .catch(err => {
-            console.log("Error =>", err);
-            Swal.close();
-            Swal.fire({
-              title: 'Oops something went wrong !',
-              icon: 'error',
-              confirmButtonText: 'Ok',
-            });
           });
+          const respData = await resp.json();
 
-      },
-      willClose: (e) => {
-        // console.log(e)
-        // Swal doc after close
-      }
-    }).then((result) => {
-      // closed response of Swal progress popup
-    });
-  };
+          if (respData.status == 'error') {
+            Swal.fire({
+              title: 'Error Creating order',
+              html: respData.message
+            });
+
+          } else {
+            console.log(respData?.message?.id);
+            return respData?.message?.id;
+          };
+        };
+
+        return submit();
+
+      } catch (error) {
+        Swal.fire({
+          title: 'connection error'
+        });
+      };
+    },
+    // Finalize the transaction after payer approval
+    onApprove: (data, actions) => {
+      console.log('Approved => ',actions);
+      return fetch(`/orders/${data.orderID}/capture`, {
+          method: 'POST'
+        })
+        .then(res => res.json())
+        .then(function(orderData) {
+          // Successful capture! For dev/demo purposes:
+          console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+          // const transaction = orderData.purchase_units[0].payments.captures[0];
+          // alert(`Transaction ${transaction.status}: ${transaction.id}\n\nSee console for all available details`);
+          // // When ready to go live, remove the alert and show a success message within this page. For example:
+          // // const element = document.getElementById('paypal-button-container');
+          // // element.innerHTML = '<h3>Thank you for your payment!</h3>';
+          // // Or go to another URL:  actions.redirect('thank_you.html');
+        });
+    }
+  }).render('#paypal-button-container');
 </script>

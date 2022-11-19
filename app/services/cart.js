@@ -75,6 +75,12 @@ export const getSingleProductWithTotal = (UID, PID) => {
                         }
                     }
                 ]);
+                const updates = await db.products.updateOne({ PID: productOutput.PID }, {
+                    $inc: {
+                        impressions: 1,
+                        interactions: 1
+                    }
+                });
                 resolve(productData[0]);
             } catch (error) {
                 reject('Error fetching product data');
@@ -159,6 +165,13 @@ export const getAllProductsWithTotal = (UID) => {
                     { $replaceRoot: { newRoot: "$products" } },
                     { $project: { _id: 0 } }
                 ]);
+                products?.forEach(async (product) => {
+                    const updates = await db.products.updateOne({ PID: product.PID }, {
+                        $inc: {
+                            interactions: 1
+                        }
+                    });
+                });
                 resolve(products);
             } catch (error) {
                 console.log(error)
@@ -183,7 +196,12 @@ export const deleteProduct = (UID, PID) => {
                         'products': { PID: productOutput.PID }
                     }
                 });
-
+                const updates = await db.products.updateOne({ PID: productOutput.PID }, {
+                    $inc: {
+                        addedToCart: -1,
+                        interactions: 1
+                    }
+                });
                 if (formDb.modifiedCount == 0) {
                     reject('Nothing to remove');
                 } else {
@@ -252,6 +270,11 @@ export const addProduct = (UID, PID, quantity) => {
                                                 [`products.${isThisPIDExistsIndex}.quantity`]: quantity
                                             }
                                         });
+                                        const updates = await db.products.updateOne({ PID: productOutput.PID }, {
+                                            $inc: {
+                                                interactions: 1
+                                            }
+                                        });
                                         const updatedValues = await getSingleProductWithTotal(userOutput.UID, productOutput.PID);
                                         resolve(updatedValues); return 0;
                                         // resolve("Product updated"); return 0;
@@ -263,6 +286,11 @@ export const addProduct = (UID, PID, quantity) => {
                                             },
                                             $set: {
                                                 [`products.${isThisPIDExistsIndex}.updated`]: new Date()
+                                            }
+                                        });
+                                        const updates = await db.products.updateOne({ PID: productOutput.PID }, {
+                                            $inc: {
+                                                interactions: 1
                                             }
                                         });
                                         const updatedValues = await getSingleProductWithTotal(userOutput.UID, productOutput.PID);
@@ -280,6 +308,13 @@ export const addProduct = (UID, PID, quantity) => {
                                             products: {
                                                 PID: productOutput.PID
                                             }
+                                        }
+                                    });
+                                    const updates = await db.products.updateOne({ PID: productOutput.PID }, {
+                                        $inc: {
+                                            addedToCart: 1,
+                                            impressions: 1,
+                                            interactions: 1
                                         }
                                     });
                                     const updatedValues = await getSingleProductWithTotal(userOutput.UID, productOutput.PID);
@@ -309,6 +344,13 @@ export const addProduct = (UID, PID, quantity) => {
                             ]
                         });
                         addedData.save();
+                        const updates = await db.products.updateOne({ PID: productOutput.PID }, {
+                            $inc: {
+                                addedToCart: 1,
+                                impressions: 1,
+                                interactions: 1
+                            }
+                        });
                         const updatedValues = await getSingleProductWithTotal(userOutput.UID, productOutput.PID);
                         resolve(updatedValues); return 0;
                     } catch (error) {
@@ -325,42 +367,3 @@ export const addProduct = (UID, PID, quantity) => {
         };
     });
 };
-
-
-// export const addOrderId = (UID, PID, orderID) => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             // validating user id
-//             const userOutput = await auth.validatior({ UID: UID }, { UIDRequired: true });
-//             const productOutput = await products.validatior({ PID: PID }, { PID: true });
-
-//             try {
-//                 const existingData = await db.cart.find({ UID: userOutput.UID });
-//                 let index = existingData[0].products.map(e => e.PID == PID).indexOf(true);
-
-//                 const data = await db.cart.updateOne({ UID: UID }, {
-//                     $set: {
-//                         [`products.${index}.orderID`]: orderID
-//                     }
-//                 })
-
-//                 resolve(existingData[0]);
-//             } catch (error) {
-//                 reject("Error addOrderID to cart product");
-//             };
-//         } catch (error) {
-//             reject(error);
-//         };
-//     });
-// };
-
-
-// const test = async () => {
-//     try {
-//         const data = await addOrderId('6pxw23gPVG0AlKh3IE6or782V', 'Xa3aTKovaH_bFJ7OxS09', 'QnEh8UOeLBBKxEBwlSyv');
-//         console.log('Test res => ', data);
-//     } catch (error) {
-//         console.log("Test Err => ", error);
-//     };
-// };
-// test();  

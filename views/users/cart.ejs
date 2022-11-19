@@ -1,4 +1,4 @@
-<main class="main">
+<main class="main animate__animated animate__fadeIn">
   <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
     <div class="container">
       <h1 class="page-title">Shopping Cart<span>Shop</span></h1>
@@ -13,7 +13,16 @@
     </div><!-- End .container -->
   </nav><!-- End .breadcrumb-nav -->
 
-  <div class="page-content">
+  <div class="page-content" id="cartlock" <% if(locals?.cartProducts?.length>0){ %> style="display:none;" <% } %>>
+    <div class="container">
+      <div class="card bg-none p-5 text-center border-none">
+        <h4 class="mt-5">Your cart is empty</h4>
+        <button class="btn btn-primary mt-2 mb-5 rounded" onclick="window.location.href='/shop'">Continue shopping</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content" id="cartHook" <% if(locals?.cartProducts?.length==0){ %> style="display:none;" <% } %>>
     <div class="cart">
       <div class="container">
         <div class="row">
@@ -33,7 +42,7 @@
                 <% locals?.cartProducts.forEach(e=>{ %>
                 <tr>
                   <td class="product-col">
-                    <div class="product">
+                    <div class="product bg-none">
                       <figure class="product-media">
                         <a href="/product/<%= e.PID %> ">
                           <img src="/product_images/<%=e.PID%>1.jpg" alt="Product image">
@@ -95,7 +104,7 @@
                 CHECKOUT</a>
             </div><!-- End .summary -->
 
-            <a href="/shop" class="btn btn-outline-dark-2 btn-block mb-3"><span>CONTINUE
+            <a href="/shop" class="btn btn-outline btn-block mb-3"><span>CONTINUE
                 SHOPPING</span><i class="icon-refresh"></i></a>
           </aside><!-- End .col-lg-3 -->
         </div><!-- End .row -->
@@ -105,6 +114,16 @@
 </main><!-- End .main -->
 
 <script>
+  function cartEmpty() {
+    document.getElementById('cartHook').style.display = 'none';
+    document.getElementById('cartlock').style.display = 'block';
+  }
+
+  function cartContains() {
+    document.getElementById('cartHook').style.display = 'block';
+    document.getElementById('cartlock').style.display = 'none';
+  }
+
   function deleteFromCart(PID, deletable) {
     Swal.fire({
         title: 'Delete product ?',
@@ -135,13 +154,16 @@
         if (res.status == 'good') {
           if (isDeleteFromCart) {
             deletable.remove();
-            subTotal.innerText = `₹ ${res.message?.subTotal ? res.message?.subTotal : 0}`;
+            const value = res.message?.subTotal ? res.message?.subTotal : 0;
+            subTotal.innerText = `₹ ${value}`;
             document.getElementById("cart_total_count").innerText = res.message.totalCount;
+            if (res.message.totalCount == 0) cartEmpty();
           } else {
             quantityToSet.parentElement.parentElement.parentElement
               .querySelector('td.total-col').innerText = `₹ ${res.message.product.total}`;
             subTotal.innerText = `₹ ${res.message.subTotal}`;
             document.getElementById("cart_total_count").innerText = res.message.totalCount;
+            if (res.message.totalCount != 0) cartContains();
           };
         }
       })

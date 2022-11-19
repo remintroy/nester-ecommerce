@@ -25,6 +25,7 @@ export const createOrder = (UID, orderID, amount) => {
         });
     });
 };
+
 export const verifyPurchace = (paymentID, orderID, signature) => {
     const Hmac = crypto.createHmac('sha256', process.env.RAZPRPAY_KEY_SECRET);
     Hmac.update(orderID + "|" + paymentID);
@@ -33,8 +34,8 @@ export const verifyPurchace = (paymentID, orderID, signature) => {
 };
 
 const test = async () => {
-    console.log(verifyPurchace('pay_Kf9X91TElvIRS5', 'order_Kf9X2ivBRa4Q4V', 'e30e21602b903b59d1e86fe1404596786df4fe55d48bb74695254fa727b1e7a5'));
-    console.log("[-] Payment Module RAZORPAY");
+    const order = await createOrder('hi','alskdflaskdfh','600')
+    console.log(order);
 };
 
 // test();

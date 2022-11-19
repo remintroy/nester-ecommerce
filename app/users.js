@@ -1,7 +1,7 @@
 import * as auth from "./services/auth.js";
 import * as db from "./services/schema.js";
 import * as userService from "./services/users.js";
-import { getAllCountries, getAllCountriesName } from "./services/util.js";
+import * as util from "./services/util.js";
 import { appConfig } from "../index.js";
 import * as orders from "./services/orders.js";
 import * as address from "./services/address.js";
@@ -16,6 +16,7 @@ export const localsForUser = async (req, res, next) => {
     res.locals.categorys = await db.category.find();
     res.locals.user = req.user;
     res.locals.appName = appConfig.name;
+    res.locals.util = util;
     next();
   } catch (error) {
     console.log(error);
@@ -100,6 +101,11 @@ export const home = (req, res) => {
 export const shop = async (req, res) => {
   try {
     const products = await db.products.find();
+    const updates = await db.products.updateMany({}, {
+      $inc: {
+        impressions: 1
+      }
+    });
     res.locals.currentPage = "shop";
     res.locals.products = products;
     res.render("users/shop");
@@ -113,6 +119,12 @@ export const product = async (req, res) => {
   const PID = req.params.id;
   try {
     const productData = await db.products.findOne({ PID: PID });
+    const updates = await db.products.updateOne({ PID: PID }, {
+      $inc: {
+        views: 1,
+
+      }
+    });
     res.locals.currentPage = "product";
     res.locals.product = productData;
     res.render("users/product");
@@ -150,8 +162,8 @@ export const dashboard = async (req, res) => {
 export const checkout = async (req, res) => {
   try {
     const UID = req.user.UID;
-    res.locals.country = await getAllCountries();
-    res.locals.address = await userService.getAllAddress(UID);
+    res.locals.country = await util.getAllCountries();
+    res.locals.address = await userService?.getAllAddress(UID);
     res.locals.currentPage = "checkout";
     res.render("users/checkout");
   } catch (error) {
@@ -175,6 +187,7 @@ export const ordersPg = async (req, res) => {
 export const addressPg = async (req, res) => {
   try {
     res.locals.address = await address.getAll(req?.user?.UID);
+    res.locals.country = await util.getAllCountries();
     res.locals.currentPageA = "dashboard";
     res.locals.currentPage = "address";
     res.render("users/dashboard");
@@ -293,10 +306,22 @@ export const checkOutVerifyRazorpayAPI = async (req, res) => {
     res.send({ status: "error", message: error });
   }
 };
+export const checkOutVerifyPaypalAPI = async (req, res) => {
+  try {
+    const UID = req.user.UID; // form session
+    // adds product to cart or if exist updates the quantity
+    const output = await userService.veryfyPayment2(UID, id, req.body);
+    res.send({ status: "good", message: output, action: "/dashboard/orders" });
+  } catch (error) {
+    console.log("error => ", error);
+    res.send({ status: "error", message: error });
+  }
+};
 export const getAddressByAddressID = async (req, res) => {
   try {
     const UID = req.user.UID; // form session
     // adds product to cart or if exist updates the quantity
+    const id = req.params.id;
     const output = await address.getByID(UID, req?.body?.addressID);
     res.send({ status: "good", message: output, action: "/dashboard/orders" });
   } catch (error) {
@@ -314,6 +339,17 @@ export const cancelOrderAPI = async (req, res) => {
       req.body.orderID,
       req.body.PID
     );
+    res.send({ status: "good", message: result });
+  } catch (error) {
+    res.send({ status: "error", message: error });
+  }
+};
+export const updateUserDataAPI = async (req, res) => {
+  try {
+    // UID form session
+    const UID = req.user.UID;
+    //...
+    const result = await userService.updateUserData(UID, req.body);
     res.send({ status: "good", message: result });
   } catch (error) {
     res.send({ status: "error", message: error });

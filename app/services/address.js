@@ -75,24 +75,26 @@ export const getAll = (UID) => {
 
                 const data = await db.address.findOne({ UID: userOutput.UID });
                 const result = [];
-                const keys = Object.keys(data.address[0]._doc);
+                
+                if (data?.address) {
+                    const keys = Object.keys(data?.address[0]?._doc);
+                    for (let i = 0; i < data?.address?.length; i++) {
+                        const output = {};
+                        for (let j = 0; j < keys.length; j++) {
+                            output[keys[j]] = data?.address[i][keys[j]];
+                            if (keys[j] == 'country' && data?.address[i][keys[j]]) {
 
-                for (let i = 0; i < data?.address?.length; i++) {
-                    const output = {};
-                    for (let j = 0; j < keys.length; j++) {
-                        output[keys[j]] = data?.address[i][keys[j]];
-                        if (keys[j] == 'country' && data?.address[i][keys[j]]) {
+                                if (data?.address[i][keys[j]].length == 2) {
+                                    output.countryCode = data?.address[i][keys[j]];
+                                } else {
+                                    let dataCountry = await util.getCountryByName(data?.address[i][keys[j]]);
+                                    output.countryCode = dataCountry.code;
+                                };
 
-                            if (data?.address[i][keys[j]].length == 2) {
-                                output.countryCode = data?.address[i][keys[j]];
-                            } else {
-                                let dataCountry = await util.getCountryByName(data?.address[i][keys[j]]);
-                                output.countryCode = dataCountry.code;
                             };
-
                         };
+                        result.push(output);
                     };
-                    result.push(output);
                 };
 
                 // for(let i=0; i<data?.address?.length; i++){
@@ -360,6 +362,29 @@ export const getByID = (UID, addressID) => {
             } catch (error) {
                 console.log(error)
                 reject('Error while fetching address');
+            };
+        } catch (error) {
+            reject(error);
+        };
+    });
+};
+export const update = (UID, address) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const addressOutput = await validator(UID, address);
+            try {
+                const ExistingData = await db.address.find({ UID: UID });
+                const index = ExistingData[0]?.address.map(e => e._id == addressOutput.addressID).indexOf(true);
+                const dataToUpdate = {};
+                Object.keys(addressOutput).forEach(key => {
+                    if (addressOutput[key] && key != 'addressID' && key != 'UID') dataToUpdate[`address.${index}.${key}`] = addressOutput[key];
+                });
+                const updated = await db.address.updateOne({ UID: addressOutput.UID }, {
+                    $set: dataToUpdate
+                });
+                resolve('Updated successfully');
+            } catch (error) {
+                reject('Error updating address');
             };
         } catch (error) {
             reject(error);

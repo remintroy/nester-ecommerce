@@ -1,9 +1,18 @@
 import express from 'express';
 import * as admin from '../app/admin.js';
 import * as auth from '../app/services/auth.js';
+import * as apiRouter from './admin_api.js';
 
 const adminApp = express.Router();
 
+adminApp.use('/api', auth.mustLoginAsAdmin, apiRouter.default);
+
+// admin auth routes
+adminApp.get('/admin_login', auth.mustLogoutAsAdmin, admin.login);
+// api for admin login 
+adminApp.post('/admin_login', auth.mustLogoutAsAdminAPI, admin.loginApi);
+// api for admin logout
+adminApp.post('/admin_logout', auth.mustLoginAsAdminAPI, auth.adminLogout);
 
 // api for edit user data
 adminApp.put('/user_management/edit_user/', auth.mustLoginAsAdminAPI, admin.editUserAPI);
@@ -12,7 +21,7 @@ adminApp.post('/products/add_product', auth.mustLoginAsAdminAPI, admin.addProduc
 // api for edit products
 adminApp.put('/products/edit_product/', auth.mustLoginAsAdminAPI, admin.editProductAPI);
 // api for adding caegory
-adminApp.post('/products/add_category', auth.mustLoginAsAdminAPI, admin.addCategoryAPI); 
+adminApp.post('/products/add_category', auth.mustLoginAsAdminAPI, admin.addCategoryAPI);
 // api for edit category
 adminApp.put('/products/edit_category', auth.mustLoginAsAdminAPI, admin.editCategoryAPI);
 // api for delete category
@@ -30,17 +39,19 @@ adminApp.use(auth.mustLoginAsAdmin);
 adminApp.use(admin.localsForAdmin);
 
 // dashboard routes
-adminApp.get('/', admin.dashboard);
+adminApp.get(['/','/index.html'], admin.dashboard);
 // all users listing
 adminApp.get('/user_management', admin.users);
 // disabled users listing
 adminApp.get('/user_management/disabled_users', admin.disabledUsers);
-// all category listing
-adminApp.get('/products/categorys', auth.mustLoginAsAdminAPI, admin.category);
+// active users listing
+adminApp.get('/user_management/active_users', admin.activeUsers);
 // all products
-adminApp.get('/products', admin.products_disp);
+adminApp.get('/products/all', admin.allProducts);
+// all category listing
+adminApp.get('/products/categorys', admin.category);
 // products Home
-adminApp.get('/products/all', admin.productHome);
+adminApp.get('/products', admin.productHome);
 // add products
 adminApp.get('/products/add_product', admin.addProducts);
 // edit products
@@ -67,7 +78,8 @@ adminApp.get('/test', admin.test);
 
 // 404 for admin
 adminApp.use((req, res) => {
-    res.render('admin/404', { layout: 'admin_layout', message: 'Page Not Found !' })
+    res.status(404);
+    res.render('admin/404', { layout: 'admin-template/layout', message: 'Page Not Found !' })
 });
 
 export default adminApp;

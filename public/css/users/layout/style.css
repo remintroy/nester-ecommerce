@@ -2,4 +2,12 @@
   position: fixed;
   bottom: 0;
   z-index: 100;
+}
+
+.inputContainerForUerDataUpdate label {
+  display: block;
+}
+.inputContainerForUerDataUpdate label span {
+  float: right;
+  color: red;
 }/*# sourceMappingURL=style.css.map */

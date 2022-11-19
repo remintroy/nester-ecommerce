@@ -11,8 +11,8 @@
   </p>
 
   <!-- DataTales Example -->
-  <div class=" mb-4">
-    <div class=" py-3">
+  <div class="card mb-4">
+    <div class="card-header py-3">
       <h6 class="m-0 font-weight-bold text-primary">All users</h6>
     </div>
     <div class="card-body">
@@ -38,6 +38,27 @@
                 <%=index+1%>
               </td>
               <td class="status <%=order?.orders?.status%>">
+                <span style="text-transform: capitalize;" class="d-flex align-items-center">
+                  <% if(order?.orders?.status=='orderd') {%>
+                  <span class="badge badge-warning ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(order?.orders?.update)%>"><%=order?.orders?.status%></span>
+                  <!-- <div class="spinner-grow spinner-grow-sm text-warning"></div> -->
+                  <% }else if(order?.orders?.status=='packed'){ %>
+                  <span class="badge badge-info ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(order?.orders?.update)%>"><%=order?.orders?.status%></span>
+                  <!-- <div class="spinner-grow spinner-grow-sm text-info"></div> -->
+                  <% }else if(order?.orders?.status=='arriving today'){ %>
+                  <span class="badge badge-primary ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(order?.orders?.update)%>"><%=order?.orders?.status%></span>
+                  <!-- <div class="spinner-grow spinner-grow-sm text-primary"></div> -->
+                  <% }else if(order?.orders?.status=='out for delivery'){ %>
+                  <span class="badge badge-secondary ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(order?.orders?.update)%>"><%=order?.orders?.status%></span>
+                  <!-- <div class="spinner-grow spinner-grow-sm text-secondary"></div> -->
+                  <% }else if(order?.orders?.status=='delivered'){ %>
+                  <span class="badge badge-success ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(order?.orders?.update)%>"><%=order?.orders?.status%></span>
+                  <!-- <div class="spinner-grow spinner-grow-sm text-success"></div> -->
+                  <% }else if(order?.orders?.status=='cancelled'){ %>
+                  <span class="badge badge-danger ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(order?.orders?.update)%>"><%=order?.orders?.status%></span>
+                  <!-- <div class="spinner-grow spinner-grow-sm text-danger"></div> -->
+                  <% } %>
+                </span>
                 <%=order?.orders?.status%>
               </td>
               <td>

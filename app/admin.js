@@ -3,14 +3,17 @@ import { randomId, dataToReadable } from './services/util.js';
 import * as db from './services/schema.js';
 import * as products from './services/products.js';
 import * as orders from './services/orders.js';
+import * as util from './services/util.js';
 
-const layout = `admin_layout`;
+const layout = `admin-template/layout`;
+const pagesBase = `admin-template`;
 
 // set up all common locals for render
 export const localsForAdmin = async (req, res, next) => {
-    res.locals.layout = `admin_layout`;
+    res.locals.layout = layout;
     res.locals.title = `Admin-panel`;
     res.locals.admin = req.admin;
+    res.locals.util = util;
     next();
 };
 // warns deprication of a route
@@ -25,7 +28,7 @@ export const dashboard = async (req, res) => {
         res.locals.title = `Admin-panel`;
         res.locals.admin = req.admin;
         res.locals.currentPage = 'dashboard';
-        res.render('admin/dashboard');
+        res.render(pagesBase + '/dashboard');
     } catch (error) {
         console.error(error);
         res.locals.message = `Internal error`;
@@ -58,7 +61,7 @@ export const users = async (req, res) => {
         res.locals.currentPage = 'users';
         res.locals.currentPageA = 'users';
 
-        res.render('admin/users');
+        res.render(pagesBase + '/users');
     } catch (error) {
         res.locals.message = `Can't read user data from db `;
         res.locals.code = 500;
@@ -92,7 +95,41 @@ export const disabledUsers = async (req, res) => {
         res.locals.currentPage = 'diabledUsers';
         res.locals.currentPageA = 'users';
 
-        res.render('admin/users');
+        res.render(pagesBase + '/users');
+    } catch (error) {
+        res.locals.message = `Can't read user data from db `;
+        res.locals.message = 500;
+        res.render('admin/404');
+    };
+};
+// all active users
+export const activeUsers = async (req, res) => {
+    try {
+        const allUsers = await db.users.find({}, { password: 0 });
+        const userData = [];
+
+        for (let i = 0; i < allUsers.length; i++) {
+            const output = {};
+
+            if (allUsers[i]?.blocked) continue;
+
+            output.name = allUsers[i].name;
+            output.phone = allUsers[i].phone;
+            output.email = allUsers[i].email;
+            output.loginProvider = allUsers[i].loginProvider;
+            output.creationTime = dataToReadable(allUsers[i].creationTime);
+            output.lastLogin = dataToReadable(allUsers[i].lastLogin);
+            output.blocked = allUsers[i].blocked;
+            output.UID = allUsers[i].UID;
+
+            userData.push(output);
+        };
+
+        res.locals.users = userData;
+        res.locals.currentPage = 'activeUsers';
+        res.locals.currentPageA = 'users';
+
+        res.render(pagesBase + '/users');
     } catch (error) {
         res.locals.message = `Can't read user data from db `;
         res.locals.message = 500;
@@ -100,42 +137,13 @@ export const disabledUsers = async (req, res) => {
     };
 };
 // all products
-export const products_disp = async (req, res) => {
+export const allProducts = async (req, res) => {
     try {
         const productData = await db.products.find();
-        const output = [];
-
-        productData.forEach((element, index, array) => {
-            const keys = Object.keys(element._doc);
-            const result = {};
-
-            for (let i = 0; i < keys.length; i++) {
-                const CONST_MAX_TITLE_LEN = 50;
-                const CONST_MAX_DESCRIPTION_LEN = 30;
-                // key is creation time
-                result[keys[i]] = keys[i] == 'creationTime' ? // --if-- key is creation time
-                    // formatted time to readable
-                    dataToReadable(element.creationTime) :
-                    result[keys[i]] = keys[i] == 'title' ? // -- else if --
-                        // title is more than title len
-                        element[keys[i]].length > CONST_MAX_TITLE_LEN ? // --if--
-                            // creationTime true and title is above the limit
-                            element[keys[i]].slice(0, CONST_MAX_TITLE_LEN) + '...' : // --inner else--
-                            // return same value
-                            element[keys[i]] : // -- else if--
-                        result[keys[i]] = keys[i] == 'description' ? // --if--
-                            element[keys[i]].length > CONST_MAX_DESCRIPTION_LEN ? // --inner if--
-                                element[keys[i]].slice(0, CONST_MAX_DESCRIPTION_LEN) + '...' : // --inner else--
-                                element[keys[i]] : // -- else --
-                            element[keys[i]];
-            };
-            output.push(result);
-        });
-        res.locals.currentPage = 'products';
+        res.locals.currentPage = 'allProducts';
         res.locals.currentPageA = 'products';
-        res.locals.products = output;
-
-        res.render('admin/products');
+        res.locals.products = productData;
+        res.render(pagesBase + '/products_all');
     } catch (error) {
         res.locals.message = `Faild to fetch product data from db `;
         res.locals.code = 500;
@@ -150,13 +158,21 @@ export const addProducts = async (req, res) => {
         res.locals.currentPageA = 'products';
         res.locals.currentPage = 'addProducts';
         res.locals.category = category;
-        res.render('admin/add_products');
+        res.render(pagesBase + '/add_products');
     } catch (error) {
         console.error(error);
         res.locals.message = `Interal error`;
         res.locals.code = 500;
         res.render('admin/404');
     };
+};
+// products home
+export const productHome = async (req, res) => {
+    const productData = await db.products.find().limit(10);
+    res.locals.products = productData;
+    res.locals.currentPage = 'products';
+    res.locals.currentPageA = 'products';
+    res.render(pagesBase + '/products');
 };
 // api for adding product
 export const addProductsAPI = async (req, res) => {
@@ -236,6 +252,7 @@ export const ordres = async (req, res) => {
         res.render('admin/404');
     };
 };
+// order 
 export const ordresFromID = async (req, res) => {
     try {
         const orderID = req?.params?.id;
@@ -395,9 +412,7 @@ export const editUserAPI = async (req, res) => {
     };
 };
 
-export const productHome = async (req, res) => {
-    res.render('admin/productsHome');
-};
+
 
 export const test = async (req, res) => {
     res.render('admin/test');

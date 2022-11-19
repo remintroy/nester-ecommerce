@@ -1,0 +1,7 @@
+.form-group label{
+    width: 100%;
+}
+.form-group label span{
+    float: right;
+    color: red;
+}

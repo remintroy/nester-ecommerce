@@ -1,0 +1,53 @@
+<!-- Custom styles for this page -->
+<link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+  <!-- Page Heading -->
+  <h1 class="h3 mb-2 text-gray-800">All Products</h1>
+
+  <div class="btn-cont mt-4">
+    <a class="btn btn-inverse-info my-2 <%=locals.currentPage=='allProducts'?'active':'';%>" href="/user_management">All product</a>
+    <a class="btn btn-inverse-info my-2 mx-1 <%=locals.currentPage=='activeUsers'?'active':'';%>" href="/user_management/active_users">Active users</a>
+    <a class="btn btn-inverse-info my-2 mx-0 <%=locals.currentPage=='diabledUsers'?'active':'';%>" href="/user_management/disabled_users">Disabled users</a>
+  </div>
+
+  <!-- DataTales Example -->
+  <div class="table-responsive bg-white p-2 rounded mt-4">
+    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>IMG</th>
+          <th>Title</th>
+          <th>Price</th>
+          <th>Quantitly</th>
+          <!-- <th>Discount</th> -->
+          <th>Category</th>
+          <th>Created</th>
+          <th style="cursor: pointer; text-align: center;">-</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% products.forEach((product,index,array)=>{ %>
+        <tr>
+          <td> <%=index+1%> </td>
+          <td style="text-transform:capitalize;">
+            <img class="img-fluid rounded" src="/product_images/<%=product.PID%>1.jpg" alt="IMG">
+          </td>
+          <td style="white-space: nowrap;"> <%=product.title?.slice(0,55)+'...'%> </td>
+          <td> ₹ <%=product.price%> </td>
+          <td> <%=product.stock%> pcs</td>
+          <td style="text-transform: capitalize;"> <%=product.category%> </td>
+          <td style="white-space: nowrap;"> <%=locals?.util?.dataToReadable(product?.creationTime)%> </td>
+          <td style="cursor: pointer; text-align: center;" onclick="window.location.href='/admin_panel/products/edit_product/<%=product.PID%>'">
+            <b>more</b>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+      
+    </table>
+  </div>
+  <!-- /.container-fluid -->

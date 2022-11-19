@@ -245,13 +245,14 @@ export function validatior(data, requiredIn, typeOfValidation) {
                         let passwordHashFromDb = typeOfValidation == 'adminLogin' ?
                             await db.adminUser.findOne({ email: email }, { password: 1, _id: 0 }) :
                             await db.users.findOne({ email: email }, { password: 1, _id: 0 });
-
                         try {
-
-                            let matched = await bCrypt.compare(password, passwordHashFromDb.password);
-
-                            output.password = matched;
-
+                            if (passwordHashFromDb) {
+                                let matched = await bCrypt.compare(password, passwordHashFromDb?.password);
+                                output.password = matched;
+                            } else {
+                                let matched = false;
+                                output.password = matched;
+                            };
                         } catch (error) {
                             console.log(error);
                         };
@@ -323,7 +324,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
                                 //     'Enter a different phone number to update' :
                                 //     'Phone number already registered';
                                 // reject(rejectMessage); return 0;
-                                if (phoneIn[0].UID == UID && phoneIn[0].phone == phone) {
+                                if (phoneIn[0].UID == UID && phoneIn[0]?.phone == phone) {
 
                                 } else {
                                     reject('Phone number already registerd'); return 0;

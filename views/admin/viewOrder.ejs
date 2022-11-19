@@ -14,22 +14,22 @@
         <div class="float-right d-flex align-items-center">
           <small><i>Product ID : <%= e?.order?.products?.PID %> </i></small>
           <% if(e?.order?.products?.status=='orderd') {%>
-          <span class="badge badge-warning ml-2 mr-2 badge-pill"><%=e?.order?.products?.status%></span>
+          <span class="badge badge-warning ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.order?.products?.update)%>"><%=e?.order?.products?.status%></span>
           <div class="spinner-grow spinner-grow-sm text-warning"></div>
           <% }else if(e?.order?.products?.status=='packed'){ %>
-          <span class="badge badge-info ml-2 mr-2 badge-pill"><%=e?.order?.products?.status%></span>
+          <span class="badge badge-info ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.order?.products?.update)%>"><%=e?.order?.products?.status%></span>
           <div class="spinner-grow spinner-grow-sm text-info"></div>
           <% }else if(e?.order?.products?.status=='arriving today'){ %>
-          <span class="badge badge-primary ml-2 mr-2 badge-pill"><%=e?.order?.products?.status%></span>
+          <span class="badge badge-primary ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.order?.products?.update)%>"><%=e?.order?.products?.status%></span>
           <div class="spinner-grow spinner-grow-sm text-primary"></div>
           <% }else if(e?.order?.products?.status=='out for delivery'){ %>
-          <span class="badge badge-secondary ml-2 mr-2 badge-pill"><%=e?.order?.products?.status%></span>
+          <span class="badge badge-secondary ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.order?.products?.update)%>"><%=e?.order?.products?.status%></span>
           <div class="spinner-grow spinner-grow-sm text-secondary"></div>
           <% }else if(e?.order?.products?.status=='delivered'){ %>
-          <span class="badge badge-success ml-2 mr-2 badge-pill"><%=e?.order?.products?.status%></span>
+          <span class="badge badge-success ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.order?.products?.update)%>"><%=e?.order?.products?.status%></span>
           <div class="spinner-grow spinner-grow-sm text-success"></div>
           <% }else if(e?.order?.products?.status=='cancelled'){ %>
-          <span class="badge badge-danger ml-2 mr-2 badge-pill"><%=e?.order?.products?.status%></span>
+          <span class="badge badge-danger ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.order?.products?.update)%>"><%=e?.order?.products?.status%></span>
           <div class="spinner-grow spinner-grow-sm text-danger"></div>
           <% } %>
         </div>
@@ -70,25 +70,25 @@
 
             <div class="card p-3 mt-3 ">
               <span style="text-transform: capitalize;" class="d-flex align-items-center">
-                Order Status : 
+                Order Status :
                 <!-- <%= e?.order?.products?.status %> -->
                 <% if(e?.order?.products?.status=='orderd') {%>
-                <span class="badge badge-warning ml-2 mr-2 badge-pill"><%=e?.order?.products?.status%></span>
+                <span class="badge badge-warning ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.order?.products?.update)%>"><%=e?.order?.products?.status%></span>
                 <!-- <div class="spinner-grow spinner-grow-sm text-warning"></div> -->
                 <% }else if(e?.order?.products?.status=='packed'){ %>
-                <span class="badge badge-info ml-2 mr-2 badge-pill"><%=e?.order?.products?.status%></span>
+                <span class="badge badge-info ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.order?.products?.update)%>"><%=e?.order?.products?.status%></span>
                 <!-- <div class="spinner-grow spinner-grow-sm text-info"></div> -->
                 <% }else if(e?.order?.products?.status=='arriving today'){ %>
-                <span class="badge badge-primary ml-2 mr-2 badge-pill"><%=e?.order?.products?.status%></span>
+                <span class="badge badge-primary ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.order?.products?.update)%>"><%=e?.order?.products?.status%></span>
                 <!-- <div class="spinner-grow spinner-grow-sm text-primary"></div> -->
                 <% }else if(e?.order?.products?.status=='out for delivery'){ %>
-                <span class="badge badge-secondary ml-2 mr-2 badge-pill"><%=e?.order?.products?.status%></span>
+                <span class="badge badge-secondary ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.order?.products?.update)%>"><%=e?.order?.products?.status%></span>
                 <!-- <div class="spinner-grow spinner-grow-sm text-secondary"></div> -->
                 <% }else if(e?.order?.products?.status=='delivered'){ %>
-                <span class="badge badge-success ml-2 mr-2 badge-pill"><%=e?.order?.products?.status%></span>
+                <span class="badge badge-success ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.order?.products?.update)%>"><%=e?.order?.products?.status%></span>
                 <!-- <div class="spinner-grow spinner-grow-sm text-success"></div> -->
                 <% }else if(e?.order?.products?.status=='cancelled'){ %>
-                <span class="badge badge-danger ml-2 mr-2 badge-pill"><%=e?.order?.products?.status%></span>
+                <span class="badge badge-danger ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.order?.products?.update)%>"><%=e?.order?.products?.status%></span>
                 <!-- <div class="spinner-grow spinner-grow-sm text-danger"></div> -->
                 <% } %>
               </span>
@@ -169,9 +169,8 @@
       <% }); %>
 
       <li class="list-group-item d-flex justify-content-between align-items-center">
-        Total : <%= locals?.orders[0]?.order?.products?.subTotal %>.00 Rs
+        <b>Total : <%= locals?.orders[0]?.order?.products?.subTotal %>.00 Rs</b>
         <div class="d-flex align-items-center">
-          <span class="badge badge-success mr-2" data-toggle="tooltip" title="Hooray!">Deleverd</span>
           <div class="spinner-grow text-success"></div>
         </div>
       </li>
@@ -181,11 +180,3 @@
 
   </div>
 </div>
-
-
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
-<script>
-  $(document).ready(function() {
-    $('[data-toggle="tooltip"]').tooltip();
-  });
-</script>

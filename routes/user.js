@@ -5,6 +5,10 @@ import * as admin from '../app/admin.js';
 
 const app = express.Router();
 
+app.get('/test', (req, res) => {
+    res.send({ status: "good", message: "Test message form server" });
+})
+
 // admin auth routes
 app.get('/admin_login', auth.mustLogoutAsAdmin, admin.login);
 // api for admin login 
@@ -38,10 +42,14 @@ app.delete('/user_address', auth.mustLoginAsUserAPI, users.deleteUserAddressAPI)
 app.post('/checkout', auth.mustLoginAsUserAPI, users.checkoutCartProductsAPI);
 // api veryfy payment
 app.post('/checkout/verify', auth.mustLoginAsUserAPI, users.checkOutVerifyRazorpayAPI);
+// api for captur paypal payment
+app.post('/checkout/:id/capture', auth.mustLoginAsUserAPI, users.checkOutVerifyPaypalAPI);
 // api to get address by addressID
 app.post('/checkout/address', auth.mustLoginAsUserAPI, users.getAddressByAddressID);
 // api for cancel order
 app.post('/orders/cancel/', auth.mustLoginAsUserAPI, users.cancelOrderAPI);
+// api for update user data
+app.put('/user_data/update', auth.mustLoginAsUserAPI, users.updateUserDataAPI);
 
 // sub - dev api's
 // api for get all products form cart

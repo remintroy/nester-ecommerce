@@ -4,7 +4,8 @@ import * as db from './schema.js';
 import * as util from './util.js';
 import * as cart from './cart.js';
 import * as address from './address.js';
-import * as pay from './razorpay.js';
+import * as razorpay from './razorpay.js';
+import * as paypal from './paypal.js';
 
 const ORDERID_LENGTH = 20;
 const ALL_ORDER_STATUS = ['orderd', 'packed', 'arriving today', 'out for delivery', 'delivered', 'cancelled'];
@@ -41,6 +42,7 @@ const addTODB = (UID, addressFrom, type, save) => {
             // sets evey product status
             products?.map(e => e['paymentStatus'] = 'pending');
             products?.map(e => e['status'] = 'orderd');
+            products?.map(e => e['update'] = new Date());
 
             try {
                 // 
@@ -75,11 +77,21 @@ const addTODB = (UID, addressFrom, type, save) => {
                         // total amount to pay
                         const orderTotalAmount = products[0].subTotal;
                         // creating order in razorpay
-                        paymentDetails = await pay.createOrder(UID, await createOrderID(), orderTotalAmount);
+                        paymentDetails = await razorpay.createOrder(UID, await createOrderID(), orderTotalAmount);
 
                     } catch (error) {
-                        reject('Error creating order');
+                        reject(error?.error?.description ? error?.error?.description : 'Error Creating order');
                     };
+                } else if (type == 'paypal') {
+                    try {
+                        // total amount to pay
+                        const orderTotalAmount = products[0].subTotal;
+                        // creating order in razorpay
+                        paymentDetails = await paypal.createOrder(UID, await createOrderID(), orderTotalAmount);
+                    } catch (error) {
+                        reject(error?.error?.description ? error?.error?.description : 'Error Creating order');
+                    };
+
                 } else if (type == 'COD') {
                     // place order and save to db
 
@@ -106,6 +118,17 @@ const addTODB = (UID, addressFrom, type, save) => {
                                 ]
                             }
                         });
+                        products?.forEach(async (product) => {
+                            const updates = await db.products.updateOne({ PID: product.PID }, {
+                                $inc: {
+                                    interactions: 1,
+                                    purchased: 1,
+                                },
+                                $set: {
+                                    lastPurchased: new Date()
+                                }
+                            });
+                        });
                     } else {
                         // order collection not exists for this user
                         const data = await db.orders({
@@ -118,12 +141,23 @@ const addTODB = (UID, addressFrom, type, save) => {
                                     address: addressFrom,
                                     paymentType: type,
                                     status: 'pending',
-                                    paymentType: 'online',
                                     paymentStatus: 'pending'
                                 }
                             ]
                         });
-                        data.save();
+                        const confirm = await data.save();
+                        
+                        products?.forEach(async (product) => {
+                            const updates = await db.products.updateOne({ PID: product.PID }, {
+                                $inc: {
+                                    interactions: 1,
+                                    purchased: 1,
+                                },
+                                $set: {
+                                    lastPurchased: new Date()
+                                }
+                            });
+                        });
                     };
 
                     // clear cart
@@ -131,6 +165,14 @@ const addTODB = (UID, addressFrom, type, save) => {
                         $set: {
                             products: []
                         }
+                    });
+                    products?.forEach(async (product) => {
+                        const updates = await db.products.updateOne({ PID: product.PID }, {
+                            $inc: {
+                                interactions: 1,
+                                addedToCart: -1
+                            }
+                        });
                     });
 
                     resolve({
@@ -142,7 +184,7 @@ const addTODB = (UID, addressFrom, type, save) => {
                     });
                 };
 
-                if (type == 'online') resolve({
+                if (type == 'online' || type == 'paypal') resolve({
                     address: addressDetails,
                     id: paymentDetails.id,
                     amount: paymentDetails.amount,
@@ -173,6 +215,7 @@ const addTODBOnline = (UID, addressFrom) => {
             // sets evey product status
             products?.map(e => e['paymentStatus'] = 'paid');
             products?.map(e => e['status'] = 'orderd');
+            products?.map(e => e['update'] = new Date());
 
             try {
                 // 
@@ -212,6 +255,17 @@ const addTODBOnline = (UID, addressFrom) => {
                             ]
                         }
                     });
+                    products?.forEach(async (product) => {
+                        const updates = await db.products.updateOne({ PID: product.PID }, {
+                            $inc: {
+                                interactions: 1,
+                                purchased: 1,
+                            },
+                            $set: {
+                                lastPurchased: new Date()
+                            }
+                        });
+                    });
                 } else {
                     // order collection not exists for this user
                     const data = await db.orders({
@@ -228,6 +282,17 @@ const addTODBOnline = (UID, addressFrom) => {
                         ]
                     });
                     data.save();
+                    products?.forEach(async (product) => {
+                        const updates = await db.products.updateOne({ PID: product.PID }, {
+                            $inc: {
+                                interactions: 1,
+                                purchased: 1,
+                            },
+                            $set: {
+                                lastPurchased: new Date()
+                            }
+                        });
+                    });
                 };
 
                 // clear cart
@@ -235,6 +300,14 @@ const addTODBOnline = (UID, addressFrom) => {
                     $set: {
                         products: []
                     }
+                });
+                products?.forEach(async (product) => {
+                    const updates = await db.products.updateOne({ PID: product.PID }, {
+                        $inc: {
+                            interactions: 1,
+                            addedToCart: -1
+                        }
+                    });
                 });
 
                 resolve({
@@ -262,10 +335,21 @@ export const checkout = (UID, body) => {
             const userOutput = await auth.validatior({ UID: UID }, { UIDRequired: true });
             let method;
 
-            if (body?.method == 'COD' || body?.method == 'online') method = body?.method;
+            if (body?.method == 'COD' || body?.method == 'online' || body?.method == 'paypal') method = body?.method;
             else throw 'Payment methord required';
 
             try {
+
+                // updating data of carted products
+                const products = await cart.getAllProductsWithTotal(userOutput.UID);
+                products?.forEach(async (product) => {
+                    const updates = await db.products.updateOne({ PID: product.PID }, {
+                        $inc: {
+                            interactions: 1,
+                            reachedCheckout: 1
+                        }
+                    });
+                });
 
                 // if place order by existing address
                 if (body?.type == 'id') {
@@ -333,7 +417,8 @@ export const cancelOrderWithUID = (UID, orderID) => {
 
                         const updated = await db.orders.updateOne({ UID: userOutput.UID }, {
                             $set: {
-                                [`orders.${index}.status`]: 'cancelled'
+                                [`orders.${index}.status`]: 'cancelled',
+                                [`orders.${index}.update`]: new Date()
                             }
                         })
 
@@ -377,12 +462,18 @@ export const cancelOrderProductWithUID = (UID, orderID, PID) => {
 
                         const updated = await db.orders.updateOne({ UID: userOutput.UID }, {
                             $set: {
-                                [`orders.${indexOrder}.products.${indexProduct}.status`]: 'cancelled'
+                                [`orders.${indexOrder}.products.${indexProduct}.status`]: 'cancelled',
+                                [`orders.${indexOrder}.products.${indexProduct}.update`]: new Date()
                             }
-                        })
+                        });
+
+                        const updateStat = await db.products.updateOne({ PID: productOutput }, {
+                            $inc: {
+                                cancelled: 1
+                            }
+                        });
 
                         resolve("Order successfully cancelled");
-
                     };
 
                 } else {
@@ -400,13 +491,24 @@ export const cancelOrderProductWithUID = (UID, orderID, PID) => {
         };
     });
 };
+// paypal payment
+export const paymentConfirmPaypal = (UID, id, body) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const result = await paypal.capturePayment(id);
+            resolve(result);
+        } catch (error) {
+            reject(error);
+        };
+    });
+};
 export const paymentConfirmRazorpay = (UID, body) => {
     return new Promise(async (resolve, reject) => {
         try {
             // valdiating userID
             const userOutput = await auth.validatior({ UID: UID }, { UIDRequired: true });
             // validating payment signature
-            const validatePayment = pay.verifyPurchace(body.keys.paymentID, body.keys.orderID, body.keys.signature);
+            const validatePayment = razorpay.verifyPurchace(body.keys.paymentID, body.keys.orderID, body.keys.signature);
             if (!validatePayment) throw 'Error validating payment';
 
             // find address form db
@@ -513,7 +615,8 @@ export const cancelOrder = (orderID) => {
 
             const updated = await db.orders.updateOne({ "orders._id": orderID }, {
                 $set: {
-                    [`orders.${index}.status`]: 'cancelled'
+                    [`orders.${index}.status`]: 'cancelled',
+                    [`orders.${index}.update`]: new Date()
                 }
             });
             resolve("order successfully cancelled");
@@ -651,10 +754,11 @@ export const updateOrderStatus = (PID, orderID, status) => {
 
                             const statusChecker = ALL_ORDER_STATUS.indexOf((status + "").trim().toLowerCase());
                             if (statusChecker == -1) reject('Invalid status');
-                            else{
+                            else {
                                 const updated = await db.orders.updateOne({ 'orders.orderID': orderID }, {
                                     $set: {
-                                        [`orders.${indexOrder}.products.${indexProduct}.status`]: ALL_ORDER_STATUS[statusChecker]
+                                        [`orders.${indexOrder}.products.${indexProduct}.status`]: ALL_ORDER_STATUS[statusChecker],
+                                        [`orders.${indexOrder}.products.${indexProduct}.update`]: new Date()
                                     }
                                 });
                                 resolve("Order successfully updated");
