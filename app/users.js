@@ -23,6 +23,32 @@ export const localsForUser = async (req, res, next) => {
   }
 };
 
+// analytics for users pages
+export const analytics = (req, res, next) => {
+  try {
+
+    db.analytics.updateOne({ title: 'user_page_request' }, {
+      $push: {
+        data: new Date()
+      }
+    }).then(res => {
+      if (res.matchedCount == 0) {
+        db.analytics({
+          title: 'user_page_request',
+          data: [
+            new Date()
+          ]
+        })
+          .save();
+      };
+    });
+
+    next();
+  } catch (error) {
+    next();
+  };
+};
+
 // auth - pages
 export const login = (req, res) => {
   res.locals.currentPage = "login";

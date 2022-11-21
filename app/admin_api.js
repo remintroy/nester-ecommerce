@@ -4,17 +4,67 @@ import * as apiService from './api/admin_api.js';
 export const reports = async (req, res) => {
     try {
         //...  availabe api query's
-        const validKeys = ['products', 'orders', 'category', 'sales'];
+        const validKeys = [];
+
+        // ----- products ------
+
+        // get products data in past hours
+        validKeys.push({
+            key: 'products-hour',
+            service: 'productsDataInPastHours'
+        });
+
+        // get total net worth of products
+        validKeys.push({
+            key: 'products-networth-hour',
+            service: 'totalProductNetWorth'
+        });
+
+        // ----- orders -------
+
+        // get order data in past hours
+        validKeys.push({
+            key: 'orders-hour',
+            service: 'ordersDataInPastHours'
+        });
+
+        // get order data by year
+        validKeys.push({
+            key: 'orders-year',
+            service: 'salesInYear'
+        });
+
+        validKeys.push({
+            key: 'orders-year-count',
+            service: 'salesInYear_count'
+        });
+
+        // ----- category -----
+
+        // get category data in past hours
+        validKeys.push({
+            key: 'category-hour',
+            service: 'categoryUsageInPastHours'
+        });
+
+        // ----- views ------
+        validKeys.push({
+            key: 'requests-today',
+            service: 'userViewsInDay'
+        });
+
+
         const keys = Object.keys(req.query);
         let isGoodQuery = false;
-
         // findig the existatnce of any valid key in query
         for (let i = 0; i < validKeys.length; i++) {
-            const valid = validKeys[i];
+            const valid = validKeys[i].key;
             for (let j = 0; j < keys.length; j++) {
                 const key = keys[j];
-                if (valid == key) isGoodQuery = true;
-                break;
+                if (valid == key) {
+                    isGoodQuery = true;
+                    break;
+                };
             };
             if (isGoodQuery) break;
         };
@@ -22,18 +72,16 @@ export const reports = async (req, res) => {
         // error message for no valid key's
         if (!isGoodQuery) throw `Can't find any valid querys`;
 
-        const { products, orders, request, category, sales } = req.query;
         const output = {}; // accumilator for the output data
+        const query = req.query;
 
         // all services 
-        if (products) output.producs = await apiService.productsDataInPastHours(products);
-        if (orders) output.orders = await apiService.ordersDataInPastHours(orders);
-        if (category) output.category = await apiService.categoryUsageInPastHours(category);
-        if (sales) output.sales = await apiService.totalProductNetWorth(sales);
+        for (const i of validKeys) {
+            if (query[i.key]) output[i.key] = await apiService[i.service](query[i.key]);
+        };
 
         // final data
         res.send(output);
-
     } catch (error) {
         // error data
         res.send({ status: 'error', message: error });
@@ -41,7 +89,7 @@ export const reports = async (req, res) => {
 };
 
 // api for producst data 
-export const producs = async (req, res) => {
+export const products = async (req, res) => {
     try {
         //...  availabe api query's
         const validKeys = [];
@@ -49,7 +97,7 @@ export const producs = async (req, res) => {
         validKeys.push({
             key: 'pages',
             service: 'getProductInPages'
-        })
+        });
 
         const keys = Object.keys(req.query);
         let isGoodQuery = false;
@@ -83,3 +131,4 @@ export const producs = async (req, res) => {
         res.send({ status: 'error', message: error });
     };
 };
+

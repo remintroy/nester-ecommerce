@@ -244,7 +244,7 @@ export const ordres = async (req, res) => {
         res.locals.orders = await orders.getAllWithFromattedDate();
         res.locals.currentPage = 'orders';
         res.locals.currentPageA = 'orders';
-        res.render('admin/orders');
+        res.render(pagesBase + '/orders');
     } catch (error) {
         console.log('ALL_ORDERS_PAGE_DB => ', error);
         res.locals.message = `Can't get order's from db `;
@@ -255,15 +255,25 @@ export const ordres = async (req, res) => {
 // order 
 export const ordresFromID = async (req, res) => {
     try {
+
         const orderID = req?.params?.id;
-        res.locals.orders = await orders.getByOrderID(orderID);
-        res.locals.currentPage = 'viewOrder';
-        res.locals.currentPageA = 'orders';
-        res.render('admin/viewOrder');
+        const orderFormDb = await orders.getByOrderID(orderID);
+        if (orderFormDb.length == 0) throw 'Order not found';
+
+        try {
+            res.locals.orders = orderFormDb;
+            res.locals.currentPage = 'viewOrder';
+            res.locals.currentPageA = 'orders';
+            res.render(pagesBase + '/viewOrder');
+        } catch (error) {
+            console.log('ALL_ORDERS_PAGE_DB => ', error);
+            res.locals.message = `Can't get order's from db `;
+            res.locals.code = 500;
+            res.render('admin/404');
+        };
     } catch (error) {
-        console.log('ALL_ORDERS_PAGE_DB => ', error);
-        res.locals.message = `Can't get order's from db `;
-        res.locals.code = 500;
+        res.locals.message = error;
+        res.locals.code = 404;
         res.render('admin/404');
     };
 };
@@ -282,7 +292,7 @@ export const updateStatusOrderAPI = async (req, res) => {
         const orderID = req?.body?.orderID;
         const status = req?.body?.status;
         const resp = await orders.updateOrderStatus(PID, orderID, status);
-        res.send({ status: "good", message: "Order cancelled" });
+        res.send({ status: "good", message: "Order status successfully updated" });
     } catch (error) {
         res.send({ status: "error", message: error });
     };
@@ -305,9 +315,9 @@ export const category = async (req, res) => {
         });
 
         res.locals.categorys = output;
-        res.locals.currentPage = 'allCategory';
-        res.locals.currentPageA = 'products';
-        res.render('admin/allCategory');
+        res.locals.currentPage = 'category';
+        res.locals.currentPageA = 'category';
+        res.render(pagesBase + '/category');
     } catch (error) {
         console.log('ALL_CATEGORY_PAGE_DB => ', error);
         res.locals.message = `Can't read category's from db `;

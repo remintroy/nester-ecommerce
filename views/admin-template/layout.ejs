@@ -22,7 +22,10 @@
   <!-- js -->
   <link rel="stylesheet" href="/css/cropper.css">
   <script src="/js/cropper.js"></script>  
+  <link rel="stylesheet" href="/css/swal.css">
+  <script src="/js/swal.min.js"></script>  
   <link rel="stylesheet" href="/css/custom.css">
+  <script  src="/vendors/base/vendor.bundle.base.js"></script>
 </head>
 
 <body>
@@ -37,10 +40,10 @@
 
       <!-- sidebar -->
       <%- include('./partials/sidebar') %>
-
+      
       <div class="main-panel">
         <div class="content-wrapper">
-
+          
           <!-- the content to layout -->
           <%- body %>
 
@@ -51,7 +54,6 @@
   </div>
 
   <!-- plugins:js -->
-  <script src="/vendors/base/vendor.bundle.base.js"></script>
   <!-- endinject -->
   <!-- Plugin js for this page-->
   <script src="/vendors/chart.js/Chart.min.js"></script>

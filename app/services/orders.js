@@ -8,7 +8,7 @@ import * as razorpay from './razorpay.js';
 import * as paypal from './paypal.js';
 
 const ORDERID_LENGTH = 20;
-const ALL_ORDER_STATUS = ['orderd', 'packed', 'arriving today', 'out for delivery', 'delivered', 'cancelled'];
+const ALL_ORDER_STATUS = ['ordered_OR', 'shipped_SH', 'out for delivery_OT', 'delivered_DD', 'cancelled_CC'];
 
 const createOrderID = async () => {
     let orderID = '';
@@ -41,8 +41,11 @@ const addTODB = (UID, addressFrom, type, save) => {
             if (products.length == 0) throw 'Nothing to checkout';
             // sets evey product status
             products?.map(e => e['paymentStatus'] = 'pending');
-            products?.map(e => e['status'] = 'orderd');
+            products?.map(e => e['status'] = 'ordered');
             products?.map(e => e['update'] = new Date());
+            products?.map(e => e.statusUpdate = {
+                0: { status: 'ordered', date: new Date() }
+            });
 
             try {
                 // 
@@ -146,7 +149,7 @@ const addTODB = (UID, addressFrom, type, save) => {
                             ]
                         });
                         const confirm = await data.save();
-                        
+
                         products?.forEach(async (product) => {
                             const updates = await db.products.updateOne({ PID: product.PID }, {
                                 $inc: {
@@ -216,6 +219,9 @@ const addTODBOnline = (UID, addressFrom) => {
             products?.map(e => e['paymentStatus'] = 'paid');
             products?.map(e => e['status'] = 'orderd');
             products?.map(e => e['update'] = new Date());
+            products?.map(e => e.statusUpdate = {
+                0: { status: 'ordered', date: new Date() }
+            });
 
             try {
                 // 
@@ -747,23 +753,43 @@ export const updateOrderStatus = (PID, orderID, status) => {
                     const indexOrder = existingData[0].orders.map(e => e.orderID == (orderID + "").trim()).indexOf(true);
                     const indexProduct = existingData[0].orders[indexOrder].products.map(e => e.PID == (productOutput.PID + "").trim()).indexOf(true);
 
-                    if (indexOrder == -1) reject('Order not found');
-                    else
-                        if (indexProduct == -1) reject("Order not found");
-                        else {
+                    let statusIndex = ALL_ORDER_STATUS.map(e => e.split('_')[0] == existingData[0]?.orders[indexOrder]?.products[indexProduct].status).indexOf(true);
 
-                            const statusChecker = ALL_ORDER_STATUS.indexOf((status + "").trim().toLowerCase());
-                            if (statusChecker == -1) reject('Invalid status');
-                            else {
-                                const updated = await db.orders.updateOne({ 'orders.orderID': orderID }, {
-                                    $set: {
-                                        [`orders.${indexOrder}.products.${indexProduct}.status`]: ALL_ORDER_STATUS[statusChecker],
-                                        [`orders.${indexOrder}.products.${indexProduct}.update`]: new Date()
-                                    }
-                                });
-                                resolve("Order successfully updated");
-                            };
+                    try {
+
+                        if (statusIndex == ALL_ORDER_STATUS.length - 1) throw `Can't update status of cancelled order`;
+                        if (statusIndex == ALL_ORDER_STATUS.length - 2) throw `Can't update status of delevered order`;
+
+                        if (status == 'next') {
+                            if (statusIndex >= ALL_ORDER_STATUS.length - 2) throw ('Nothing to update');
+                            else if (statusIndex != -1) statusIndex = statusIndex + 1;
+                            else statusIndex = 0;
+                        }
+                        else if (status == 'cancel') statusIndex = ALL_ORDER_STATUS.length - 1;
+
+                    } catch (error) {
+                        reject(error); return 0;
+                    };
+
+                    if (indexOrder == -1) reject('Order not found');
+                    else if (indexProduct == -1) reject("Order not found");
+                    else {
+
+                        if (status != 'next' && status != 'cancel') reject('Invalid status');
+                        else {
+                            const updated = await db.orders.updateOne({ 'orders.orderID': orderID }, {
+                                $set: {
+                                    [`orders.${indexOrder}.products.${indexProduct}.statusUpdate.${statusIndex + ""}`]: {
+                                        status: ALL_ORDER_STATUS[statusIndex]?.split('_')[0],
+                                        date: new Date(),
+                                    },
+                                    [`orders.${indexOrder}.products.${indexProduct}.status`]: ALL_ORDER_STATUS[statusIndex]?.split('_')[0],
+                                    [`orders.${indexOrder}.products.${indexProduct}.update`]: new Date()
+                                }
+                            });
+                            resolve("Order successfully updated");
                         };
+                    };
 
                 } else {
                     reject('Nothing to update');

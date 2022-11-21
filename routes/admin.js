@@ -21,11 +21,11 @@ adminApp.post('/products/add_product', auth.mustLoginAsAdminAPI, admin.addProduc
 // api for edit products
 adminApp.put('/products/edit_product/', auth.mustLoginAsAdminAPI, admin.editProductAPI);
 // api for adding caegory
-adminApp.post('/products/add_category', auth.mustLoginAsAdminAPI, admin.addCategoryAPI);
+adminApp.post('/category/add_category', auth.mustLoginAsAdminAPI, admin.addCategoryAPI);
 // api for edit category
-adminApp.put('/products/edit_category', auth.mustLoginAsAdminAPI, admin.editCategoryAPI);
+adminApp.put('/category/edit_category', auth.mustLoginAsAdminAPI, admin.editCategoryAPI);
 // api for delete category
-adminApp.delete('/products/delete_category', auth.mustLoginAsAdminAPI, admin.deleteCategoryAPI);
+adminApp.delete('/category/delete_category', auth.mustLoginAsAdminAPI, admin.deleteCategoryAPI);
 // api for delete products
 adminApp.delete('/products/delete_product/', auth.mustLoginAsAdminAPI, admin.deleteProductAPI);
 // api for cancell orders
@@ -49,7 +49,7 @@ adminApp.get('/user_management/active_users', admin.activeUsers);
 // all products
 adminApp.get('/products/all', admin.allProducts);
 // all category listing
-adminApp.get('/products/categorys', admin.category);
+adminApp.get('/category', admin.category);
 // products Home
 adminApp.get('/products', admin.productHome);
 // add products

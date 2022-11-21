@@ -82,10 +82,6 @@ export const categoryUsageInPastHours = async (hoursAgo) => {
         throw 'Error while fetching category data form db';
     };
 };
-export const salesInPastDate = () => {
-
-}
-
 export const totalProductNetWorth = async (hoursAgo) => {
     try {
         const data = await db.products.aggregate([
@@ -133,7 +129,109 @@ export const totalProductNetWorth = async (hoursAgo) => {
         throw 'Error fetching product data form server';
     }
 };
+export const salesInYear_count = async (year) => {
+    try {
+        return await salesInYear(year, true);
+    } catch (error) {
+        throw error;
+    };
+};
+export const salesInYear = async (year, noData) => {
+    try {
 
+        // validating year 
+        if (isNaN(Number(year)) || !Number(year) || (year + "").length != 4) throw 'Invalid year';
+
+        try {
+            const projectQuery = {};
+
+            projectQuery._id = 0;
+            projectQuery.length = '$length';
+            projectQuery.month = '$_id';
+
+            if (!noData) projectQuery.orders = "$orders";
+
+            // fetching data
+            const dataFromDb = await db.orders.aggregate([
+                {
+                    $match: {
+                        'orders.dateOFOrder': {
+                            $gte: new Date(`${year}-01-01`),
+                            $lte: new Date(`${year}-12-31`)
+                        }
+                    },
+                },
+                {
+                    $unwind: '$orders'
+                },
+                {
+                    $group: {
+                        _id: { $month: "$orders.dateOFOrder" },
+                        length: { $sum: 1 },
+                        orders: {
+                            $addToSet: '$orders'
+                        }
+                    }
+                },
+                {
+                    $project: projectQuery
+                },
+                { $sort: { month: 1 } }
+            ]);
+
+            // resolving output data
+            return dataFromDb;
+        } catch (error) {
+            console.log(error);
+            throw 'Error fetching sales data form db';
+        };
+
+    } catch (error) {
+        throw error;
+    };
+};
+export const userViewsInDay = async () => {
+    try {
+
+        const day_start = new Date(new Date().setHours(0, 0, 0, 1));
+
+        const dataFromDb = await db.analytics.aggregate([
+            { $unwind: '$data' },
+            {
+                $match: {
+                    title: 'user_page_request',
+                    data: {
+                        $gte: day_start
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        $hour: {
+                            date: '$data',
+                            timezone: '+05:30'
+                        }
+                    },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $project: {
+                    count: '$count',
+                    _id: 0,
+                    hour: '$_id'
+                }
+            }
+        ]);
+
+        return dataFromDb;
+
+    } catch (error) {
+        console.log(error);
+        throw 'Error fetching data from db';
+    };
+};
 
 // 
 export const getProductInPages = async (pages) => {
@@ -166,7 +264,7 @@ export const getProductInPages = async (pages) => {
 
 async function test() {
     try {
-        const data = await getProductInPages(2);
+        const data = await userViewsInDay();
         console.log("data => ", data);
     } catch (error) {
         console.log("error =>", error);

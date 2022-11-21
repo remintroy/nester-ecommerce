@@ -149,6 +149,13 @@ export const orders = db.model("orders", new mongoose.Schema({
             },
             paymentError: Object,
             paymentDetails: Object,
+            statusUpdate: {
+                0: { status: String, date: Date },
+                1: { status: String, date: Date },
+                2: { status: String, date: Date },
+                3: { status: String, date: Date },
+                4: { status: String, date: Date }
+            },
             update: {
                 type: Date,
                 default: new Date()
@@ -163,6 +170,15 @@ export const orders = db.model("orders", new mongoose.Schema({
             }
         }
     ]
+}));
+
+export const analytics = db.model("analytics", new mongoose.Schema({
+    title: String,
+    data: Array,
+    created: {
+        type: Date,
+        default: new Date
+    },
 }));
 
 export const wishList = db.model("wishList", new mongoose.Schema({

@@ -25,7 +25,7 @@ export const appConfig = {
 const mongoDbSesson = new ConnectMongoDBSession(session);
 
 // -- user -- app
-app.use(Logger('dev'));
+// app.use(Logger('dev'));
 app.set("view engine", "ejs");
 app.use(session({
     saveUninitialized: false,

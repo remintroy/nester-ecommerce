@@ -62,7 +62,11 @@ app.get('/user_signin_phone', auth.mustLogoutAsUser, users.loginWithOtp);
 // create user page
 app.get('/user_registration', auth.mustLogoutAsUser, users.signup);
 
+// to set essential locals for render
 app.use(users.localsForUser);
+
+// to track request count to server
+app.use(users.analytics);
 
 /// home page
 app.get(['/', '/index.html'], users.home);
