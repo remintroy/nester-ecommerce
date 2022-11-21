@@ -39,6 +39,7 @@ export const getSingleProductWithTotal = (UID, PID) => {
                             price: { $arrayElemAt: ['$details.price', 0] },
                             offer: { $arrayElemAt: ['$details.offer', 0] },
                             quantity: '$products.quantity',
+                            stock: { $arrayElemAt: ['$details.stock', 0] },
                             total: {
                                 $multiply: [
                                     '$products.quantity',
@@ -246,92 +247,144 @@ export const addProduct = (UID, PID, quantity) => {
                                 isThisPIDExistsIndex = index;
                                 if (item.quantity > MAX_PRODUCT_QUANTITY && quantity > MAX_PRODUCT_QUANTITY || quantity > MAX_PRODUCT_QUANTITY) {
                                     isThereAnError = true;
-                                    reject("Cart Limit Exeeded"); return 0;
-                                }
+                                    throw "Cart Limit Exeeded";
+                                };
                             };
                         });
 
 
                         if (!isThereAnError) {
 
-                            // product already exist on cart
-                            if (isThisPIDExists) {
-                                // updating quantity of product
-                                try {
-                                    if (
-                                        isNaN(Number(quantity)) == false &&
-                                        quantity > 0 &&
-                                        quantity <= MAX_PRODUCT_QUANTITY
-                                    ) {
-                                        // update product quantity with new value
-                                        const updatingProductQuantity = await db.cart.updateOne({ UID: userOutput.UID }, {
-                                            $set: {
-                                                [`products.${isThisPIDExistsIndex}.updated`]: new Date(),
-                                                [`products.${isThisPIDExistsIndex}.quantity`]: quantity
-                                            }
-                                        });
-                                        const updates = await db.products.updateOne({ PID: productOutput.PID }, {
-                                            $inc: {
-                                                interactions: 1
-                                            }
-                                        });
-                                        const updatedValues = await getSingleProductWithTotal(userOutput.UID, productOutput.PID);
-                                        resolve(updatedValues); return 0;
-                                        // resolve("Product updated"); return 0;
-                                    } else {
-                                        // increase product quantity 
-                                        const updatingProductQuantity = await db.cart.updateOne({ UID: userOutput.UID }, {
-                                            $inc: {
-                                                [`products.${isThisPIDExistsIndex}.quantity`]: 1
-                                            },
-                                            $set: {
-                                                [`products.${isThisPIDExistsIndex}.updated`]: new Date()
-                                            }
-                                        });
-                                        const updates = await db.products.updateOne({ PID: productOutput.PID }, {
-                                            $inc: {
-                                                interactions: 1
-                                            }
-                                        });
-                                        const updatedValues = await getSingleProductWithTotal(userOutput.UID, productOutput.PID);
-                                        resolve(updatedValues); return 0;
+                            try {
+                                // product already exist on cart
+                                if (isThisPIDExists) {
+                                    // updating quantity of product
+                                    // check for product quantity
+                                    const productDataFromProducts = await db.products.findOne({ PID: productOutput.PID });
+
+                                    try {
+
+                                        // checks if products stock is available
+                                        if (productDataFromProducts.stock <= checkForCartDB[0].products[isThisPIDExistsIndex].quantity) {
+                                            if (quantity) {
+                                                if (quantity > productDataFromProducts.stock) {
+                                                    throw 'Out of stock';
+                                                };
+                                            } else {
+                                                throw 'Out of stock';
+                                            };
+                                        };
+
+                                        try {
+
+                                            if (
+                                                isNaN(Number(quantity)) == false &&
+                                                quantity > 0 &&
+                                                quantity <= MAX_PRODUCT_QUANTITY
+                                            ) {
+                                                // update product quantity with new value
+                                                const updatingProductQuantity = await db.cart.updateOne({ UID: userOutput.UID }, {
+                                                    $set: {
+                                                        [`products.${isThisPIDExistsIndex}.updated`]: new Date(),
+                                                        [`products.${isThisPIDExistsIndex}.quantity`]: quantity
+                                                    }
+                                                });
+                                                const updates = await db.products.updateOne({ PID: productOutput.PID }, {
+                                                    $inc: {
+                                                        interactions: 1
+                                                    }
+                                                });
+                                                const updatedValues = await getSingleProductWithTotal(userOutput.UID, productOutput.PID);
+                                                resolve(updatedValues); return 0;
+                                                // resolve("Product updated"); return 0;
+                                            } else {
+                                                // increase product quantity 
+                                                const updatingProductQuantity = await db.cart.updateOne({ UID: userOutput.UID }, {
+                                                    $inc: {
+                                                        [`products.${isThisPIDExistsIndex}.quantity`]: 1
+                                                    },
+                                                    $set: {
+                                                        [`products.${isThisPIDExistsIndex}.updated`]: new Date()
+                                                    }
+                                                });
+                                                const updates = await db.products.updateOne({ PID: productOutput.PID }, {
+                                                    $inc: {
+                                                        interactions: 1
+                                                    }
+                                                });
+                                                const updatedValues = await getSingleProductWithTotal(userOutput.UID, productOutput.PID);
+                                                resolve(updatedValues); return 0;
+                                            };
+                                        } catch (error) {
+                                            reject('Oops someting went wrong'); return 0;
+                                        };
+                                    } catch (error) {
+                                        reject(error); return 0;
                                     };
-                                } catch (error) {
-                                    console.log('Error => ', error);
-                                    reject('Oops someting went wrong'); return 0;
-                                };
-                            } else {
-                                // adding new product to cart
-                                try {
-                                    const addNewProductToDB = await db.cart.updateOne({ UID: userOutput.UID }, {
-                                        $push: {
-                                            products: {
-                                                PID: productOutput.PID
+
+                                } else {
+                                    // adding new product to cart
+
+                                    const productDataFromProducts = await db.products.findOne({ PID: productOutput.PID });
+
+                                    // checks if products stock is available
+                                    if (productDataFromProducts.stock <= checkForCartDB[0].products[isThisPIDExistsIndex]?.quantity ? checkForCartDB[0].products[isThisPIDExistsIndex]?.quantity : quantity) {
+                                        if (quantity) {
+                                            if (quantity > productDataFromProducts.stock) {
+                                                throw 'Out of stock';
+                                            };
+                                        } else {
+                                            throw 'Out of stock';
+                                        };
+                                    };
+
+                                    try {
+                                        const addNewProductToDB = await db.cart.updateOne({ UID: userOutput.UID }, {
+                                            $push: {
+                                                products: {
+                                                    PID: productOutput.PID,
+                                                    quantity: quantity ? quantity : 1
+                                                }
                                             }
-                                        }
-                                    });
-                                    const updates = await db.products.updateOne({ PID: productOutput.PID }, {
-                                        $inc: {
-                                            addedToCart: 1,
-                                            impressions: 1,
-                                            interactions: 1
-                                        }
-                                    });
-                                    const updatedValues = await getSingleProductWithTotal(userOutput.UID, productOutput.PID);
-                                    resolve(updatedValues); return 0;
-                                } catch (error) {
-                                    console.log('Error => ', error);
-                                    reject("Oops something went wrong"); return 0;
+                                        });
+                                        const updates = await db.products.updateOne({ PID: productOutput.PID }, {
+                                            $inc: {
+                                                addedToCart: 1,
+                                                impressions: 1,
+                                                interactions: 1
+                                            }
+                                        });
+                                        const updatedValues = await getSingleProductWithTotal(userOutput.UID, productOutput.PID);
+                                        resolve(updatedValues); return 0;
+                                    } catch (error) {
+                                        console.log('Error => ', error);
+                                        reject("Oops something went wrong"); return 0;
+                                    };
                                 };
+
+                            } catch (error) {
+                                console.log(error)
+                                reject('Oops someting went wrong'); return 0;
                             };
                         };
 
                     } catch (error) {
-                        console.error("error=>", error);
-                        reject('Error adding product to cart'); return 0;
+                        // console.error("error=>", error); // TODO: remove log
+                        reject(error); return 0;
                     };
                 } else {
                     // cart not exist for this user on cart collection
+                    const productDataFromProducts = await db.products.findOne({ PID: productOutput.PID });
+
+                    // checks if products stock is available
+                    if (productDataFromProducts.stock <= checkForCartDB[0]?.products[isThisPIDExistsIndex]?.quantity) throw 'Out of stock';
+                    if (quantity) {
+                        if (quantity > productDataFromProducts.stock) {
+                            throw 'Out of stock';
+                        };
+                    };
+
+
                     try {
                         // adds products to cart
                         const addedData = await db.cart({
@@ -354,12 +407,13 @@ export const addProduct = (UID, PID, quantity) => {
                         const updatedValues = await getSingleProductWithTotal(userOutput.UID, productOutput.PID);
                         resolve(updatedValues); return 0;
                     } catch (error) {
-                        console.log('Error => ', error);
+                        // console.log('Error => ', error); // TODO : remove log
                         reject('Error adding to cart'); return 0;
                     };
                 };
             } catch (error) {
-                console.log('Error => ', error);
+                console.log(error);
+                // console.log('Error => ', error); // TODO : remove log
                 reject("Oops something went wrong"); return 0;
             };
         } catch (error) {

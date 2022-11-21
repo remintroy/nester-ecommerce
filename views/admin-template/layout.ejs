@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel</title>
-  
+
   <!-- plugins:css -->
   <link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="/vendors/base/vendor.bundle.base.css">
@@ -21,11 +21,11 @@
   <link rel="shortcut icon" href="/images/favicon.png" />
   <!-- js -->
   <link rel="stylesheet" href="/css/cropper.css">
-  <script src="/js/cropper.js"></script>  
+  <script src="/js/cropper.js"></script>
   <link rel="stylesheet" href="/css/swal.css">
-  <script src="/js/swal.min.js"></script>  
+  <script src="/js/swal.min.js"></script>
   <link rel="stylesheet" href="/css/custom.css">
-  <script  src="/vendors/base/vendor.bundle.base.js"></script>
+  <script src="/vendors/base/vendor.bundle.base.js"></script>
 </head>
 
 <body>
@@ -40,10 +40,10 @@
 
       <!-- sidebar -->
       <%- include('./partials/sidebar') %>
-      
+
       <div class="main-panel">
         <div class="content-wrapper">
-          
+
           <!-- the content to layout -->
           <%- body %>
 
@@ -77,6 +77,47 @@
     $(document).ready(function() {
       $('[data-toggle="tooltip"]').tooltip();
     });
+
+    function logout() {
+      let disp_state = document.getElementById("disp_state");
+
+      const disp = ({
+        message,
+        isGood,
+        returnVal
+      }) => {
+        disp_state.style.backgroundColor = isGood ? 'rgb(205 255 196 / 56%)' : 'rgb(255 203 203 / 56%)';
+        disp_state.style.display = message || returnVal == false ? 'flex' : 'none';
+        disp_state.innerText = message ? message : disp_state.innerText;
+        return isGood || message == '' ? true : returnVal;
+      };
+      fetch('/admin_logout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: "log me out"
+          })
+        })
+        .then(res => res.json())
+        .then(res => {
+          if (res.status == 'error') {
+            disp({
+              message: res.message,
+              isGood: false
+            })
+          } else {
+            window.location.href = '/admin_login';
+          };
+        })
+        .catch(error => {
+          disp({
+            message: error,
+            isGood: false
+          });
+        });
+    };
   </script>
 
 </body>

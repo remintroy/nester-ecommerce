@@ -383,7 +383,7 @@ export const loginApi = async (req, res) => {
 
         req.session.loggedIn = true;
         req.session.admin = userData.adminID;
-        res.send({ status: "good", message: 'Login success', action: "/admin_panel/" });
+        res.send({ status: "good", message: 'Login success', action: "/" });
     } catch (error) {
         res.send({ status: 'error', message: error });
     };

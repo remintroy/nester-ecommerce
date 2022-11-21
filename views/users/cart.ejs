@@ -65,7 +65,7 @@
                   </td>
                   <td class="quantity-col">
                     <div class="cart-product-quantity">
-                      <input type="number" class="form-control" value="<%=e.quantity%>" min="1" max="1000" step="1" data-decimals="0" required onchange="updateProductQuantity('<%=e.PID%>',this)">
+                      <input type="number" class="form-control" value="<%=e.quantity%>" min="1" max="100" step="1" data-decimals="0" required onchange="updateProductQuantity('<%=e.PID%>',this)">
                     </div><!-- End .cart-product-quantity -->
                   </td>
                   <td class="total-col">₹ <%=e.quantity*(e.price-e.offer)%>
@@ -100,7 +100,7 @@
                 </tbody>
               </table><!-- End .table table-summary -->
 
-              <a href="checkout.html" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO
+              <a href="/checkout" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO
                 CHECKOUT</a>
             </div><!-- End .summary -->
 
@@ -165,7 +165,21 @@
             document.getElementById("cart_total_count").innerText = res.message.totalCount;
             if (res.message.totalCount != 0) cartContains();
           };
-        }
+        } else {
+          Swal.fire({
+            title: res.message,
+            toast: true,
+            icon: 'error',
+            showConfirmButton: false,
+            position: 'top',
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+          })
+        };
       })
       .catch(error => console.log(error));
   };

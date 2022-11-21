@@ -5,7 +5,7 @@ import * as auth from '../app/services/auth.js';
 const api = Express.Router();
 
 // authenticate requests
-api.use(auth.mustLoginAsAdminAPI); // TODO
+// api.use(auth.mustLoginAsAdminAPI); // TODO
 
 // report data
 api.get('/reports', apiService.reports);

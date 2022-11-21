@@ -26,7 +26,6 @@ export const localsForUser = async (req, res, next) => {
 // analytics for users pages
 export const analytics = (req, res, next) => {
   try {
-
     db.analytics.updateOne({ title: 'user_page_request' }, {
       $push: {
         data: new Date()
@@ -46,6 +45,29 @@ export const analytics = (req, res, next) => {
     next();
   } catch (error) {
     next();
+  };
+};
+export const analytics_pages = async (title) => {
+  try {
+    title = (title + "").trim();
+    db.analytics.updateOne({ title: title }, {
+      $push: {
+        data: new Date()
+      }
+    }).then(res => {
+      if (res.matchedCount == 0) {
+        db.analytics({
+          title: title,
+          data: [
+            new Date()
+          ]
+        })
+          .save();
+      };
+    });
+    return true;
+  } catch (error) {
+    return false;
   };
 };
 
@@ -123,6 +145,7 @@ export const home = (req, res) => {
   res.locals.user = req.user;
   res.currentPage = "home";
   res.render("users/index");
+  analytics_pages('user_home_GET');
 };
 export const shop = async (req, res) => {
   try {
@@ -135,6 +158,7 @@ export const shop = async (req, res) => {
     res.locals.currentPage = "shop";
     res.locals.products = products;
     res.render("users/shop");
+    analytics_pages('user_shop_GET');
   } catch (error) {
     res.locals.message = `Can't read product data from db `;
     res.locals.code = 500;
@@ -154,6 +178,7 @@ export const product = async (req, res) => {
     res.locals.currentPage = "product";
     res.locals.product = productData;
     res.render("users/product");
+    analytics_pages('user_product_GET');
   } catch (error) {
     res.locals.message = `Can't read product data from db`;
     res.locals.code = 500;
@@ -164,6 +189,7 @@ export const cart = async (req, res) => {
   res.locals.currentPage = "cart";
   try {
     res.render("users/cart");
+    analytics_pages('user_cart_GET');
   } catch (error) {
     res.locals.message = `Can't read product data from db `;
     res.code = 500;
@@ -173,12 +199,14 @@ export const cart = async (req, res) => {
 export const wishlist = (req, res) => {
   res.locals.currentPage = "wishlist";
   res.render("users/wishlist");
+  analytics_pages('user_wishlist_GET');
 };
 export const dashboard = async (req, res) => {
   try {
     res.locals.orders = await orders.getByUID(req?.user?.UID);
     res.locals.currentPage = "dashboard";
     res.render("users/dashboard");
+    analytics_pages('user_dashboard_GET');
   } catch (error) {
     res.locals.code = "500";
     res.locals.message = error;
@@ -192,6 +220,7 @@ export const checkout = async (req, res) => {
     res.locals.address = await userService?.getAllAddress(UID);
     res.locals.currentPage = "checkout";
     res.render("users/checkout");
+    analytics_pages('user_checkout_GET');
   } catch (error) {
     res.locals.message = "Cant display this page now...";
     res.locals.error = "Faild to fetch address related data form database";
@@ -204,6 +233,7 @@ export const ordersPg = async (req, res) => {
     res.locals.currentPageA = "dashboard";
     res.locals.currentPage = "orders";
     res.render("users/dashboard");
+    analytics_pages('user_dash/orders_GET');
   } catch (error) {
     res.locals.message = "Cant display this page now...";
     res.locals.error = "Faild to fetch orders related data form database";
@@ -217,6 +247,7 @@ export const addressPg = async (req, res) => {
     res.locals.currentPageA = "dashboard";
     res.locals.currentPage = "address";
     res.render("users/dashboard");
+    analytics_pages('user_dash/address_GET');
   } catch (error) {
     res.locals.message = "Cant display this page now...";
     res.locals.error = "Faild to fetch address related data form database";
@@ -228,6 +259,7 @@ export const accountPg = async (req, res) => {
     res.locals.currentPageA = "dashboard";
     res.locals.currentPage = "account";
     res.render("users/dashboard");
+    analytics_pages('user_dash/account_GET');
   } catch (error) {
     res.locals.message = "Cant display this page now...";
     res.locals.error = "Faild to fetch account related data form database";

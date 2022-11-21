@@ -53,6 +53,10 @@ export const reports = async (req, res) => {
             service: 'userViewsInDay'
         });
 
+        validKeys.push({
+            key: 'pages-today',
+            service: 'getRequestByPages'
+        });
 
         const keys = Object.keys(req.query);
         let isGoodQuery = false;

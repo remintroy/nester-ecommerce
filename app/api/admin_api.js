@@ -78,10 +78,10 @@ export const categoryUsageInPastHours = async (hoursAgo) => {
 
         return data;
     } catch (error) {
-        console.log(error);
         throw 'Error while fetching category data form db';
     };
 };
+// total products net worth of added hours ago
 export const totalProductNetWorth = async (hoursAgo) => {
     try {
         const data = await db.products.aggregate([
@@ -125,10 +125,10 @@ export const totalProductNetWorth = async (hoursAgo) => {
         ]);
         return data;
     } catch (error) {
-        console.log(error);
         throw 'Error fetching product data form server';
     }
 };
+// reutrn total orders count only
 export const salesInYear_count = async (year) => {
     try {
         return await salesInYear(year, true);
@@ -136,6 +136,7 @@ export const salesInYear_count = async (year) => {
         throw error;
     };
 };
+// reutrn total orders count and products 
 export const salesInYear = async (year, noData) => {
     try {
 
@@ -182,7 +183,6 @@ export const salesInYear = async (year, noData) => {
             // resolving output data
             return dataFromDb;
         } catch (error) {
-            console.log(error);
             throw 'Error fetching sales data form db';
         };
 
@@ -190,6 +190,7 @@ export const salesInYear = async (year, noData) => {
         throw error;
     };
 };
+// reutrn total views in today for each hour
 export const userViewsInDay = async () => {
     try {
 
@@ -228,8 +229,71 @@ export const userViewsInDay = async () => {
         return dataFromDb;
 
     } catch (error) {
-        console.log(error);
         throw 'Error fetching data from db';
+    };
+};
+// reutrn total data of each pages requests
+export const getRequestByPages = async () => {
+    try {
+        const day_start = new Date(new Date().setHours(0, 0, 0, 1));
+        const data = await db.analytics.aggregate([
+            {
+                $facet: {
+                    home: [
+                        { $match: { title: 'user_home_GET' }, },
+                        { $unwind: '$data' },
+                        { $match: { data: { $gte: day_start } } },
+                        { $group: { _id: { $hour: { date: '$data', timezone: '+05:30' } }, count: { $sum: 1 } } },
+                        { $project: { count: '$count', _id: 0, hour: '$_id' } }
+                    ],
+                    shop: [
+                        { $match: { title: 'user_shop_GET' }, },
+                        { $unwind: '$data' },
+                        { $match: { data: { $gte: day_start } } },
+                        { $group: { _id: { $hour: { date: '$data', timezone: '+05:30' } }, count: { $sum: 1 } } },
+                        { $project: { count: '$count', _id: 0, hour: '$_id' } }
+                    ],
+                    product: [
+                        { $match: { title: 'user_product_GET' }, },
+                        { $unwind: '$data' },
+                        { $match: { data: { $gte: day_start } } },
+                        { $group: { _id: { $hour: { date: '$data', timezone: '+05:30' } }, count: { $sum: 1 } } },
+                        { $project: { count: '$count', _id: 0, hour: '$_id' } }
+                    ],
+                    cart: [
+                        { $match: { title: 'user_cart_GET' }, },
+                        { $unwind: '$data' },
+                        { $match: { data: { $gte: day_start } } },
+                        { $group: { _id: { $hour: { date: '$data', timezone: '+05:30' } }, count: { $sum: 1 } } },
+                        { $project: { count: '$count', _id: 0, hour: '$_id' } }
+                    ],
+                    wishlist: [
+                        { $match: { title: 'user_wishlist_GET' }, },
+                        { $unwind: '$data' },
+                        { $match: { data: { $gte: day_start } } },
+                        { $group: { _id: { $hour: { date: '$data', timezone: '+05:30' } }, count: { $sum: 1 } } },
+                        { $project: { count: '$count', _id: 0, hour: '$_id' } }
+                    ],
+                    dashboard: [
+                        { $match: { title: 'user_dashboard_GET' }, },
+                        { $unwind: '$data' },
+                        { $match: { data: { $gte: day_start } } },
+                        { $group: { _id: { $hour: { date: '$data', timezone: '+05:30' } }, count: { $sum: 1 } } },
+                        { $project: { count: '$count', _id: 0, hour: '$_id' } }
+                    ],
+                    checkout: [
+                        { $match: { title: 'user_checkout_GET' }, },
+                        { $unwind: '$data' },
+                        { $match: { data: { $gte: day_start } } },
+                        { $group: { _id: { $hour: { date: '$data', timezone: '+05:30' } }, count: { $sum: 1 } } },
+                        { $project: { count: '$count', _id: 0, hour: '$_id' } }
+                    ]
+                }
+            }
+        ]);
+        return data[0];
+    } catch (error) {
+        throw error;
     };
 };
 
@@ -264,7 +328,7 @@ export const getProductInPages = async (pages) => {
 
 async function test() {
     try {
-        const data = await userViewsInDay();
+        const data = await getRequestByPages();
         console.log("data => ", data);
     } catch (error) {
         console.log("error =>", error);

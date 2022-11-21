@@ -126,8 +126,13 @@
         })
         .then(res => res.json())
         .then(res => {
-          document.getElementById("cart_total_count").innerText = res.message.totalCount;
-          notify('added to cart');
+          console.log(res);
+          if (res.status == 'good') {
+            document.getElementById("cart_total_count").innerText = res.message.totalCount;
+            notify('added to cart', true);
+          } else {
+            notify(res.message);
+          };
         })
         .catch(error => console.log(error));
     };
@@ -135,10 +140,10 @@
 
   <!-- <script src="/js/swal/swal.min.js"></script> -->
   <script>
-    function notify(message) {
+    function notify(message, isGood) {
       Swal.fire({
         title: message,
-        icon: 'success',
+        icon: isGood ? 'success' : 'error',
         toast: true,
         position: 'top',
         showConfirmButton: false,
@@ -148,8 +153,7 @@
           toast.addEventListener('mouseenter', Swal.stopTimer)
           toast.addEventListener('mouseleave', Swal.resumeTimer)
         }
-      })
-
+      });
     };
   </script>
   <script>

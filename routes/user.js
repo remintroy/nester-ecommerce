@@ -9,12 +9,12 @@ app.get('/test', (req, res) => {
     res.send({ status: "good", message: "Test message form server" });
 })
 
-// admin auth routes
-app.get('/admin_login', auth.mustLogoutAsAdmin, admin.login);
-// api for admin login 
-app.post('/admin_login', auth.mustLogoutAsAdminAPI, admin.loginApi);
-// api for admin logout
-app.post('/admin_logout', auth.mustLoginAsAdminAPI, auth.adminLogout);
+// // admin auth routes
+// app.get('/admin_login', auth.mustLogoutAsAdmin, admin.login);
+// // api for admin login 
+// app.post('/admin_login', auth.mustLogoutAsAdminAPI, admin.loginApi);
+// // api for admin logout
+// app.post('/admin_logout', auth.mustLoginAsAdminAPI, auth.adminLogout);
 
 // apis - api for user sign in 
 app.post('/user_signin', auth.mustLogoutAsUserAPI, users.loginAPI);
@@ -69,18 +69,18 @@ app.use(users.localsForUser);
 app.use(users.analytics);
 
 /// home page
-app.get(['/', '/index.html'], users.home);
+app.get('/', users.home);
 // shop page
-app.get(['/shop', '/shop.html'], users.shop);
+app.get('/shop', users.shop);
 // products page
-app.get(['/product/:id', '/product.html/:id'], users.product);
+app.get('/product/:id', users.product);
 
 // user auth must routes
-app.get(['/cart', '/cart.html'], auth.mustLoginAsUser, users.cart);
+app.get('/cart', auth.mustLoginAsUser, users.cart);
 // wishlist page
-app.get(['/wishlist', '/wishlist.html'], auth.mustLoginAsUser, users.wishlist);
+app.get('/wishlist', auth.mustLoginAsUser, users.wishlist);
 // dashboard page
-app.get(['/dashboard', '/dashboard.html'], auth.mustLoginAsUser, users.dashboard);
+app.get('/dashboard', auth.mustLoginAsUser, users.dashboard);
 // ordres page
 app.get('/dashboard/orders', auth.mustLoginAsUser, users.ordersPg);
 // address page
@@ -88,6 +88,6 @@ app.get('/dashboard/address', auth.mustLoginAsUser, users.addressPg);
 // account page 
 app.get('/dashboard/account', auth.mustLoginAsUser, users.accountPg);
 // checkout page
-app.get(['/checkout', '/checkout.html'], auth.mustLoginAsUser, users.checkout);
+app.get('/checkout', auth.mustLoginAsUser, users.checkout);
 
 export default app;
