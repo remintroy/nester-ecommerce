@@ -100,9 +100,11 @@ export const veryfyPayment = (UID, body) => {
     });
 };
 export const veryfyPayment2 = (UID, id, body) => {
+    console.log(UID,id,body); // TODO : remove log
     return new Promise(async (resolve, reject) => {
         try {
             const result = await orders.paymentConfirmPaypal(UID, id, body);
+            console.log('Paypal result => ',result); // TODO : remove log
             resolve(result);
         } catch (error) {
             reject(error);

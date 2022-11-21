@@ -103,6 +103,11 @@ export const products = async (req, res) => {
             service: 'getProductInPages'
         });
 
+        validKeys.push({
+            key:'analytics-pid',
+            service:'getProductsStatByPID'
+        })
+
         const keys = Object.keys(req.query);
         let isGoodQuery = false;
         // findig the existatnce of any valid key in query

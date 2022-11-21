@@ -367,6 +367,7 @@ export const checkOutVerifyRazorpayAPI = async (req, res) => {
 export const checkOutVerifyPaypalAPI = async (req, res) => {
   try {
     const UID = req.user.UID; // form session
+    const id = req.params.id;
     // adds product to cart or if exist updates the quantity
     const output = await userService.veryfyPayment2(UID, id, req.body);
     res.send({ status: "good", message: output, action: "/dashboard/orders" });

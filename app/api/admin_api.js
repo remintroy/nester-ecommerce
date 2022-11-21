@@ -1,4 +1,5 @@
 import * as db from '../services/schema.js';
+import * as products from '../services/products.js';
 
 // get products added at ( n ) hours ago
 export const productsDataInPastHours = async (hoursAgo) => {
@@ -325,13 +326,29 @@ export const getProductInPages = async (pages) => {
         throw 'Error while fetching data from db';
     };
 };
+export const getProductsStatByPID = async (PID) => {
+    try {
+        const productsOutput = await products.validatior({ PID: PID }, { PID: true }, 'updateproduct');
+        try {
+            const dataFromDb = await db.products.aggregate([
+                { $match: { PID: productsOutput.PID } }
+            ]);
+            return dataFromDb;
+        } catch (error) {
+            console.log(error);
+            throw 'Error fetching products analytics data from db';
+        };
+    } catch (error) {
+        throw error;
+    };
+};
 
 async function test() {
     try {
-        const data = await getRequestByPages();
+        const data = await getProductsStatByPID('vu36w782UNhC0D7ilDVM');
         console.log("data => ", data);
     } catch (error) {
         console.log("error =>", error);
     }
 }
-// test()
+test()

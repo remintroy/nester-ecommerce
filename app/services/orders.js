@@ -208,7 +208,7 @@ const addTODB = (UID, addressFrom, type, save) => {
         };
     });
 };
-const addTODBOnline = (UID, addressFrom) => {
+const addTODBOnline = (UID, addressFrom, typeOfPayment) => {
     return new Promise(async (resolve, reject) => {
         try {
             // get all products from cart
@@ -532,7 +532,7 @@ export const paymentConfirmRazorpay = (UID, body) => {
                 if (address) {
                     try {
                         // place order
-                        const data = await addTODBOnline(userOutput.UID, output);
+                        const data = await addTODBOnline(userOutput.UID, output, 'razorPay');
                         resolve(data);
 
                     } catch (error) {

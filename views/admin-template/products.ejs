@@ -120,7 +120,7 @@
 
         const more = document.createElement('td');
         more.setAttribute('style', 'cursor: pointer; text-align: center;');
-        more.setAttribute('onclick', `window.location.href='/admin_panel/products/edit_product/${items?.PID}'`);
+        more.setAttribute('onclick', `window.location.href='/products/edit_product/${items?.PID}'`);
         more.innerHTML = `<b>More</b>`;
 
         tr.append(index, img_cont, title, price, stock, category, creationTime, more);

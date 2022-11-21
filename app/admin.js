@@ -158,7 +158,7 @@ export const addProducts = async (req, res) => {
         res.locals.currentPageA = 'products';
         res.locals.currentPage = 'addProducts';
         res.locals.category = category;
-        res.render(pagesBase + '/add_products');
+        res.render(pagesBase + '/products_add');
     } catch (error) {
         console.error(error);
         res.locals.message = `Interal error`;
@@ -195,7 +195,15 @@ export const editProduct = async (req, res) => {
         try {
             const product = await db.products.findOne({ PID: output.PID });
             const categorys = await db.category.find();
-            const keys = Object.keys(product._doc);
+
+            if (!product) {
+                res.locals.code = 404;
+                res.locals.message = `Can't find product with this PID`;
+                res.render('admin/404');
+                return 0;
+            };
+
+            const keys = Object.keys(product?._doc);
             const result = {};
 
             for (let i = 0; i < keys.length; i++) {
@@ -206,9 +214,8 @@ export const editProduct = async (req, res) => {
             res.locals.currentPageA = 'products';
             res.locals.product = result;
             res.locals.category = categorys;
-            res.render('admin/editProduct');
+            res.render(pagesBase + '/products_edit');
         } catch (error) {
-            console.log(error);
             res.locals.code = 500;
             res.locals.message = "Error fetching product data form db"
             res.render('admin/404');

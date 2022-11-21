@@ -260,7 +260,7 @@
     // Finalize the transaction after payer approval
     onApprove: (data, actions) => {
       console.log('Approved => ',actions);
-      return fetch(`/orders/${data.orderID}/capture`, {
+      return fetch(`/checkout/${data.orderID}/capture`, {
           method: 'POST'
         })
         .then(res => res.json())
