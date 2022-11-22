@@ -141,7 +141,7 @@ $(function () {
       };
 
       new Chart("ordersChart", {
-        type: "bar",
+        type: "line",
         data: {
           labels: xValues,
           datasets: [{
@@ -175,7 +175,7 @@ $(function () {
         options: {
           legend: { display: false },
           scales: {
-            yAxes: [{ ticks: { min: 0, max: 16 } }],
+            yAxes: [{ ticks: { min: 0 } }],
           },
           plugins: {
             filler: {
@@ -240,7 +240,7 @@ $(function () {
     const dayOptions = {
       legend: { display: false },
       scales: {
-        yAxes: [{ ticks: { min: 0 } }],
+        yAxes: [{ ticks: { min: 0, precision: 0 } }],
       },
       plugins: {
         filler: {
@@ -364,8 +364,8 @@ $(function () {
           };
         };
 
-         // wishlist
-         for (let j = 0; j < 24; j++) {
+        // wishlist
+        for (let j = 0; j < 24; j++) {
           if (dataFromServer['pages-today']?.wishlist[j]) {
             if (dataFromServer['pages-today']?.wishlist[j].hour == i) {
               outputE = Number(dataFromServer['pages-today']?.wishlist[j].count);
@@ -420,7 +420,7 @@ $(function () {
               borderColor: dayBorderColor[0],
               fill: false,
               borderWidth: 1,
-              data: yValuesA
+              data: yValuesA,
             },
             {
               label: 'Shop',

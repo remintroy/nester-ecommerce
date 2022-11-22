@@ -362,7 +362,7 @@ const finalSubmitToServer = async (data) => {
 
                     window.checkOutData = data;
 
-                    if (data.method == 'online') {
+                    if (data.method == 'razorpay') {
 
                         const options = {
                             "key": "rzp_test_oRZSfNK6JdPa46",
@@ -372,7 +372,8 @@ const finalSubmitToServer = async (data) => {
                             "handler": function (response) {
 
                                 paySubmit({
-                                    orderID: response.razorpay_order_id,
+                                    orderID: res.message.orderID,
+                                    id: response.razorpay_order_id,
                                     paymentID: response.razorpay_payment_id,
                                     signature: response.razorpay_signature
                                 });

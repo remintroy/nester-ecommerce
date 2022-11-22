@@ -349,6 +349,6 @@ async function test() {
         console.log("data => ", data);
     } catch (error) {
         console.log("error =>", error);
-    }
-}
-test()
+    };
+};
+// test()

@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon index.js --experimental-fetch"
+    "start": "nodemon index.js"
   },
   "author": "remindev",
   "license": "ISC",

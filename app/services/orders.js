@@ -6,6 +6,7 @@ import * as cart from './cart.js';
 import * as address from './address.js';
 import * as razorpay from './razorpay.js';
 import * as paypal from './paypal.js';
+import * as analytics from './analytics.js';
 
 const ORDERID_LENGTH = 20;
 const ALL_ORDER_STATUS = ['ordered_OR', 'shipped_SH', 'out for delivery_OT', 'delivered_DD', 'cancelled_CC'];
@@ -28,381 +29,176 @@ const createOrderID = async () => {
     // result orderID
     return orderID;
 };
-const addTODB = (UID, addressFrom, type, save) => {
+//.. user
+export const checkout = async (UID, body) => {
+    try {
+        const startTime = new Date();
+        // HERE UID is considerd validated because its form session
 
-    save = 'YES';
+        // getting data from request body
+        const { method: paymentMethod = null, address: addressFrom = null } = body;
 
-    return new Promise(async (resolve, reject) => {
-        try {
-            // get all products from cart
-            const products = await cart.getAllProductsWithTotal(UID);
+        // guard for check existance of all data
+        if (addressFrom == null || paymentMethod == null) throw `Requset doesn't contain all needed data`;
 
-            // check for products existence
-            if (products.length == 0) throw 'Nothing to checkout';
-            // sets evey product status
-            products?.map(e => e['paymentStatus'] = 'pending');
-            products?.map(e => e['status'] = 'ordered');
-            products?.map(e => e['update'] = new Date());
-            products?.map(e => e.statusUpdate = {
-                0: { status: 'ordered', date: new Date() }
-            });
+        // guard for paymet methord
+        if (['COD', 'razorpay', 'paypal'].indexOf(paymentMethod) == -1) throw 'Invalid payment methord';
 
+        // --------- gets all products in cart ---------
+        const products = await cart.getAllProductsWithTotal(UID);
+
+        // check for emplty cart
+        if (products?.length == 0) throw 'Nothing to checkout';
+
+        // some analytics to each products
+        products?.forEach(async product => {
             try {
-                // 
-                const checkForExistingCollection = await db.orders.find({ UID: UID });
-                const userDataForCheckout = await db.users.find({ UID: UID }, {
-                    _id: 0,
-                    password: 0,
-                    loginProvider: 0,
-                    __v: 0,
-                    blocked: 0,
-                    lastLogin: 0,
-                    creationTime: 0,
-                    UID: 0
-                });
-
-                let paymentDetails = {};
-                let addressDetails = {};
-
-                // cheks and saves address accordingly
-                if (save == "YES") {
-                    try {
-                        const saveAddress = await address.save(UID, addressFrom);
-                        addressDetails.id = saveAddress._id + "";
-                    } catch (error) {
-                        reject(error); return 0;
-                    };
-                };
-
-                //... PAYMENT
-                if (type == 'online') {
-                    try {
-                        // total amount to pay
-                        const orderTotalAmount = products[0].subTotal;
-                        // creating order in razorpay
-                        paymentDetails = await razorpay.createOrder(UID, await createOrderID(), orderTotalAmount);
-
-                    } catch (error) {
-                        reject(error?.error?.description ? error?.error?.description : 'Error Creating order');
-                    };
-                } else if (type == 'paypal') {
-                    try {
-                        // total amount to pay
-                        const orderTotalAmount = products[0].subTotal;
-                        // creating order in razorpay
-                        paymentDetails = await paypal.createOrder(UID, await createOrderID(), orderTotalAmount);
-                    } catch (error) {
-                        reject(error?.error?.description ? error?.error?.description : 'Error Creating order');
-                    };
-
-                } else if (type == 'COD') {
-                    // place order and save to db
-
-                    paymentDetails = {
-                        type: 'COD',
-                        orderID: await createOrderID()
-                    };
-
-                    //...
-                    if (checkForExistingCollection.length > 0) {
-                        // order collection exists for this user
-                        const data = await db.orders.updateOne({ UID: UID }, {
-                            $push: {
-                                orders: [
-                                    {
-                                        orderID: paymentDetails?.receipt ? paymentDetails.receipt?.split('_')[1] : paymentDetails.orderID,
-                                        paymentDetails: paymentDetails,
-                                        products: products,
-                                        address: addressFrom,
-                                        paymentType: type,
-                                        status: 'pending',
-                                        paymentStatus: 'pending'
-                                    }
-                                ]
-                            }
-                        });
-                        products?.forEach(async (product) => {
-                            const updates = await db.products.updateOne({ PID: product.PID }, {
-                                $inc: {
-                                    interactions: 1,
-                                    purchased: 1,
-                                },
-                                $set: {
-                                    lastPurchased: new Date()
-                                }
-                            });
-                        });
-                    } else {
-                        // order collection not exists for this user
-                        const data = await db.orders({
-                            UID: UID,
-                            orders: [
-                                {
-                                    orderID: paymentDetails?.receipt ? paymentDetails.receipt?.split('_')[1] : paymentDetails.orderID,
-                                    paymentDetails: paymentDetails,
-                                    products: products,
-                                    address: addressFrom,
-                                    paymentType: type,
-                                    status: 'pending',
-                                    paymentStatus: 'pending'
-                                }
-                            ]
-                        });
-                        const confirm = await data.save();
-
-                        products?.forEach(async (product) => {
-                            const updates = await db.products.updateOne({ PID: product.PID }, {
-                                $inc: {
-                                    interactions: 1,
-                                    purchased: 1,
-                                },
-                                $set: {
-                                    lastPurchased: new Date()
-                                }
-                            });
-                        });
-                    };
-
-                    // clear cart
-                    const cartDataRemoveStatus = await db.cart.updateOne({ UID: UID }, {
-                        $set: {
-                            products: []
-                        }
-                    });
-                    products?.forEach(async (product) => {
-                        const updates = await db.products.updateOne({ PID: product.PID }, {
-                            $inc: {
-                                interactions: 1,
-                                addedToCart: -1
-                            }
-                        });
-                    });
-
-                    resolve({
-                        id: paymentDetails.orderID,
-                        amount: products[0].subTotal,
-                        user: userDataForCheckout[0],
-                        status: 'created',
-                        message: 'Order successfully rejested'
-                    });
-                };
-
-                if (type == 'online' || type == 'paypal') resolve({
-                    address: addressDetails,
-                    id: paymentDetails.id,
-                    amount: paymentDetails.amount,
-                    receipt: paymentDetails.receipt,
-                    status: paymentDetails.status,
-                    user: userDataForCheckout[0],
-                    message: 'Order successfully initiated'
-                });
-
-                //...
-
+                await analytics.addProductReachedCheckout(product.PID);
+                await analytics.addProductInteractions(product.PID);
             } catch (error) {
-                console.log("Error => ", error);
-                reject('Error initiating address');
+                //..  
+            };
+        });
+
+        for (const product of products) {
+            if (product.quantity > product.stock) throw 'Some products in cart is out of stock';
+        };
+
+        // ---------- address ----------
+        const addressResult = {};
+        const addressOutput = await address.validator(UID, addressFrom);
+
+        for (const i of Object.keys(addressOutput)) {
+            if (addressOutput[i]) addressResult[i] = addressOutput[i];
+        };
+
+        let addressID = await address.save(UID, addressResult);
+        addressID = addressID._id + "";
+
+        // -------- set values to products -------
+        products?.map(e => e['paymentStatus'] = 'pending');
+        products?.map(e => e['status'] = 'ordered');
+        products?.map(e => e['update'] = new Date());
+        products?.map(e => e.statusUpdate = {
+            0: { status: 'ordered', date: new Date() }
+        });
+
+        // --------- getting data's -------------
+        let existingOrdresCollection = null;
+        let userData = null;
+
+        try {
+            existingOrdresCollection = await db.orders.find({ UID: UID });
+            userData = await db.users.find({ UID: UID }, {
+                _id: 0,
+                password: 0,
+                loginProvider: 0,
+                __v: 0,
+                blocked: 0,
+                lastLogin: 0,
+                creationTime: 0,
+                UID: 0
+            });
+        } catch (error) {
+            throw 'Error while fetching user data';
+        };
+
+        // --------- Creating order -----------
+        const orderTotalAmount = products[0].subTotal;
+        const orderID = await createOrderID();
+
+        try {
+
+            const dataToDatabase = {
+                orderID: orderID,
+                products: products,
+                address: addressResult,
+                paymentType: paymentMethod,
+                status: 'ordered',
+                paymentStatus: 'pending'
+            };
+
+            // if user has a orders collection
+            if (existingOrdresCollection.length > 0) {
+                // updating existing document
+                const data = await db.orders.updateOne({ UID: UID }, {
+                    $push: {
+                        orders: [dataToDatabase]
+                    }
+                });
+            } else {
+                // creating new document
+                const data = await db.orders({
+                    UID: UID,
+                    orders: [dataToDatabase]
+                });
+                const confirm = await data.save();
             };
         } catch (error) {
-            reject(error);
+            throw 'Error while creating order';
         };
-    });
-};
-const addTODBOnline = (UID, addressFrom, typeOfPayment) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            // get all products from cart
-            const products = await cart.getAllProductsWithTotal(UID);
-            // check for products existence
-            if (products.length == 0) throw 'Nothing to checkout';
-            // sets evey product status
-            products?.map(e => e['paymentStatus'] = 'paid');
-            products?.map(e => e['status'] = 'orderd');
-            products?.map(e => e['update'] = new Date());
-            products?.map(e => e.statusUpdate = {
-                0: { status: 'ordered', date: new Date() }
-            });
 
+        // --------- creating order in specified paymetn method --------
+
+        let paymentDetails = {};
+        let collectedErrors;
+
+        if (paymentMethod == 'razorpay') {
             try {
-                // 
-                const checkForExistingCollection = await db.orders.find({ UID: UID });
-                const userDataForCheckout = await db.users.find({ UID: UID }, {
-                    _id: 0,
-                    password: 0,
-                    loginProvider: 0,
-                    __v: 0,
-                    blocked: 0,
-                    lastLogin: 0,
-                    creationTime: 0,
-                    UID: 0
-                });
+                // creating order in razorpay
+                paymentDetails = await razorpay.createOrder(UID, orderID, orderTotalAmount);
+            } catch (error) {
+                throw error?.error?.description ? error?.error?.description : 'Payment gateway error';
+            };
+        } else if (paymentMethod == 'paypal') {
+            try {
+                // creating order in paypal
+                paymentDetails = await paypal.createOrder(UID, orderID, orderTotalAmount);
+            } catch (error) {
+                throw (error?.error?.description ? error?.error?.description : 'Payment gateway error');
+            };
+        } else {
+            paymentDetails = {
+                orderID: orderID
+            };
+        };
 
-                // place order and save to db
-                let paymentDetails = {
-                    type: 'online',
-                    orderID: await createOrderID(),
-                    amount: products[0].subTotal
-                };
-
-                //...
-                if (checkForExistingCollection.length > 0) {
-                    // order collection exists for this user
-                    const data = await db.orders.updateOne({ UID: UID }, {
-                        $push: {
-                            orders: [
-                                {
-                                    orderID: paymentDetails?.orderID ? paymentDetails.orderID : await createOrderID(),
-                                    paymentDetails: paymentDetails,
-                                    products: products,
-                                    address: addressFrom,
-                                    paymentType: 'online',
-                                    paymentStatus: 'paid'
-                                }
-                            ]
+        if (paymentMethod == 'COD') {
+            try {
+                for (const product of products) {
+                    await db.products.updateOne({ PID: product.PID }, {
+                        $inc: {
+                            stock: 0 - Number(product.quantity)
                         }
                     });
-                    products?.forEach(async (product) => {
-                        const updates = await db.products.updateOne({ PID: product.PID }, {
-                            $inc: {
-                                interactions: 1,
-                                purchased: 1,
-                            },
-                            $set: {
-                                lastPurchased: new Date()
-                            }
-                        });
-                    });
-                } else {
-                    // order collection not exists for this user
-                    const data = await db.orders({
-                        UID: UID,
-                        orders: [
-                            {
-                                orderID: paymentDetails?.orderID ? paymentDetails.orderID : await createOrderID(),
-                                paymentDetails: paymentDetails,
-                                products: products,
-                                address: addressFrom,
-                                paymentType: 'online',
-                                paymentStatus: 'paid'
-                            }
-                        ]
-                    });
-                    data.save();
-                    products?.forEach(async (product) => {
-                        const updates = await db.products.updateOne({ PID: product.PID }, {
-                            $inc: {
-                                interactions: 1,
-                                purchased: 1,
-                            },
-                            $set: {
-                                lastPurchased: new Date()
-                            }
-                        });
-                    });
                 };
-
-                // clear cart
                 const cartDataRemoveStatus = await db.cart.updateOne({ UID: UID }, {
                     $set: {
                         products: []
                     }
                 });
-                products?.forEach(async (product) => {
-                    const updates = await db.products.updateOne({ PID: product.PID }, {
-                        $inc: {
-                            interactions: 1,
-                            addedToCart: -1
-                        }
-                    });
-                });
-
-                resolve({
-                    amount: products[0].subTotal,
-                    status: 'paid',
-                    user: userDataForCheckout[0],
-                    message: 'Order successfully initiated'
-                });
-
-                //...
             } catch (error) {
-                console.log("Error => ", error);
-                reject('Error initiating address');
+                collectedErrors = 'Error while removing product from cart';
             };
-        } catch (error) {
-            reject(error);
         };
-    });
+
+        return {
+            id: paymentDetails?.id ? paymentDetails.id : orderID,
+            timeTaken: new Date() - startTime + ' ms',
+            orderID: orderID,
+            amount: orderTotalAmount,
+            typeOfPayment: paymentMethod,
+            user: userData,
+            status: 'created',
+            message: 'Order successfully initiated',
+            errors: collectedErrors
+        };
+
+    } catch (error) {
+        throw error;
+    };
 };
 
-//.. user
-export const checkout = (UID, body) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const userOutput = await auth.validatior({ UID: UID }, { UIDRequired: true });
-            let method;
-
-            if (body?.method == 'COD' || body?.method == 'online' || body?.method == 'paypal') method = body?.method;
-            else throw 'Payment methord required';
-
-            try {
-
-                // updating data of carted products
-                const products = await cart.getAllProductsWithTotal(userOutput.UID);
-                products?.forEach(async (product) => {
-                    const updates = await db.products.updateOne({ PID: product.PID }, {
-                        $inc: {
-                            interactions: 1,
-                            reachedCheckout: 1
-                        }
-                    });
-                });
-
-                // if place order by existing address
-                if (body?.type == 'id') {
-                    // find address form db
-                    try {
-                        const address = await db.address.findOne({ UID: userOutput.UID });
-                        let output = {};
-
-                        // matching address
-                        address?.address?.forEach(e => {
-                            if (e._id == body.address) {
-                                output = e;
-                            };
-                        });
-
-                        if (address) {
-                            try {
-                                // place order
-                                const data = await addTODB(userOutput.UID, output, method);
-                                resolve(data);
-
-                            } catch (error) {
-                                reject(error);
-                            };
-                        } else {
-                            reject("Plz select address");
-                        };
-
-                    } catch (error) {
-                        console(error)
-                        reject('Error fetching address form db');
-                    };
-
-                } else {
-                    // place order by new address
-                    const data = await addTODB(userOutput.UID, body.address, method, body?.address?.save ? 'YES' : 'NO');
-                    resolve(data);
-                };
-
-            } catch (error) {
-                reject(error);
-            };
-        } catch (error) {
-            reject(error);
-        };
-    });
-};
 export const cancelOrderWithUID = (UID, orderID) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -498,59 +294,92 @@ export const cancelOrderProductWithUID = (UID, orderID, PID) => {
     });
 };
 // paypal payment
-export const paymentConfirmPaypal = (UID, id, body) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const result = await paypal.capturePayment(id);
-            resolve(result);
-        } catch (error) {
-            reject(error);
-        };
-    });
-};
-export const paymentConfirmRazorpay = (UID, body) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            // valdiating userID
-            const userOutput = await auth.validatior({ UID: UID }, { UIDRequired: true });
-            // validating payment signature
-            const validatePayment = razorpay.verifyPurchace(body.keys.paymentID, body.keys.orderID, body.keys.signature);
-            if (!validatePayment) throw 'Error validating payment';
-
-            // find address form db
+export const paymentConfirmPaypal = async (UID, id, orderID) => {
+    try {
+        const result = await paypal.capturePayment(id);
+        if (result.status == 'COMPLETED') {
             try {
-                const address = await db.address.findOne({ UID: userOutput.UID });
-                let output = {};
+                const dataFromDb = await db.orders.find({ UID: UID });
+                if (dataFromDb[0]) {
 
-                // matching address
-                address?.address?.forEach(e => {
-                    if (e._id == body?.address?.id ? body.address.id : body?.address) {
-                        output = e;
+
+                    const indexOfOrder = dataFromDb[0].orders.map(e => e.orderID == orderID).indexOf(true);
+                    const updatedData = await db.orders.updateOne({ UID: UID }, {
+                        $set: {
+                            [`orders.${indexOfOrder}.paymentStatus`]: 'paid'
+                        }
+                    });
+
+                    const productData = await cart.getAllProductsWithTotal(UID);
+                    for (const product of productData) {
+                        await db.products.updateOne({ PID: product.PID }, {
+                            $inc: {
+                                stock: 0 - Number(product.quantity)
+                            }
+                        });
                     };
-                });
 
-                if (address) {
-                    try {
-                        // place order
-                        const data = await addTODBOnline(userOutput.UID, output, 'razorPay');
-                        resolve(data);
-
-                    } catch (error) {
-                        reject(error);
-                    };
+                    const cartDataRemoveStatus = await db.cart.updateOne({ UID: UID }, {
+                        $set: {
+                            products: []
+                        }
+                    });
+                    // 
+                    return 'Payment success';
                 } else {
-                    reject("Plz select address");
+                    throw 'Order not found';
                 };
-
             } catch (error) {
-                console(error)
-                reject('Error fetching address form db');
+                throw 'Error syncing payment details, IF you are paid please contact our customer support';
             };
-
-        } catch (error) {
-            reject(error);
         };
-    });
+    } catch (error) {
+        throw error;
+    };
+};
+export const paymentConfirmRazorpay = async (UID, body) => {
+    try {
+        // valdiating userID
+        const userOutput = await auth.validatior({ UID: UID }, { UIDRequired: true });
+        // validating payment signature
+        const validatePayment = razorpay.verifyPurchace(body.keys.paymentID, body.keys.id, body.keys.signature);
+        if (!validatePayment) throw 'Error validating payment';
+
+        try {
+            const dataFromDb = await db.orders.find({ UID: userOutput.UID });
+            if (dataFromDb[0]) {
+
+                const indexOfOrder = dataFromDb[0].orders.map(e => e.orderID == body.keys.orderID).indexOf(true);
+                const updatedData = await db.orders.updateOne({ UID: userOutput.UID }, {
+                    $set: {
+                        [`orders.${indexOfOrder}.paymentStatus`]: 'paid'
+                    }
+                });
+                const productData = await cart.getAllProductsWithTotal(UID);
+                for (const product of productData) {
+                    await db.products.updateOne({ PID: product.PID }, {
+                        $inc: {
+                            stock: 0 - Number(product.quantity)
+                        }
+                    });
+                };
+                const cartDataRemoveStatus = await db.cart.updateOne({ UID: userOutput.UID }, {
+                    $set: {
+                        products: []
+                    }
+                });
+                // 
+                return 'Payment success';
+            } else {
+                throw 'Order not found';
+            };
+        } catch (error) {
+            throw 'Error syncing payment details, IF you are paid please contact our customer support';
+        };
+
+    } catch (error) {
+        throw error;
+    };
 };
 
 //.. admin 

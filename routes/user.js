@@ -43,7 +43,7 @@ app.post('/checkout', auth.mustLoginAsUserAPI, users.checkoutCartProductsAPI);
 // api veryfy payment
 app.post('/checkout/verify', auth.mustLoginAsUserAPI, users.checkOutVerifyRazorpayAPI);
 // api for captur paypal payment
-app.post('/checkout/:id/capture', auth.mustLoginAsUserAPI, users.checkOutVerifyPaypalAPI);
+app.post('/checkout/:id/capture/:orderID', auth.mustLoginAsUserAPI, users.checkOutVerifyPaypalAPI);
 // api to get address by addressID
 app.post('/checkout/address', auth.mustLoginAsUserAPI, users.getAddressByAddressID);
 // api for cancel order

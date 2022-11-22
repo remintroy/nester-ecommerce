@@ -197,7 +197,7 @@
                     <div class="btn btn-light w-100 text-dark mb-2" onclick="finalSubmit('COD')" style="cursor:pointer; color: black !important; font-weight: bold; border-radius: 5px;">
                       COD <small>&nbsp; cash on delevery </small>
                     </div>
-                    <div class="btn btn-light w-100 text-dark" onclick="finalSubmit('online')" style="cursor:pointer; color: black !important; font-weight: bold; border-radius: 5px;">
+                    <div class="btn btn-light w-100 text-dark" onclick="finalSubmit('razorpay')" style="cursor:pointer; color: black !important; font-weight: bold; border-radius: 5px;">
                       Razorpay
                     </div>
                     <div class="text-center my-2">OR</div>
@@ -224,7 +224,7 @@
     // Sets up the transaction when a payment button is clicked
     createOrder: (data, actions) => {
       try {
-        window.typeOfPayment = 'paypal'
+        window.typeOfPayment = 'paypal';
 
         const submit = async () => {
           const data = await inputActions('validate');
@@ -240,11 +240,12 @@
           if (respData.status == 'error') {
             Swal.fire({
               title: 'Error Creating order',
-              html: respData.message
+              html: respData.message,
+              icon: 'error'
             });
 
           } else {
-            console.log(respData?.message?.id);
+            window.orderID = respData.message.orderID;
             return respData?.message?.id;
           };
         };
@@ -259,20 +260,27 @@
     },
     // Finalize the transaction after payer approval
     onApprove: (data, actions) => {
-      console.log('Approved => ',actions);
-      return fetch(`/checkout/${data.orderID}/capture`, {
-          method: 'POST'
+      console.log('Approved => ', actions);
+      return fetch(`/checkout/${data.orderID}/capture/${window.orderID}`, {
+          method: 'POST',
+          body: JSON.stringify({
+            orderID: window.orderID
+          })
         })
         .then(res => res.json())
-        .then(function(orderData) {
-          // Successful capture! For dev/demo purposes:
-          console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
-          // const transaction = orderData.purchase_units[0].payments.captures[0];
-          // alert(`Transaction ${transaction.status}: ${transaction.id}\n\nSee console for all available details`);
-          // // When ready to go live, remove the alert and show a success message within this page. For example:
-          // // const element = document.getElementById('paypal-button-container');
-          // // element.innerHTML = '<h3>Thank you for your payment!</h3>';
-          // // Or go to another URL:  actions.redirect('thank_you.html');
+        .then(orderData => {
+          Swal.fire({
+              title: 'Payment success',
+              html: 'Ordered successfully',
+              icon: 'success'
+            })
+            .then(_ => {
+              if (orderData.action) {
+                window.location.href = orderData.action;
+              } else {
+                window.location.href = '/dashboard/orders';
+              };
+            });
         });
     }
   }).render('#paypal-button-container');

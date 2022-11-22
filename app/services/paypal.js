@@ -30,8 +30,7 @@ export const capturePayment = async (orderID) => {
             Authorization: `Bearer ${accessTocken}`
         }
     });
-    const data = response.data;
-    return data;
+    return response.data;
 };
 
 export const createOrder = async (UID, orderID, amountInInr) => {
@@ -56,8 +55,7 @@ export const createOrder = async (UID, orderID, amountInInr) => {
             ]
         })
     });
-    const data = response.data;
-    return data;
+    return response.data;
 };
 
 async function test() {
