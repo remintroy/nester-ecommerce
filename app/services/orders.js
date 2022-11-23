@@ -55,6 +55,7 @@ export const checkout = async (UID, body) => {
             try {
                 await analytics.addProductReachedCheckout(product.PID);
                 await analytics.addProductInteractions(product.PID);
+                await analytics.addProductImpressions(product.PID);
             } catch (error) {
                 //..  
             };
@@ -317,6 +318,11 @@ export const paymentConfirmPaypal = async (UID, id, orderID) => {
                                 stock: 0 - Number(product.quantity)
                             }
                         });
+                        try {
+                            await analytics.addProductImpressions(product.PID);
+                        } catch (error) {
+                            //...
+                        };
                     };
 
                     const cartDataRemoveStatus = await db.cart.updateOne({ UID: UID }, {
@@ -362,6 +368,11 @@ export const paymentConfirmRazorpay = async (UID, body) => {
                             stock: 0 - Number(product.quantity)
                         }
                     });
+                    try {
+                        await analytics.addProductImpressions(product.PID);
+                    } catch (error) {
+                        //...
+                    };
                 };
                 const cartDataRemoveStatus = await db.cart.updateOne({ UID: userOutput.UID }, {
                     $set: {

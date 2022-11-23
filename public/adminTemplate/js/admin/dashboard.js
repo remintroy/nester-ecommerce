@@ -175,7 +175,12 @@ $(function () {
         options: {
           legend: { display: false },
           scales: {
-            yAxes: [{ ticks: { min: 0 } }],
+            yAxes: [{
+              ticks: {
+                min: 0,
+                precision: 0
+              }
+            }],
           },
           plugins: {
             filler: {
@@ -240,7 +245,12 @@ $(function () {
     const dayOptions = {
       legend: { display: false },
       scales: {
-        yAxes: [{ ticks: { min: 0, precision: 0 } }],
+        yAxes: [{
+          ticks: {
+            min: 0,
+            precision: 0
+          }
+        }],
       },
       plugins: {
         filler: {

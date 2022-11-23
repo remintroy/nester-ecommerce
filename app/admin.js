@@ -380,8 +380,8 @@ export const deleteCategoryAPI = async (req, res) => {
 };
 // login page
 export const login = (req, res) => {
-    res.locals.layout = 'admin_auth_layout';
-    res.render('admin/login');
+    res.locals.layout = pagesBase + '/auth/layout';
+    res.render(pagesBase + '/auth/login');
 };
 // api for login
 export const loginApi = async (req, res) => {

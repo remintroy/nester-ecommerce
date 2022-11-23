@@ -1,6 +1,7 @@
 import * as auth from './auth.js';
 import * as products from './products.js';
 import * as db from './schema.js';
+import * as analytics from './analytics.js';
 
 const MAX_PRODUCT_QUANTITY = 100;
 
@@ -76,6 +77,14 @@ export const getSingleProductWithTotal = (UID, PID) => {
                         }
                     }
                 ]);
+
+                for (const product of productData) {
+                    try {
+                        await analytics.addProductImpressions(product.product.PID);
+                    } catch (error) {
+                        //...
+                    };
+                };
 
                 resolve(productData[0]);
             } catch (error) {
@@ -161,13 +170,13 @@ export const getAllProductsWithTotal = (UID) => {
                     { $replaceRoot: { newRoot: "$products" } },
                     { $project: { _id: 0 } }
                 ]);
-                // products?.forEach(async (product) => {
-                //     const updates = await db.products.updateOne({ PID: product.PID }, {
-                //         $inc: {
-                //             interactions: 1
-                //         }
-                //     });
-                // });
+                for (const product of products) {
+                    try {
+                        await analytics.addProductImpressions(product.PID);
+                    } catch (error) {
+                        //...
+                    };
+                };
                 resolve(products);
             } catch (error) {
                 console.log(error)

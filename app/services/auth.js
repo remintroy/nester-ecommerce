@@ -415,7 +415,7 @@ export const mustLogoutAsAdmin = (req, res, next) => {
         next();
     } else {
         res.status(403);
-        res.redirect('/admin_panel/');
+        res.redirect('/');
     };
 };
 export const mustLogoutAsAdminAPI = (req, res, next) => {

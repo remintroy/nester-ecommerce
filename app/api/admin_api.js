@@ -330,10 +330,46 @@ export const getProductsStatByPID = async (PID) => {
     try {
         const productsOutput = await products.validatior({ PID: PID }, { PID: true }, 'updateproduct');
         try {
+            const todayStart = new Date(new Date().setHours(0, 0, 0, 1));
+            const firstday_week = new Date(new Date().setDate(todayStart.getDate() - todayStart.getDay()));
+            const firstday_month = new Date(todayStart.getFullYear(), todayStart.getMonth(), 1);
+
             const dataFromDb = await db.products.aggregate([
-                { $match: { PID: productsOutput.PID } }
+                { $match: { PID: productsOutput.PID } },
+                {
+                    $facet: {
+                        day_views: [
+                            { $unwind: '$views' },
+                            { $match: { views: { $gt: todayStart } } },
+                            { $group: { _id: { $hour: { date: '$views', timezone: '+05:30' } }, count: { $sum: 1 } } },
+                            { $project: { _id: 0, count: '$count', hour: '$_id' } },
+                            { $sort: { count: 1 } }
+                        ],
+                        week_views: [
+                            { $unwind: '$views' },
+                            { $match: { views: { $gte: firstday_week } } },
+                            { $group: { _id: { $dayOfWeek: { date: '$views', timezone: '+05:30' } }, count: { $sum: 1 } } },
+                            { $project: { _id: 0, count: '$count', day: '$_id' } },
+                            { $sort: { count: 1 } }
+                        ],
+                        month_views: [
+                            { $unwind: '$views' },
+                            { $match: { views: { $gte: firstday_month } } },
+                            { $group: { _id: { $week: { date: '$views', timezone: '+05:30' } }, count: { $sum: 1 } } },
+                            { $project: { _id: 0, count: '$count', week: '$_id' } },
+                            { $sort: { count: 1 } } 
+                        ],
+                        day_impressions: [
+                            { $unwind: '$impressions' },
+                            { $match: { impressions: { $gte: todayStart } } },
+                            { $group: { _id: { $hour: { date: '$impressions', timezone: '+05:30' } }, count: { $sum: 1 } } },
+                            { $project: { _id: 0, count: '$count', hour: '$_id' } },
+                            { $sort: { count: 1 } }
+                        ],
+                    }
+                }
             ]);
-            return dataFromDb;
+            return dataFromDb[0];
         } catch (error) {
             console.log(error);
             throw 'Error fetching products analytics data from db';
