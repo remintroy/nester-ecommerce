@@ -73,7 +73,7 @@ export const products = db.model("products", new mongoose.Schema({
     PID: String,
     title: String,
     description: String,
-    category: Array,
+    category: String,
     price: Number,
     views: Array,
     addedToCart: Array,
@@ -214,3 +214,28 @@ export const countries = db.model("countries", new mongoose.Schema(
         mobileCode: String
     }
 ));
+
+export const wallets = db.model('wallets', new mongoose.Schema({
+    UID: String,
+    amount: Number,
+    transactions: [{
+        amount: Number,
+        flow: String,
+        date: Date,
+        message: String,
+        remarks: String
+    }]
+}));
+
+export const coupens = db.model('coupens', new mongoose.Schema({
+    code: String,
+    title: String,
+    value: Number,
+    expiry: Date,
+    minSpent: Number,
+    maxSpent: Number,
+    category: String,
+    product: String,
+    maxUsage: Number,
+    used: Number
+}))

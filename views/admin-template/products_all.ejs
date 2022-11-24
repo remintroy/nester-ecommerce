@@ -41,7 +41,7 @@
           <td> <%=product.stock%> pcs</td>
           <td style="text-transform: capitalize;"> <%=product.category%> </td>
           <td style="white-space: nowrap;"> <%=locals?.util?.dataToReadable(product?.creationTime)%> </td>
-          <td style="cursor: pointer; text-align: center;" onclick="window.location.href='/products/edit_product/<%=product.PID%>'">
+          <td style="cursor: pointer; text-align: center;" onclick="window.location.href='/products/view_product/<%=product.PID%>'">
             <b>more</b>
           </td>
         </tr>

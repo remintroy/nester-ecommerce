@@ -1,7 +1,7 @@
 /node_modules
-.env
+*.env
 /keys
 /public/product_images
 /uploads
 /public/banners
-vs_code.code-workspace
+*.code-workspace

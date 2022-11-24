@@ -2,7 +2,7 @@
 
   <div class="d-flex justify-content-between my-3">
     <div class="left">
-      <h2>Products</h2>
+      <h1 class="h3 mb-4 d-flex gap-2"><i class="mdi mdi-shopping"></i> Products</h1>
     </div>
     <div class="right">
       <a href="/" class="btn btn-inverse-warning">Draft's</a>
@@ -120,7 +120,7 @@
 
         const more = document.createElement('td');
         more.setAttribute('style', 'cursor: pointer; text-align: center;');
-        more.setAttribute('onclick', `window.location.href='/products/edit_product/${items?.PID}'`);
+        more.setAttribute('onclick', `window.location.href='/products/view_product/${items?.PID}'`);
         more.innerHTML = `<b>More</b>`;
 
         tr.append(index, img_cont, title, price, stock, category, creationTime, more);

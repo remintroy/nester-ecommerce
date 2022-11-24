@@ -245,6 +245,14 @@ export const editCategory = ({ category, ID }) => {
                             }
                         });
 
+                        const existingCategory = await db.category.findOne({ _id: ID });
+
+                        const updateChangesInProducts = await db.products.updateMany({ category: existingCategory.category }, {
+                            $set: {
+                                category: category
+                            }
+                        });
+
                         resolve('Category updated successfully');
 
                     } catch (error) {
@@ -268,12 +276,26 @@ export const editCategory = ({ category, ID }) => {
 export const deleteCategory = ({ ID }) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const afterDelete = await db.category.deleteOne({ _id: ID });
-            resolve("Category successfully deleted");
+            const existingCategory = await db.category.find({ _id: ID });
+            if (existingCategory.length > 0) {
+                
+                const existingProducts = await db.products.find({ category: existingCategory[0].category });
+
+                if (existingProducts.length > 0) {
+                    reject(`can't delete, Products exist on this category`); return 0;
+                } else {
+                    const afterDelete = await db.category.deleteOne({ _id: ID });
+                    resolve("Category successfully deleted");
+                };
+
+            } else {
+                reject('Nothig to delete'); return 0;
+            };
+
         } catch (error) {
-            reject('Error deleteing category'); return 0;
+            reject('Error deleting category'); return 0;
         };
-    });
+    })
 };
 
 export const addProduct = ({ title, description, price, quantity, offer, category }, files) => {

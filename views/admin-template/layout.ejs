@@ -74,6 +74,21 @@
   <script src="/js/jquery.cookie.js" type="text/javascript"></script>
 
   <script>
+    const toast = (message, icon) => {
+      Swal.fire({
+        title: message,
+        icon: icon,
+        toast: true,
+        position: 'bottom-left',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+      });
+    }
     $(document).ready(function() {
       $('[data-toggle="tooltip"]').tooltip();
     });

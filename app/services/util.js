@@ -1,4 +1,5 @@
 import * as db from './schema.js';
+import RandomID from 'random-id';
 
 // no dependencies --- start
 /**
@@ -9,15 +10,21 @@ import * as db from './schema.js';
  * @param {number} length - Length of returning id
  * @returns - random ID e.g.. randomID(10) => AdF6ui-_oD
  */
-export function randomId(length) {
-    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'.split('');
-    var str = '';
+export function randomId(length, pattern) {
     length = length ? length : 10;
-    for (var i = 0; i < length; i++) {
-        str += chars[Math.floor(Math.random() * chars.length)];
+
+    if (pattern) {
+        return RandomID(length, pattern);
+    } else {
+        var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'.split('');
+        var str = '';
+        for (var i = 0; i < length; i++) {
+            str += chars[Math.floor(Math.random() * chars.length)];
+        };
+        return str;
     };
-    return str;
 };
+
 export const nameFormatter = (name) => {
     let arryOfEachName = name?.split(' ') ? name.split(' ') : [];
     let arrayAfterFomatting = arryOfEachName.map(name => {
@@ -59,8 +66,8 @@ export const getAllCountries = () => {
                     }
                 },
                 {
-                    $sort:{
-                        name:1
+                    $sort: {
+                        name: 1
                     }
                 }
             ]);
@@ -152,7 +159,7 @@ export const getCountryByMobileCode = (code) => {
 
 // test --- below
 const test = async () => {
-    const data = await getCountryByMobileCode('+91');
+    const data = await RandomID(10, 'A');
     console.log(data)
 };
 // test();

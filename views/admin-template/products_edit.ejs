@@ -2,290 +2,168 @@
 <div class="container-fluid">
 
   <!-- Page Heading -->
-  <h1 class="h3 mb-2 text-gray-800" style="line-height: 1.3;"> <%= product.title %> </h1>
+  <h1 class="h3 mb-2 text-gray-800" style="line-height: 1.3;"> PRODUCT ID : <%= product.PID %> </h1>
 
+  <div class="custom-modal" id="imageEditor" style="display:none;">
+    <div class="inner-cont rounded">
+      <div class="card rounded animate__animated  animate__bounceInUp">
+        <div class="card-header px-4 py-3 bg-white">Edit Images</div>
+        <div class="card-body d-flex p-0 m-0 justify-content-start position-relative">
 
-  <div class="row">
+          <div style="width: 65%; padding: 10px;" class="h-100 img-cont-out bg-light d-flex align-items-center justify-content-center position-relative">
+            <img id="imageEditable" style="width: 100%;
+              height: 100%;
+              object-fit: scale-down;" src="http://localhost:8081/product_images/aTMq1gnqVTdDPMb8EMBv1.jpg" alt="">
+          </div>
 
-    <div class="col-12 p-2">
-      <div class="row">
-        <div class="col-6 col-md-3 p-2">
-          <div class="card rounded bg-white p-4">
-            <img src="/product_images/<%=product?.PID %>1.jpg" class="img-fluid" alt="">
+          <div class="col-4 py-4 pb-2 px-4 position-relative">
+            <div class="text-cont">
+              <div class="d-flex justify-content-between">
+                <h6>Crop your image</h6>
+              </div>
+              <p>
+                Cropping your image to a fixed aspect ratio helps to improve the perfomance of your product.
+                So we fixed to 1:1
+              </p>
+            </div>
+
+            <div class="aciton-cont">
+              <div class="d-flex justify-content-end">
+                <div class="d-flex align-items-center" onclick="window.crop.reset()">
+                  <small class="mb-1 p-0">Reset -&nbsp;</small> <i class="mdi mdi-autorenew text-primary"></i>
+                </div>
+              </div>
+              <button class="border p-3 my-2 w-100 bg-white d-flex align-items-center gap-2 justify-content-between" onclick="window['crop'].setDragMode('crop')">
+                Drag to crop
+                <i class="mdi mdi-plus text-primary"></i>
+              </button>
+              <button class="border p-3 my-2 w-100 bg-white d-flex align-items-center gap-2 justify-content-between" onclick="window['crop'].setDragMode('move')">
+                Move
+                <i class="mdi mdi-arrow-all text-primary"></i>
+              </button>
+              <button class="border p-3 my-2 w-100 bg-white d-flex align-items-center gap-2 justify-content-between">
+                <span>Move-X</span>
+                <div class="d-flex align-items-center gap-3">
+                  <i class="mdi mdi-arrow-left text-primary" onclick="window['crop'].move(-10,0)"></i>
+                  <i class="mdi mdi-arrow-right text-primary" onclick="window['crop'].move(10,0)"></i>
+                </div>
+              </button>
+              <button class="border p-3 my-2 w-100 bg-white d-flex align-items-center gap-2 justify-content-between">
+                <span>Move-Y</span>
+                <div class="d-flex align-items-center gap-3">
+                  <i class="mdi mdi-arrow-up text-primary" onclick="window['crop'].move(0,-10)"></i>
+                  <i class="mdi mdi-arrow-down text-primary" onclick="window['crop'].move(0,10)"></i>
+                </div>
+              </button>
+              <button class="border p-3 my-2 w-100 bg-white d-flex align-items-center gap-2 justify-content-between">
+                <span>Zoom</span>
+                <div class="d-flex align-items-center gap-3">
+                  <i class="mdi mdi-magnify-plus text-primary" onclick="window['crop'].zoom(1)"></i>
+                  <i class="mdi mdi-magnify-minus text-primary" onclick="window['crop'].zoom(-1)"></i>
+                </div>
+              </button>
+            </div>
           </div>
+
         </div>
-        <div class="col-6 col-md-3 p-2">
-          <div class="card rounded bg-white p-4">
-            <img src="/product_images/<%=product?.PID %>2.jpg" class="img-fluid" alt="">
-          </div>
-        </div>
-        <div class="col-6 col-md-3 p-2">
-          <div class="card rounded bg-white p-4">
-            <img src="/product_images/<%=product?.PID %>3.jpg" class="img-fluid" alt="">
-          </div>
-        </div>
-        <div class="col-6 col-md-3 p-2">
-          <div class="card rounded bg-white p-4">
-            <img src="/product_images/<%=product?.PID %>4.jpg" class="img-fluid" alt="">
+        <div id="card_actions" class="card-footer d-flex justify-content-between px-4 py-2 bg-white">
+          <button class="btn btn-info">Preview</button>
+          <div>
+            <button class="btn btn-light">Cancel</button>
+            <button class="btn btn-info mx-2"> Re-Select </button>
+            <button class="btn btn-info"> Save </button>
           </div>
         </div>
       </div>
     </div>
-
-    <div class="col-12 p-2">
-      <div class="card rounded bg-white py-2 pt-3 px-4">
-        <h5 style="line-height: 1.3;"><%=product?.title?product.title:''%></h5>
-        <p><%=product?.description?product.description:''%></p>
-        <p style="text-transform:capitalize;">Category : <%= product?.category %> </p>
-        <p>Price : <%=product?.price?product.price+' Rs':''%></p>
-        <p>Offer : - <%=product?.offer?''+product.offer+' Rs / Pcs':''%></p>
-        <p>Amount need to pay : <%=product?.price?product.price - product.offer+' Rs / Pcs':''%></p>
-      </div>
-    </div>
-
-    <div class="col-12 p-2">
-      <div class="row">
-
-        <div class="col-md-8 p-2">
-          <div class="rounded card bg-white py-1 px-2">
-            <div class="card-body">
-              <h4 class="card-title">Todays view count</h4>
-              <canvas id="productDailyView"></canvas>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-4 p-2">
-          <div class="rounded card bg-white h-100">
-            <div class="card-body p-3">
-              <h4 class="card-title">Views This week</h4>
-              <canvas id="productWeekViews" style="position: relative; height:110vh; width:80vw"></canvas>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-8 p-2">
-          <div class="rounded card bg-white">
-            <div class="card-body p-3">
-              <h4 class="card-title">Impressions today</h4>
-              <canvas id="productDayImpressions"></canvas>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-
   </div>
+  <style>
+    .custom-modal {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: rgba(0, 0, 0, 0.515);
+      z-index: 1050;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-  <script>
-    (async function() {
-      try {
-        const reslut = await fetch('/api/products?analytics-pid=<%=product?.PID%>', {
-          method: 'GET'
-        });
-        const res = await reslut.json();
+    .custom-modal .inner-cont {
+      width: 90%;
+      height: 90%;
+    }
 
-        const dayxValues = [];
-        for (let i = 0; i <= 23; i++) {
-          if (i >= 12) dayxValues.push(i == 12 ? 12 + " pm" : i - 12 + " pm");
-          else dayxValues.push(i + " am");
-        };
+    .custom-modal .inner-cont .card {
+      height: 100%;
+    }
 
-        const weekxValues = [];
-        for (let i = 1; i <= 7; i++) {
-          weekxValues.push(i);
-        };
+    .custom-modal .inner-cont .card .card-body {
+      overflow-x: hidden
+    }
 
-        const dayOptions = {
-          legend: {
-            display: false
-          },
-          scales: {
-            yAxes: [{
-              ticks: {
-                min: 0,
-                precision: 0
-              }
-            }],
-          },
-          plugins: {
-            filler: {
-              propagate: true
-            }
-          }
-        };
+    .custom-modal .inner-cont .card .card-body .aciton-cont i {
+      cursor: pointer;
+      background-color: rgb(229, 235, 255);
+      padding: 5px;
+      padding-bottom: 3px;
+      border-radius: 5px;
+    }
 
-        const dayColor = [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
-        ];
+    .custom-modal .inner-cont .card .card-body .img-cont {
+      max-height: 100%;
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
 
-        let yValuesA = [];
-        let yValuesB = [];
-        let yValuesC = [];
+    .custom-modal .inner-cont .card .card-body .img-cont img {
+      max-height: 100%;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      object-fit: scale-down;
+    }
+  </style>
 
-        for (let i = 0; i < 24; i++) {
-          let outputA = '';
-          let outputB = '';
-          for (let j = 0; j < 24; j++) {
-            if (res['analytics-pid'].day_views[j]) {
-              if (res['analytics-pid'].day_views[j].hour == i) {
-                outputA = Number(res['analytics-pid'].day_views[j].count);
-                break;
-              } else {
-                outputA = 0;
-              };
-            };
-          };
-          for (let j = 0; j < 24; j++) {
-            if (res['analytics-pid'].day_impressions[j]) {
-              if (res['analytics-pid'].day_impressions[j].hour == i) {
-                outputB = Number(res['analytics-pid'].day_impressions[j].count);
-                break;
-              } else {
-                outputB = 0;
-              };
-            };
-          };
-          yValuesA.push(outputA);
-          yValuesC.push(outputB);
-        };
+  <div class="row m-0 mt-4">
+    <div class="col-12 rounded bg-white p-4">
 
-        for (let i = 0; i < 7; i++) {
-          let output = '';
-          for (let j = 0; j < 7; j++) {
-            if (res['analytics-pid'].week_views[j]) {
-              if (res['analytics-pid'].week_views[j].day == i) {
-                output = Number(res['analytics-pid'].week_views[j].count);
-                break;
-              } else {
-                output = 0;
-              };
-            };
-          };
-          yValuesB.push(output);
-        };
-
-        new Chart("productDailyView", {
-          type: "bar",
-          data: {
-            labels: dayxValues,
-            datasets: [{
-              lineTension: 0,
-              backgroundColor: dayColor,
-              borderColor: dayColor,
-              fill: true,
-              borderWidth: 1,
-              data: yValuesA
-            }]
-          },
-          options: dayOptions
-        });
-
-        new Chart("productWeekViews", {
-          type: "line",
-          data: {
-            labels: weekxValues,
-            datasets: [{
-              lineTension: 0,
-              backgroundColor: dayColor,
-              borderColor: dayColor,
-              fill: true,
-              borderWidth: 2,
-              data: yValuesB
-            }]
-          },
-          options: dayOptions
-        });
-
-        new Chart("productDayImpressions", {
-          type: "line",
-          data: {
-            labels: dayxValues,
-            datasets: [{
-              lineTension: 0,
-              backgroundColor: dayColor,
-              borderColor: dayColor,
-              fill: true,
-              borderWidth: 2,
-              data: yValuesC
-            }]
-          },
-          options: dayOptions
-        });
-      } catch (error) {
-        console.warn('Error => ', error);
-      };
-
-    }());
-  </script>
-
-
-  <!-- DataTales Example -->
-  <!-- <div class="card mb-4">
-    <div class="card-header py-3 bg-white d-flex justify-content-between">
-      <h6 class="m-0 font-weight-bold text-primary" style="text-transform: capitalize;">
-        Edit product
-      </h6>
-      <span style="text-transform: capitalize;">
-        <%= product.creationTime %>
-      </span>
-    </div>
-    <div class="card-body">
-
-      <div class="input-cont">
-        <label for="title">Title * <span></span></label>
-        <textarea type="text" name="Title" id="titleInput" autocomplete="off" placeholder="Product title"><%=product?.title?product.title:''%></textarea>
+      <div class="form-group">
+        <label for="titleInput" class="w-100 d-flex justify-content-between">Title <span></span></label>
+        <textarea type="text" class="form-control" name="Title" id="titleInput" autocomplete="off" placeholder="Title"><%=product?.title?product.title:''%></textarea>
       </div>
 
-      <div class="input-cont">
+      <div class="form-group">
         <label for="description">Description * <span></span></label>
-        <textarea type="text" name="description" id="descriptionInput" autocomplete="off" placeholder="Breaf description"><%=product?.description?product.description:''%></textarea>
+        <textarea type="text" class="form-control" name="description" id="descriptionInput" style="height: 100px;" autocomplete="off" placeholder="Breaf description"><%=product?.description?product.description:''%></textarea>
       </div>
 
-      <div class="input-cont horz">
-        <div class="input-cont">
+      <div class="row">
+        <div class="form-group col-6">
           <label for="price">Price * <span></span></label>
-          <input type="text" name="price" id="priceInput" placeholder="Price" value="<%=product?.price?product.price:''%>" autocomplete="off">
+          <input type="text" name="price" class="form-control" id="priceInput" placeholder="Price" value="<%=product?.price?product.price:''%>" autocomplete="off">
         </div>
-        <div class="input-cont">
+        <div class="form-group col-6">
           <label for="quantity">Quantity * <span></span></label>
-          <input type="text" name="quantity" id="quantityInput" autocomplete="off" placeholder="Quantity" value="<%=product?.stock?product.stock:''%>">
+          <input type="text" name="quantity" class="form-control" id="quantityInput" autocomplete="off" placeholder="Quantity" value="<%=product?.stock?product.stock:0%>">
         </div>
       </div>
 
-      <div class="input-cont horz">
-        <div class="input-cont">
+      <div class="row">
+        <div class="form-group col-6">
           <label for="discount">Discount (optional) <span></span></label>
-          <input type="text" name="offer" id="offerInput" autocomplete="off" placeholder="Discount amount" value="<%=product?.offer?product.offer:''%>">
+          <input type="text" name="offer" class="form-control" id="offerInput" autocomplete="off" placeholder="Discount amount" value="<%=product?.offer?product.offer:''%>">
         </div>
-        <div class="input-cont">
+        <div class="form-group col-6">
           <label for="category">Catogery * <span></span></label>
-          <select name="category" id="categoryInput">
+          <select name="category" class="form-control" id="categoryInput">
             <option value="<%=product?.category?product.category:''%>">
               <%=product?.category?product.category:'--Select--'%>
             </option>
@@ -300,272 +178,437 @@
         </div>
       </div>
 
-      <div class="input-cont horz">
-
-        <div class="input-cont img card">
-          <% let id = 'imgA_DISP'; let idA='imgA'; let idB = 'img1'%>
-          <div class="card-header">
-            <label for="<%=idA%>">Feature image <span></span></label>
-          </div>
-          <div class="card-body d-flex justify-content-between">
-            <div class="img-from-cont">
-              <img id="<%=id%>" src="/product_images/<%=product.PID %>1.jpg" class="img-cont" alt="">
-               <span class="choose">Select image</span> -->
-  <!-- </div>
-            <div class="edit-action-cont ml-3">
-              <p class="mb-0">Tools</p>
-              <div class="icons">
-                <button class="editAction" disabled onclick="window['<%=id%>'].setDragMode('move');">
-                  <img src="/icn/move.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].setDragMode('crop');">
-                  <img src="/icn/plus.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].move(0,-10)">
-                  <img src="/icn/up.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].move(0,10)">
-                  <img src="/icn/down.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].move(-10,0)">
-                  <img src="/icn/left.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].move(10,0)">
-                  <img src="/icn/right.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].rotate(-45)">
-                  <img src="/icn/rotate-left.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].rotate(45)">
-                  <img src="/icn/rotate-right.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="flipImageXA(this,'<%=id%>')">
-                  <img src="/icn/horz-flip.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="flipImageYA(this,'<%=id%>')">
-                  <img src="/icn/vert-flip.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].zoom(0.1)">
-                  <img src="/icn/zoom-in.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].zoom(-0.1)">
-                  <img src="/icn/zoom-out.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].reset()">
-                  <img src="/icn/reset.svg" aria-disabled="true" alt="">
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="card-footer">
-            <button class="btn btn-primary rounded ml-0" onclick="cropperJS('<%=id%>',this, '<%=idB%>')">Edit image</button>
-            <button class="btn btn-primary rounded" onclick="selectImage('<%=id%>',this, '<%=idB%>')">Select image</button>
-            <input type="file" accept="image/jpeg" name="<%=idA%>" id="<%=idA%>" hidden>
-          </div>
-        </div>
-
-        <div class="input-cont img card">
-          <% id = 'imgB_DISP'; idA='imgB'; idB = 'img2'%>
-          <div class="card-header">
-            <label for="<%=idA%>">Feature image <span></span></label>
-          </div>
-          <div class="card-body d-flex justify-content-between">
-            <div class="img-from-cont">
-              <img id="<%=id%>" src="/product_images/<%=product.PID %>2.jpg" class="img-cont" alt=""> -->
-  <!-- <span class="choose">Select image</span> -->
-  <!-- </div>
-            <div class="edit-action-cont ml-3">
-              <p class="mb-0">Tools</p>
-              <div class="icons">
-                <button class="editAction" disabled onclick="window['<%=id%>'].setDragMode('move');">
-                  <img src="/icn/move.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].setDragMode('crop');">
-                  <img src="/icn/plus.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].move(0,-10)">
-                  <img src="/icn/up.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].move(0,10)">
-                  <img src="/icn/down.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].move(-10,0)">
-                  <img src="/icn/left.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].move(10,0)">
-                  <img src="/icn/right.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].rotate(-45)">
-                  <img src="/icn/rotate-left.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].rotate(45)">
-                  <img src="/icn/rotate-right.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="flipImageXA(this,'<%=id%>')">
-                  <img src="/icn/horz-flip.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="flipImageYA(this,'<%=id%>')">
-                  <img src="/icn/vert-flip.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].zoom(0.1)">
-                  <img src="/icn/zoom-in.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].zoom(-0.1)">
-                  <img src="/icn/zoom-out.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].reset()">
-                  <img src="/icn/reset.svg" aria-disabled="true" alt="">
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="card-footer">
-            <button class="btn btn-primary rounded ml-0" onclick="cropperJS('<%=id%>',this, '<%=idB%>')">Edit image</button>
-            <button class="btn btn-primary rounded" onclick="selectImage('<%=id%>',this, '<%=idB%>')">Select image</button>
-            <input type="file" accept="image/jpeg" name="<%=idA%>" id="<%=idA%>" hidden>
-          </div>
-        </div>
-
-        <div class="input-cont img card">
-          <% id = 'imgC_DISP'; idA='imgC'; idB = 'img3'%>
-          <div class="card-header">
-            <label for="<%=idA%>">Feature image <span></span></label>
-          </div>
-          <div class="card-body d-flex justify-content-between">
-            <div class="img-from-cont">
-              <img id="<%=id%>" src="/product_images/<%=product.PID %>3.jpg" class="img-cont" alt=""> -->
-  <!-- <span class="choose">Select image</span> -->
-  <!-- <!-- </div>
-            <div class="edit-action-cont ml-3">
-              <p class="mb-0">Tools</p>
-              <div class="icons">
-                <button class="editAction" disabled onclick="window['<%=id%>'].setDragMode('move');">
-                  <img src="/icn/move.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].setDragMode('crop');">
-                  <img src="/icn/plus.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].move(0,-10)">
-                  <img src="/icn/up.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].move(0,10)">
-                  <img src="/icn/down.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].move(-10,0)">
-                  <img src="/icn/left.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].move(10,0)">
-                  <img src="/icn/right.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].rotate(-45)">
-                  <img src="/icn/rotate-left.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].rotate(45)">
-                  <img src="/icn/rotate-right.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="flipImageXA(this,'<%=id%>')">
-                  <img src="/icn/horz-flip.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="flipImageYA(this,'<%=id%>')">
-                  <img src="/icn/vert-flip.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].zoom(0.1)">
-                  <img src="/icn/zoom-in.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].zoom(-0.1)">
-                  <img src="/icn/zoom-out.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].reset()">
-                  <img src="/icn/reset.svg" aria-disabled="true" alt="">
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="card-footer">
-            <button class="btn btn-primary rounded ml-0" onclick="cropperJS('<%=id%>',this, '<%=idB%>')">Edit image</button>
-            <button class="btn btn-primary rounded" onclick="selectImage('<%=id%>',this, '<%=idB%>')">Select image</button>
-            <input type="file" accept="image/jpeg" name="<%=idA%>" id="<%=idA%>" hidden>
-          </div>
-        </div>
-
-        <div class="input-cont img card">
-          <% id = 'imgD_DISP'; idA='imgD'; idB = 'img4'%>
-          <div class="card-header">
-            <label for="<%=idA%>">Feature image <span></span></label>
-          </div>
-          <div class="card-body d-flex justify-content-between">
-            <div class="img-from-cont">
-              <img id="<%=id%>" src="/product_images/<%=product.PID %>4.jpg" class="img-cont" alt="">
-              <span class="choose">Select image</span> -->
-  <!-- </div>
-            <div class="edit-action-cont ml-3">
-              <p class="mb-0">Tools</p>
-              <div class="icons">
-                <button class="editAction" disabled onclick="window['<%=id%>'].setDragMode('move');">
-                  <img src="/icn/move.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].setDragMode('crop');">
-                  <img src="/icn/plus.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].move(0,-10)">
-                  <img src="/icn/up.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].move(0,10)">
-                  <img src="/icn/down.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].move(-10,0)">
-                  <img src="/icn/left.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].move(10,0)">
-                  <img src="/icn/right.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].rotate(-45)">
-                  <img src="/icn/rotate-left.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].rotate(45)">
-                  <img src="/icn/rotate-right.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="flipImageXA(this,'<%=id%>')">
-                  <img src="/icn/horz-flip.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="flipImageYA(this,'<%=id%>')">
-                  <img src="/icn/vert-flip.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].zoom(0.1)">
-                  <img src="/icn/zoom-in.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].zoom(-0.1)">
-                  <img src="/icn/zoom-out.svg" aria-disabled="true" alt="">
-                </button>
-                <button class="editAction" disabled onclick="window['<%=id%>'].reset()">
-                  <img src="/icn/reset.svg" aria-disabled="true" alt="">
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="card-footer">
-            <button class="btn btn-primary rounded ml-0" onclick="cropperJS('<%=id%>',this, '<%=idB%>')">Edit image</button>
-            <button class="btn btn-primary rounded" onclick="selectImage('<%=id%>',this, '<%=idB%>')">Select image</button>
-            <input type="file" accept="image/jpeg" name="<%=idA%>" id="<%=idA%>" hidden>
-          </div>
-        </div>
-
-      </div> 
-
-      <div id="disp_state" style="padding: 10px 15px; display: none; text-transform: capitalize; background-color: rgb(255, 206, 206); box-sizing: border-box; margin: 10px; color: black;" class="mt-2 rounded">
-        -
+      <h5>Update product details <small><i></i></small></h5>
+      <p class="text-muted"><b class="text-warning">Note :</b> It take some time to reflect changes everywere </p>
+      <div class="mt-3">
+        <div class="btn btn-info" onclick="updateProductDetails('<%=product.PID%>')">Apply changes</div>
+        <div class="btn btn-light">Cancel</div>
       </div>
 
-      <div class="btn-cont">
-        <button class="btn" onclick="updateUserData('<%=product.PID%>')">Submit</button>
-        <button class="btn btn-danger bg-danger" onclick="confirmDeletion('<%=product.PID%>')">Delete
-          Product</button>
-      </div> <br>
     </div>
   </div>
 
-  <script src="/js/admin/editProducts.js"></script>
+  <div class="col-12 p-2 bg-white mt-2 p-4">
+    <div class="form-group p-2">
+      <h5>Edit image</h5>
+      <div class="row mt-3">
+
+        <div class="col-3 img-cont">
+          <img src="/product_images/<%=product.PID %>1.jpg" id="imgAShow" class="img-fluid" alt="">
+          <div class="message" onclick="editExisting('imgA',this.parentElement.querySelector('img'))"> Click to edit </div>
+          <input type="file" accept="image/jpeg" id="imgA" hidden>
+        </div>
+
+        <div class="col-3 img-cont">
+          <img src="/product_images/<%=product.PID %>2.jpg" id="imgBShow" class="img-fluid" alt="">
+          <div class="message" onclick="editExisting('imgB',this.parentElement.querySelector('img'))"> Click to edit </div>
+          <input type="file" accept="image/jpeg" id="imgB" hidden>
+        </div>
+
+        <div class="col-3 img-cont">
+          <img src="/product_images/<%=product.PID %>3.jpg" id="imgCShow" class="img-fluid" alt="">
+          <div class="message" onclick="editExisting('imgC',this.parentElement.querySelector('img'))"> Click to edit </div>
+          <input type="file" accept="image/jpeg" id="imgC" hidden>
+        </div>
+
+        <div class="col-3 img-cont">
+          <img src="/product_images/<%=product.PID %>4.jpg" id="imgDShow" class="img-fluid" alt="">
+          <div class="message" onclick="editExisting('imgD',this.parentElement.querySelector('img'))"> Click to edit </div>
+          <input type="file" accept="image/jpeg" id="imgD" hidden>
+        </div>
+
+      </div>
+    </div>
+
+    <style>
+      .form-group .img-cont {
+        position: relative;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+
+      .form-group .img-cont .message {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        left: 0;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 5px;
+        transition: all .3s;
+        filter: opacity(0%);
+        color: white;
+      }
+
+      .form-group .img-cont:hover .message {
+        filter: opacity(100%);
+        background-color: rgba(0, 0, 0, 0.461);
+      }
+    </style>
+
+    <h5>Change images of product <small><i></i></small></h5>
+    <p class="text-muted"><b class="text-warning">Note :</b> Remember to keep images similar to avoid customer confusion </p>
+    <div class="mt-3">
+      <div class="btn btn-info" onclick="updateProductImages('<%=product.PID%>')">Apply changes</div>
+      <div class="btn btn-light">Cancel</div>
+    </div>
+  </div>
+
+</div>
+<!-- /.container-fluid -->
+
+<script>
+  const imgFiles = {};
+  const xmlRq = new XMLHttpRequest();
+
+  async function updateProductDetails(PID) {
+    const progress_bar = document.getElementById('progressBar');
+
+    progress_bar.classList.add('bg-primary');
+
+    progress_bar.parentElement.style.filter = 'opacity(100)';
+    progress_bar.style.transition = 'all 0s ease 0s';
+    progress_bar.style.width = '0';
+    progress_bar.parentElement.style.backgroundColor = '#eaecf4';
+    progress_bar.style.transition = 'all .5s ease 0s';
 
 
-</div> -->
-  <!-- /.container-fluid -->
+    const inputsDetails = [{
+        title: 'titleInput'
+      },
+      {
+        description: 'descriptionInput'
+      },
+      {
+        price: 'priceInput'
+      },
+      {
+        quantity: 'quantityInput'
+      },
+      {
+        offer: 'offerInput'
+      },
+      {
+        category: 'categoryInput'
+      }
+    ];
+
+    const inputs = inputsDetails.map(input => {
+      id = Object.keys(input)[0];
+      output = {};
+      output[id] = document.getElementById(input[id])
+      return output;
+    });
+
+    const inputsErr = inputsDetails.map(input => {
+      id = Object.keys(input)[0];
+      output = {};
+      output[id] = document.getElementById(input[id]).parentElement.querySelector('span');
+      output[id].innerText = '';
+      return output;
+    });
+
+    let thereIsNoError = true;
+
+    inputs.forEach((e, i) => {
+      const id = Object.keys(e)[0];
+      if (id == 'title' && e[id].value?.trim().length < 10) {
+        inputsErr[i][id].innerText = `Title need ${10-Number(e[id].value.trim().length)} more characters`;
+        thereIsNoError = false;
+      };
+      if (id == 'description' && e[id].value?.trim().length < 10) {
+        inputsErr[i][id].innerText = `Description need ${20-Number(e[id].value.trim().length)} more characters`;
+        thereIsNoError = false;
+      };
+      if (id == 'price' && isNaN(e[id].value)) {
+        inputsErr[i][id].innerText = `Enter a valid price`;
+        thereIsNoError = false;
+      };
+      if (id == 'quantity' && isNaN(e[id].value)) {
+        inputsErr[i][id].innerText = `Enter a valid quantity`;
+        thereIsNoError = false;
+      };
+      if (id == 'offer' && isNaN(e[id].value)) {
+        inputsErr[i][id].innerText = `Enter a valid discound amount`;
+        thereIsNoError = false;
+      };
+      if (id == 'category' && !e[id].value?.trim()) {
+        inputsErr[i][id].innerText = `This field is required`;
+        thereIsNoError = false;
+      };
+    });
+
+    if (thereIsNoError) {
+      const outputData = {};
+
+      inputs.forEach((e, i) => {
+        const key = Object.keys(e)[0];
+        outputData[key] = e[key]?.value?.trim();
+      });
+
+      outputData.PID = PID;
+
+      const formData = new FormData();
+      formData.append('data', JSON.stringify(outputData));
+
+      xmlRq.abort();
+      xmlRq.open('PUT', '/products/edit_product');
+
+      // 
+      xmlRq.upload.addEventListener('progress', ({
+        loaded,
+        total
+      }) => {
+        let status = Math.floor((loaded / total) * 100);
+
+        progress_bar.style.width = `${status}%`;
+
+        if (status == 100) {
+          //... processing
+        };
+
+      });
+
+      //
+      xmlRq.onreadystatechange = (e) => {
+        if (xmlRq.readyState === 4) {
+          if (xmlRq.status == 200) {
+            let res = JSON.parse(xmlRq.response);
+
+            if (res.status == 'good') {
+              progress_bar.classList.remove('bg-danger');
+              progress_bar.classList.add('bg-info');
+            } else {
+              progress_bar.classList.remove('bg-primary');
+              progress_bar.classList.add('bg-danger');
+              Swal.fire({
+                title: res.message,
+                icon: 'error'
+              });
+            };
+
+          } else {
+            Swal.fire({
+              title: "Error connecting to server",
+              icon: 'error'
+            });
+          };
+        };
+      };
+
+      //
+      xmlRq.addEventListener('error', (error) => {
+        Swal.fire({
+          title: "Error connecting to server",
+          icon: 'error'
+        });
+        console.error(error);
+      });
+
+      xmlRq.send(formData);
+    };
+
+  };
+
+  const xmlRqImg = new XMLHttpRequest();
+  async function updateProductImages(PID) {
+    const progress_bar = document.getElementById('progressBar');
+
+    progress_bar.classList.add('bg-primary');
+    progress_bar.parentElement.style.filter = 'opacity(100)';
+    progress_bar.style.transition = 'all 0s ease 0s';
+    progress_bar.style.width = '0';
+    progress_bar.parentElement.style.backgroundColor = '#eaecf4';
+    progress_bar.style.transition = 'all .5s ease 0s';
+
+    const formData = new FormData();
+
+    if (imgFiles?.img1) formData.append('img1', imgFiles.img1);
+    if (imgFiles?.img2) formData.append('img2', imgFiles.img2);
+    if (imgFiles?.img3) formData.append('img3', imgFiles.img3);
+    if (imgFiles?.img4) formData.append('img4', imgFiles.img4);
+
+    formData.append('data', JSON.stringify({
+      PID: PID
+    }));
+
+    xmlRqImg.abort();
+    xmlRqImg.open('PUT', '/products/edit_product');
+
+    // 
+    xmlRqImg.upload.addEventListener('progress', ({
+      loaded,
+      total
+    }) => {
+      let status = Math.floor((loaded / total) * 100);
+
+      progress_bar.style.width = `${status}%`;
+
+      if (status == 100) {
+        //... processing
+      };
+
+    });
+
+    //
+    xmlRqImg.onreadystatechange = (e) => {
+      if (xmlRqImg.readyState === 4) {
+        if (xmlRqImg.status == 200) {
+          let res = JSON.parse(xmlRqImg.response);
+
+          if (res.status == 'good') {
+            progress_bar.classList.remove('bg-danger');
+            progress_bar.classList.add('bg-info');
+          } else {
+            progress_bar.classList.remove('bg-primary');
+            progress_bar.classList.add('bg-danger');
+            Swal.fire({
+              title: res.message,
+              icon: 'error'
+            });
+          };
+
+        } else {
+          Swal.fire({
+            title: "Error connecting to server",
+            icon: 'error'
+          });
+        };
+      };
+    };
+
+    //
+    xmlRqImg.addEventListener('error', (error) => {
+      Swal.fire({
+        title: "Error connecting to server",
+        icon: 'error'
+      });
+      console.error(error);
+    });
+
+    xmlRqImg.send(formData);
+  };
+</script>
+
+<script>
+  (function() {
+    const editorPopUp = document.getElementById('imageEditor');
+    const card_actions = document.getElementById('card_actions');
+    const input_ids = ['imgA', 'imgB', 'imgC', 'imgD'];
+    input_ids.forEach(id => {
+      document.getElementById(id).addEventListener('change', (e) => {
+        if (e.target.files) {
+          // opens popup
+          editorPopUp.style.display = 'flex';
+          // gets image
+          const img = document.getElementById('imageEditable');
+          // set image from file to editor
+          img.src = URL.createObjectURL(e.target.files[0]);
+          // start cropper
+          window['crop'] = new Cropper(img, {
+            aspectRatio: 1 / 1
+          });
+          // set button actions inside popoup
+          const buttons = card_actions.querySelectorAll('button');
+          buttons[0].setAttribute('onclick', `preview('${id}',this)`);
+          buttons[1].setAttribute('onclick', 'cancel()');
+          buttons[2].setAttribute('onclick', `reSelectImg('${id}')`);
+          buttons[3].setAttribute('onclick', `saveImage('${id}')`);
+        };
+      });
+    });
+  }());
+  // TODO: cropper UI has some display bugs
+
+  async function editExisting(id,imgeToEdit) {
+    const editorPopUp = document.getElementById('imageEditor');
+    const card_actions = document.getElementById('card_actions');
+    editorPopUp.style.display = 'flex';
+    // gets image
+    const img = document.getElementById('imageEditable');
+    // set image from file to editor // TODO:
+    const unConverted = await fetch(imgeToEdit.src);
+    const blobFromImg = await unConverted.blob();
+
+    img.src = URL.createObjectURL(blobFromImg);
+    // start cropper
+    window['crop'] = new Cropper(img, {
+      aspectRatio: 1 / 1
+    });
+    // set button actions inside popoup
+    const buttons = card_actions.querySelectorAll('button');
+    buttons[0].setAttribute('onclick', `preview('${id}',this)`);
+    buttons[1].setAttribute('onclick', 'cancel()');
+    buttons[2].setAttribute('onclick', `reSelectImg('${id}')`);
+    buttons[3].setAttribute('onclick', `saveImage('${id}')`);
+  };
+
+  function saveImage(id) {
+    const FinalID = id == 'imgA' ? 'img1' : id == 'imgB' ? 'img2' : id == 'imgC' ? 'img3' : id == 'imgD' ? 'img4' : undefined;
+    if (window?.crop?.cropped) {
+      let blob = window['crop'].getCroppedCanvas().toBlob(blob => {
+        imgFiles[FinalID] = new File([blob], 'Edited.png', blob);
+      });
+      finalizeBtn(id);
+    } else if (window.finalImg) {
+      imgFiles[FinalID] = window.finalImg;
+      finalizeBtn(id);
+    };
+    cancel();
+  };
+
+  function finalizeBtn(id) {
+    const img_cont = document.getElementById(id + 'Show');
+    if (window?.crop?.cropped) {
+      img_cont.src = window['crop'].getCroppedCanvas().toDataURL('image/jpeg');
+    } else {
+      img_cont.src = window.previewImg;
+    };
+
+  };
+
+  function reSelectImg(id) {
+    cancel();
+    document.getElementById(id).click();
+  };
+
+  function cancel() {
+    if (window['crop']) window['crop'].destroy();
+    const editorPopUp = document.getElementById('imageEditor');
+    editorPopUp.style.display = 'none';
+  };
+
+  function preview(id, btn) {
+    const buttons = document.getElementById('imageEditor').querySelector('.aciton-cont').querySelectorAll('button');
+    window.imageHolder = document.getElementById('imageEditable').src;
+    let blob = window['crop'].getCroppedCanvas().toBlob(blob => {
+      window.finalImg = new File([blob], 'Edited.png', blob);
+    });
+    window.previewImg = window['crop'].getCroppedCanvas().toDataURL('image/jpeg');
+    let data = window['crop'].getCroppedCanvas().toDataURL('image/jpeg');
+    window['crop'].destroy();
+    document.getElementById('imageEditable').src = data;
+    btn.setAttribute('onclick', `editImage('${id}',this)`);
+    btn.innerText = 'Re-Edit';
+    buttons.forEach(btns => {
+      btns.setAttribute('disabled', '');
+    });
+  };
+
+  function editImage(id, btn) {
+    const buttons = document.getElementById('imageEditor').querySelector('.aciton-cont').querySelectorAll('button');
+    const img = document.getElementById('imageEditable');
+    img.src = window.imageHolder;
+    window['crop'] = new Cropper(img, {
+      aspectRatio: 1 / 1
+    });
+    buttons.forEach(btns => {
+      btns.removeAttribute('disabled');
+    });
+    btn.setAttribute('onclick', `preview('${id}',this)`);
+    btn.innerText = 'Preview';
+  };
+</script>

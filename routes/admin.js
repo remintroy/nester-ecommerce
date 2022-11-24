@@ -56,10 +56,16 @@ adminApp.get('/products', admin.productHome);
 adminApp.get('/products/add_product', admin.addProducts);
 // edit products
 adminApp.get('/products/edit_product/:id', admin.editProduct);
+// view products
+adminApp.get('/products/view_product/:id', admin.viewProduct);
 // all orders
 adminApp.get('/orders', admin.ordres);
 // order full data page
 adminApp.get('/orders/:id', admin.ordresFromID);
+// coupen 
+adminApp.get('/coupen', admin.coupen)
+
+adminApp.get('/coupen/add_coupen',admin.Addcoupen)
 
 // test page 
 adminApp.get('/test', admin.test);

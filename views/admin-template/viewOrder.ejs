@@ -57,7 +57,7 @@
           <div class="row mt-1">
             <div class="col-6 p-1">
               <div class="card rounded p-3 h-100">
-                <span style="text-transform: capitalize;">Payment Status : <b><%= e?.order?.products?.paymentStatus %></b></span>
+                <span style="text-transform: capitalize;">Payment Status : <b><%= e?.order?.paymentStatus %></b></span>
                 <% if(e?.order?.products?.offer){ %>
                 <span>Price : <s style="color: #ff8b8b;"><%=e?.order?.products?.price%></s>&nbsp;<%=e?.order?.products?.price - e?.order?.products?.offer%> Rs </span>
                 <% }else{ %>

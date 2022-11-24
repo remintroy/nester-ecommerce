@@ -1,69 +1,147 @@
-.form-group label{
-    width: 100%;
+.form-group label {
+  width: 100%;
 }
-.form-group label span{
-    float: right;
-    color: red;
-}  
-
+.form-group label span {
+  float: right;
+  color: red;
+}
 
 .tabe_editable_TD {
-    position: relative;
-    text-transform: capitalize;
-    padding: 0 !important;
-    height: auto;
-    position: relative;
-    min-width: 100px;
-    width: -webkit-min-content;
-    width: -moz-min-content;
-    width: min-content;
-  }
-  .tabe_editable_TD input {
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    width: 100%;
-    position: absolute;
-    outline: none;
-    padding: 5px 15px;
-    height: 100%;
-  }
-  .tabe_editable_TD .width-helper {
-    position: relative;
-    height: 100%;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 5px 20px;
-    color: transparent;
-  }
-  
-  .table_for_orders tbody tr {
-    position: relative;
-  }
-  .table_for_orders tbody tr td.status {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-  }
-  .table_for_orders tbody tr td.status.pending {
-    background-color: #edae77;
-  }
-  .table_for_orders tbody tr td.status.success, .table_for_orders tbody tr td.status.paid {
-    background-color: #9cdaa5;
-  }
-  .table_for_orders tbody tr td.status.processing {
-    background-color: #aab6ea;
-  }
-  .table_for_orders tbody tr td.status.shipped {
-    background-color: #f698ff;
-  }
-  .table_for_orders tbody tr td.status.cancelled {
-    background-color: #ff6666;
-  }
-  .table_for_orders tbody tr td.status.err {
-    background-color: transparent;
-    border: 1px solid red;
-    color: red;
-  }
+  position: relative;
+  text-transform: capitalize;
+  padding: 0 !important;
+  height: auto;
+  position: relative;
+  min-width: 100px;
+  width: -webkit-min-content;
+  width: -moz-min-content;
+  width: min-content;
+}
+.tabe_editable_TD input {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  position: absolute;
+  outline: none;
+  padding: 5px 15px;
+  height: 100%;
+}
+.tabe_editable_TD .width-helper {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 5px 20px;
+  color: transparent;
+}
+
+.table_for_orders tbody tr {
+  position: relative;
+}
+.table_for_orders tbody tr td.status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+.table_for_orders tbody tr td.status.pending {
+  background-color: #edae77;
+}
+.table_for_orders tbody tr td.status.success,
+.table_for_orders tbody tr td.status.paid {
+  background-color: #9cdaa5;
+}
+.table_for_orders tbody tr td.status.processing {
+  background-color: #aab6ea;
+}
+.table_for_orders tbody tr td.status.shipped {
+  background-color: #f698ff;
+}
+.table_for_orders tbody tr td.status.cancelled {
+  background-color: #ff6666;
+}
+.table_for_orders tbody tr td.status.err {
+  background-color: transparent;
+  border: 1px solid red;
+  color: red;
+}
+
+/*Coupen card */
+.coupon-card {
+  background: linear-gradient(135deg, #7158fe, #9d4de6);
+  color: #fff;
+  text-align: center;
+  padding: 40px 80px;
+  border-radius: 15px;
+  /* box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.15); */
+  position: relative;
+  overflow: hidden;
+}
+
+.coupon-card .times{
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  padding: 10px;
+  background-color: white;
+  border-radius: 2px;
+  color: black;
+}
+
+.coupon-card .logo {
+  width: 80px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.coupon-card h3 {
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 40px;
+}
+
+.coupon-card p {
+  font-size: 15px;
+}
+
+.coupon-card .coupon-row {
+  display: flex;
+  align-items: center;
+  margin: 25px auto;
+  width: fit-content;
+}
+
+.coupon-card #cpnCode {
+  border: 1px dashed #fff;
+  padding: 10px 20px;
+  border-right: 0;
+}
+
+.coupon-card #cpnBtn {
+  border: 1px solid #fff;
+  background: #fff;
+  padding: 10px 20px;
+  color: #7158fe;
+  cursor: pointer;
+}
+
+.coupon-card  .circle1,
+.coupon-card .circle2 {
+  background: #ffffff;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.coupon-card  .circle1 {
+  left: -25px;
+}
+
+.coupon-card .circle2 {
+  right: -25px;
+}

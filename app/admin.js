@@ -225,6 +225,27 @@ export const editProduct = async (req, res) => {
         res.render('admin/404');
     };
 };
+// view each product details
+export const viewProduct = async (req, res) => {
+    try {
+        const PID = req.params.id;
+        const output = await products.validatior({ PID: PID });
+        try {
+            const product = await db.products.findOne({ PID: output.PID });
+            res.locals.currentPage = 'editProduct';
+            res.locals.currentPageA = 'products';
+            res.locals.product = product;
+            res.render(pagesBase + '/products_view');
+        } catch (error) {
+            res.locals.code = 500;
+            res.locals.message = "Error fetching product data form db"
+            res.render('admin/404');
+        };
+    } catch (error) {
+        res.locals.message = error;
+        res.render('admin/404');
+    };
+}
 // api for edit product
 export const editProductAPI = async (req, res) => {
     try {
@@ -428,7 +449,49 @@ export const editUserAPI = async (req, res) => {
         res.send({ status: 'error', message: error });
     };
 };
+// coupens
+export const coupen = async (req, res) => {
+    try {
+        const allCategory = await db.category.find({});
+        const output = [];
 
+        allCategory.forEach(element => {
+            const keys = Object.keys(element._doc);
+            const result = {};
+
+            for (let i = 0; i < keys.length; i++) {
+                result[keys[i]] = keys[i] == 'creationTime' ? dataToReadable(element.creationTime) : element[keys[i]];
+            };
+
+            output.push(result);
+        });
+
+        res.locals.categorys = output;
+        res.locals.currentPage = 'coupen';
+        res.locals.currentPageA = 'coupen';
+        res.render(pagesBase + '/coupen');
+    } catch (error) {
+        console.log('ALL_ORDERS_PAGE_DB => ', error);
+        res.locals.message = `Can't get coupen's from db `;
+        res.locals.code = 500;
+        res.render('admin/404');
+    };
+};
+// add coupen
+export const Addcoupen = async (req, res) => {
+    try {
+        const allCategory = await db.category.find({});
+        res.locals.category = allCategory;
+        res.locals.currentPage = 'addCoupen';
+        res.locals.currentPageA = 'coupen';
+        res.render(pagesBase + '/coupen_add');
+    } catch (error) {
+        console.log('ALL_ORDERS_PAGE_DB => ', error);
+        res.locals.message = `Can't get coupen's from db `;
+        res.locals.code = 500;
+        res.render('admin/404');
+    };
+};
 
 
 export const test = async (req, res) => {

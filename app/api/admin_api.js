@@ -297,6 +297,70 @@ export const getRequestByPages = async () => {
         throw error;
     };
 };
+export const totalProductsSalesYearCount = async (year) => {
+    try {
+        return await totalProductsSalesYear(year, true);
+    } catch (error) {
+        throw error;
+    }
+}
+export const totalProductsSalesYear = async (year, noData) => {
+    try {
+
+        // validating year 
+        if (isNaN(Number(year)) || !Number(year) || (year + "").length != 4) throw 'Invalid year';
+
+        try {
+            const projectQuery = {};
+
+            projectQuery._id = 0;
+            projectQuery.length = '$length';
+            projectQuery.month = '$_id';
+
+            if (!noData) projectQuery.orders = "$orders";
+
+            // fetching data
+            const dataFromDb = await db.orders.aggregate([
+                { $unwind: '$orders' },
+                { $unwind: '$orders.products' },
+                {
+                    $facet: {
+                        OR: [
+                            { $match: { 'orders.dateOFOrder': { $gte: new Date(`${year}-01-01`), $lte: new Date(`${year}-12-31`) }, 'orders.products.status': { $eq: 'ordered' } }, },
+                            { $group: { _id: { $month: "$orders.dateOFOrder" }, length: { $sum: 1 }, orders: { $addToSet: '$orders' } } },
+                            { $project: projectQuery }, { $sort: { month: 1 } }
+                        ],
+                        SH: [
+                            { $match: { 'orders.dateOFOrder': { $gte: new Date(`${year}-01-01`), $lte: new Date(`${year}-12-31`) }, 'orders.products.status': { $eq: 'shipped' } }, },
+                            { $group: { _id: { $month: "$orders.dateOFOrder" }, length: { $sum: 1 }, orders: { $addToSet: '$orders' } } }, { $project: projectQuery }, { $sort: { month: 1 } }
+                        ],
+                        OT: [
+                            { $match: { 'orders.dateOFOrder': { $gte: new Date(`${year}-01-01`), $lte: new Date(`${year}-12-31`) }, 'orders.products.status': { $eq: 'out for delivery' } }, },
+                            { $group: { _id: { $month: "$orders.dateOFOrder" }, length: { $sum: 1 }, orders: { $addToSet: '$orders' } } }, { $project: projectQuery }, { $sort: { month: 1 } }
+                        ],
+                        DD: [
+                            { $match: { 'orders.dateOFOrder': { $gte: new Date(`${year}-01-01`), $lte: new Date(`${year}-12-31`) }, 'orders.products.status': { $eq: 'delivered' } }, },
+                            { $group: { _id: { $month: "$orders.dateOFOrder" }, length: { $sum: 1 }, orders: { $addToSet: '$orders' } } }, { $project: projectQuery }, { $sort: { month: 1 } }
+                        ],
+                        CC: [
+                            { $match: { 'orders.dateOFOrder': { $gte: new Date(`${year}-01-01`), $lte: new Date(`${year}-12-31`) }, 'orders.products.status': { $eq: 'cancelled' } }, },
+                            { $group: { _id: { $month: "$orders.dateOFOrder" }, length: { $sum: 1 }, orders: { $addToSet: '$orders' } } }, { $project: projectQuery }, { $sort: { month: 1 } }
+                        ],
+                    }
+                }
+            ])
+
+            // resolving output data
+            return dataFromDb[0];
+        } catch (error) {
+            console.log(error);
+            throw 'Error while retreving data from db';
+        };
+
+    } catch (error) {
+        throw error;
+    };
+};
 
 // 
 export const getProductInPages = async (pages) => {
@@ -357,7 +421,7 @@ export const getProductsStatByPID = async (PID) => {
                             { $match: { views: { $gte: firstday_month } } },
                             { $group: { _id: { $week: { date: '$views', timezone: '+05:30' } }, count: { $sum: 1 } } },
                             { $project: { _id: 0, count: '$count', week: '$_id' } },
-                            { $sort: { count: 1 } } 
+                            { $sort: { count: 1 } }
                         ],
                         day_impressions: [
                             { $unwind: '$impressions' },
@@ -381,7 +445,7 @@ export const getProductsStatByPID = async (PID) => {
 
 async function test() {
     try {
-        const data = await getProductsStatByPID('vu36w782UNhC0D7ilDVM');
+        const data = await totalProductsSalesYear(2022, true);
         console.log("data => ", data);
     } catch (error) {
         console.log("error =>", error);

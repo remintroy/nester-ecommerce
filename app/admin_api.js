@@ -39,6 +39,16 @@ export const reports = async (req, res) => {
             service: 'salesInYear_count'
         });
 
+        validKeys.push({
+            key: 'order-all-year',
+            service: 'totalProductsSalesYear'
+        });
+
+        validKeys.push({
+            key: 'order-all-year-count',
+            service: 'totalProductsSalesYearCount'
+        });
+
         // ----- category -----
 
         // get category data in past hours
@@ -104,8 +114,8 @@ export const products = async (req, res) => {
         });
 
         validKeys.push({
-            key:'analytics-pid',
-            service:'getProductsStatByPID'
+            key: 'analytics-pid',
+            service: 'getProductsStatByPID'
         })
 
         const keys = Object.keys(req.query);

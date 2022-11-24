@@ -5,34 +5,21 @@
 <div class="container-fluid">
 
   <!-- Page Heading -->
-  <h1 class="h3 mb-4 text-gray-800 d-flex gap-2"><i class="mdi mdi-shape-plus"></i>All Catogory's</h1>
-
-  <!-- Collapsable Card Example -->
-  <div class="card mb-4 rounded mt-4">
-    <!-- Card Header - Accordion -->
-    <div class="card-header p-3 bg-white">
-      <h6 class="m-0 font-weight-bold text-primary">Add new category (New)</h6>
+  <div class="d-flex justify-content-between align-items-center my-3">
+    <div class="d-flex align-items-center">
+      <h1 class="h3 d-flex gap-2"><i class="mdi mdi-ticket"></i> Coupens</h1>
     </div>
-    <!-- Card Content - Collapse -->
-    <div class="card-body">
-      <div class="input-cont horz">
-        <div class="form-group">
-          <label for="category">New category <span></span></label>
-          <input class="form-control" type="text" name="category" id="categoryInput" autocomplete="off" placeholder="Enter new catogery">
-        </div>
-        <div id="disp_state" style="display: none;" class="my-2 rounded">
-          error
-        </div>
-      </div>
-      <button class="btn btn-info mt-3" onclick="addCatogery()">Add category</button><br><br>
+    <div>
+      <a href="/coupen/add_coupen" class="btn btn-info">+ Add new coupen</a>
     </div>
   </div>
+
 
   <!-- DataTales Example -->
   <div class="card mb-4">
     <div class="mb-1 small" id="progressDisp"></div>
     <div class="card-header p-3 bg-white">
-      <h6 class="m-0 font-weight-bold text-primary">All Categorys</h6>
+      <h6 class="m-0 font-weight-bold text-primary">All Coupens</h6>
     </div>
     <div class="card-body">
       <div class="table-responsive">
@@ -40,12 +27,12 @@
           <thead>
             <tr>
               <th>#</th>
-              <th>Name</th>
-              <th>ID</th>
-              <th>Created</th>
+              <th>Code</th>
+              <th>Title</th>
+              <th>Value</th>
+              <th>Expires</th>
               <th>status</th>
-              <!-- <th style="cursor: pointer; text-align: center;">Disable / Enable</th> -->
-              <th style="cursor: pointer; text-align: center;">Delete </th>
+              <th>More</th>
             </tr>
           </thead>
           <tbody>
@@ -54,25 +41,23 @@
               <td>
                 <%=index+1%>
               </td>
-              <td class="tabe_editable_TD" title="Click To edit" onclick="categoryName('<%=category._id%>',this)">
-                <input class="input_editable" type="text" data-id="<%=category._id%>" disabled value="<%=category.category%>">
+              <td>
+                <%= locals.util.randomId(8,'A') %>
               </td>
               <td>
-                <%=category._id%>
+                Today special
+              </td>
+              <td>
+                ₹ <%= locals.util.randomId(4,'0') %>
               </td>
               <td>
                 <%=category.creationTime%>
               </td>
               <td style="text-transform:capitalize;">
-                <%if(category.status){%>
-                &nbsp;<i class="fas fa-exclamation-circle"></i> disabled
-                <%}else{%>
-                &nbsp;<i class="fas fa-check-circle"></i> active
-                <%};%>
+                active
               </td>
-
-              <td style="cursor: pointer; text-align: center;" onclick="deleteCategory('<%=category._id%>')">
-                <i class="fas fa-trash-alt"></i>&nbsp;&nbsp;Delete
+              <td style="cursor: pointer; text-align: center;">
+                <b> More</b>
               </td>
             </tr>
             <% }); %>
@@ -207,7 +192,6 @@
               input.style.borderColor = 'red';
               progress_bar.classList.remove('bg-primary');
               progress_bar.classList.add('bg-danger');
-              toast(res.message,'error');
             } else {
               input.style.borderColor = '';
               progress_bar.classList.remove('bg-danger');
@@ -245,7 +229,6 @@
         .then(res => {
           if (res.status == 'error') {
             console.log(res.message);
-            toast(res.message,'error');
           } else {
             window.location.reload();
           };

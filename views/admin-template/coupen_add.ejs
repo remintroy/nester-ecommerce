@@ -1,0 +1,166 @@
+<!-- Custom styles for this page -->
+<link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-12 rounded bg-white p-5">
+      <h3 class="h3 d-flex gap-2"><i class="mdi mdi-ticket"></i>Add discount coupen</h3>
+      <div class="row mt-4">
+        <div class="col-6">
+          <div class="coupon-card">
+            <!-- <img src="https://i.postimg.cc/KvTqpZq9/uber.png" class="logo"> -->
+            <div class="times" id="timesDisplay">1</div>
+            <h3 id="coupenTextDisplay">Your title here</h3>
+            <di class="coupon-row">
+              <span id="cpnCode"><%= locals.util.randomId(8,'A') %> </span>
+              <span id="cpnBtn">Copy Code</span>
+            </di>
+            <p>Discount Amount : <span id="amountDisplay">0</span></p>
+            <p>Valid Till: <span id="dateDisplay">YYYY-MM-DD</span></p>
+            <div class="circle1"></div>
+            <div class="circle2"></div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+            <label for=""><b>Coupen title *</b> <span></span></label>
+            <input id="titleInput" type="text" onkeydown="syncTextToDisplay(this)" onkeyup="syncTextToDisplay(this)" class="form-control" placeholder="Your title here">
+          </div>
+          <div class="form-group">
+            <label for=""><b>Expiry date *</b> <span></span></label>
+            <input type="date" id="dateInput" onchange="syncDateToDisplay(this)" class="form-control" />
+          </div>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-12">
+
+          <div class="row">
+            <div class="form-group col-6">
+              <label for=""><b>Amount in Rs *</b><span></span></label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text d-flex align-items-center">
+                    <div class="form-check form-switch p-0 m-0 d-flex justify-content-center align-items-center">
+                      <input class="form-check-input p-0 m-0" type="radio" name="flexSwitchCheckChecked">
+                    </div>
+                  </div>
+                </div>
+                <input id="amountInRsInput" type="number" onkeydown="syncAmountToDisplayA(this)" onkeyup="syncAmountToDisplayA(this)" onfocus="syncAmountToDisplayA(this)" class="form-control" placeholder="Amount here">
+              </div>
+            </div>
+
+            <div class="form-group col-6">
+              <label for=""><b>Amount in % *</b><span></span></label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text d-flex align-items-center">
+                    <div class="form-check form-switch p-0 m-0 d-flex justify-content-center align-items-center">
+                      <input class="form-check-input p-0 m-0" type="radio" name="flexSwitchCheckChecked">
+                    </div>
+                  </div>
+                </div>
+                <input id="amountInPInput" type="number" max="100" onkeydown="syncAmountToDisplayB(this)" onkeyup="syncAmountToDisplayB(this)" onfocus="syncAmountToDisplayB(this)" class="form-control" placeholder="Amount here">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for=""><b>Minimum spend</b><span></span></label>
+                <input id="minSpendInput" type="number" placeholder="Minimum spend amount" class="form-control" />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for=""><b>Maximum spend</b><span></span></label>
+                <input id="maxSpendInput" type="number" placeholder="Minimum spend amount" class="form-control" />
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="form-group col-6">
+              <label for=""><b>Max usage *</b><span></span></label>
+              <input id="maxUsageInput" type="number" onkeyup="syncTimesToDiplay(this)" onkeydown="syncTimesToDiplay(this)" id="date" class="form-control" placeholder="How many times" />
+            </div>
+            <div class="form-group col-6">
+              <label for=""><b>Make coupen only for a specific category</b><span></span></label>
+              <select class="form-control" style="height: 58%;" id="categoryInput">
+                <option value="">--Select--</option>
+                <% category.forEach((element,index,array)=>{ %>
+                <option value="<%= element.category %> "> <%= element.category %> </option>
+                <% }); %>
+              </select>
+            </div>
+          </div>
+
+          <div class="btn-cont">
+            <div class="btn btn-info">Create coupen</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="height: 500px;"></div>
+
+  <script>
+    const syncTextToDisplay = ({
+      value
+    }) => {
+      const display = document.getElementById('coupenTextDisplay');
+      display.innerText = value;
+      if (value?.trim() == '') {
+        display.innerText = 'Your title here';
+      }
+    };
+
+    const syncDateToDisplay = ({
+      value
+    }) => {
+      const display = document.getElementById('dateDisplay');
+      display.innerText = value;
+    };
+
+    const syncAmountToDisplay = (input, value) => {
+      const radio = input.parentElement.querySelector('input');
+      radio.click();
+      const display = document.getElementById('amountDisplay');
+      display.innerText = value;
+    };
+
+    const syncAmountToDisplayA = (input) => {
+      syncAmountToDisplay(input, input.value?.trim() ? input.value?.trim() + " Rs" : '0');
+    };
+
+    const syncAmountToDisplayB = (input) => {
+      if (Number(input.value) > 100) input.value = 100;
+      syncAmountToDisplay(input, input.value?.trim() ? input.value?.trim() + "%" : '0');
+    };
+
+    const syncTimesToDiplay = ({
+      value
+    }) => {
+      const timesDisplay = document.getElementById('timesDisplay');
+      timesDisplay.innerText = Number(value?.trim()) ? Number(value?.trim()) - 0 > 0 ? Number(value?.trim()) - 0 : 1 : 1;
+    };
+
+    const validate = () => {
+      const title = document.getElementById("titleInput");
+      const expiry = document.getElementById("dateInput");
+      const amountInRS = document.getElementById("amountInRsInput");
+      const amountInP = document.getElementById("amountInPInput");
+      const minSpend = document.getElementById("minSpendInput");
+      const maxSpend = document.getElementById("maxSpendInput");
+      const maxUsage = document.getElementById("maxUsageInput");
+      const category = document.getElementById("categoryInput");
+    };
+  </script>
+
+
+</div>

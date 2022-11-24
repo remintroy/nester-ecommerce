@@ -7,6 +7,7 @@ import * as address from './address.js';
 import * as razorpay from './razorpay.js';
 import * as paypal from './paypal.js';
 import * as analytics from './analytics.js';
+import * as wallets from './wallet.js';
 
 const ORDERID_LENGTH = 20;
 const ALL_ORDER_STATUS = ['ordered_OR', 'shipped_SH', 'out for delivery_OT', 'delivered_DD', 'cancelled_CC'];
@@ -270,9 +271,15 @@ export const cancelOrderProductWithUID = (UID, orderID, PID) => {
                             }
                         });
 
-                        const updateStat = await db.products.updateOne({ PID: productOutput }, {
+                        // refund
+                        const amountToAdd = existingData[0].orders[indexOrder].products[indexProduct].total;
+                        const addAmountToWallet = await wallets.addAmount(existingData[0].UID, amountToAdd, 'Refund due to order cancelation');
+
+                        // re updating the stock
+                        const stockToUpdate = existingData[0].orders[indexOrder].products[indexProduct].quantity;
+                        const updateStock = await db.products.updateOne({ PID: productOutput.PID }, {
                             $inc: {
-                                cancelled: 1
+                                stock: stockToUpdate
                             }
                         });
 
@@ -627,6 +634,17 @@ export const updateOrderStatus = (PID, orderID, status) => {
                                     [`orders.${indexOrder}.products.${indexProduct}.update`]: new Date()
                                 }
                             });
+                            if (ALL_ORDER_STATUS[statusIndex] == ALL_ORDER_STATUS[ALL_ORDER_STATUS.length - 1]) {
+                                if (existingData[0].orders[indexOrder].paymentStatus == 'paid') {
+                                    const amountToAdd = existingData[0].orders[indexOrder].products[indexProduct].total;
+                                    const addAmountToWallet = await wallets.addAmount(existingData[0].UID, amountToAdd, 'Refund due to order cancelation');
+                                };
+                                const updateStock = await db.products.updateOne({ PID: productOutput.PID }, {
+                                    $inc: {
+                                        stock: existingData[0].orders[indexOrder].products[indexProduct].quantity
+                                    }
+                                });
+                            };
                             resolve("Order successfully updated");
                         };
                     };
