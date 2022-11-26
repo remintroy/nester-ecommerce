@@ -4,6 +4,9 @@ import * as db from './services/schema.js';
 import * as products from './services/products.js';
 import * as orders from './services/orders.js';
 import * as util from './services/util.js';
+import * as coupenService from './services/coupens.js';
+import * as pdfService from './services/pdf.js';
+import * as path from 'path';
 
 const layout = `admin-template/layout`;
 const pagesBase = `admin-template`;
@@ -261,7 +264,7 @@ export const deleteProductAPI = async (req, res) => {
     try {
         const output = await products.deleteProduct(req.body.PID);
 
-        res.send({ status: 'good', message: output, action: '/admin_panel/products/' });
+        res.send({ status: 'good', message: output, action: '/products/' });
     } catch (error) {
         res.send({ status: 'error', message: error });
     };
@@ -452,21 +455,8 @@ export const editUserAPI = async (req, res) => {
 // coupens
 export const coupen = async (req, res) => {
     try {
-        const allCategory = await db.category.find({});
-        const output = [];
-
-        allCategory.forEach(element => {
-            const keys = Object.keys(element._doc);
-            const result = {};
-
-            for (let i = 0; i < keys.length; i++) {
-                result[keys[i]] = keys[i] == 'creationTime' ? dataToReadable(element.creationTime) : element[keys[i]];
-            };
-
-            output.push(result);
-        });
-
-        res.locals.categorys = output;
+        const coupens = await db.coupens.find({});
+        res.locals.coupens = coupens;
         res.locals.currentPage = 'coupen';
         res.locals.currentPageA = 'coupen';
         res.render(pagesBase + '/coupen');
@@ -492,7 +482,27 @@ export const Addcoupen = async (req, res) => {
         res.render('admin/404');
     };
 };
-
+// add coupen api
+export const AddcoupenAPI = async (req, res) => {
+    try {
+        const output = await coupenService.add(req.body);
+        res.send({ status: 'good', message: output });
+    } catch (error) {
+        res.send({ status: 'error', message: error });
+    };
+};
+export const DeletecoupenAPI = async (req, res) => {
+    try {
+        const output = await coupenService.remove(req.body.ID);
+        res.send({ status: 'good', message: output });
+    } catch (error) {
+        res.send({ status: 'error', message: error });
+    };
+};
+export const createReportPDF = async (req, res) => {
+    await pdfService.createPdf();
+    res.sendFile(path.join(process.cwd(), '/reports/report.pdf'));
+};
 
 export const test = async (req, res) => {
     res.render('admin/test');

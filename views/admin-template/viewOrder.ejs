@@ -79,6 +79,9 @@
                   <% }else if(e?.order?.products?.status=='shipped'){ %>
                   <span class="badge bg-primary ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.order?.products?.update)%>"><%=e?.order?.products?.status%></span>
                   <!-- <div class="spinner-grow spinner-grow-sm text-primary"></div> -->
+                  <% }else if(e?.order?.products?.status=='returned'){ %>
+                    <span class="badge bg-primary ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.order?.products?.update)%>"><%=e?.order?.products?.status%></span>
+                    <!-- <div class="spinner-grow spinner-grow-sm text-primary"></div> -->
                   <% }else if(e?.order?.products?.status=='out for delivery'){ %>
                   <span class="badge bg-secondary ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.order?.products?.update)%>"><%=e?.order?.products?.status%></span>
                   <!-- <div class="spinner-grow spinner-grow-sm text-secondary"></div> -->

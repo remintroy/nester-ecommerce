@@ -1,5 +1,7 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
+import { Convert } from "easy-currencies";
+
 dotenv.config();
 
 const baseURL = 'https://api-m.sandbox.paypal.com';
@@ -34,6 +36,7 @@ export const capturePayment = async (orderID) => {
 };
 
 export const createOrder = async (UID, orderID, amountInInr) => {
+    const amountInUSD = await Convert(amountInInr).from("INR").to("USD");
     const accessTocken = await generateAccessTocken();
     const url = `${baseURL}/v2/checkout/orders/`;
     const response = await axios({
@@ -49,7 +52,7 @@ export const createOrder = async (UID, orderID, amountInInr) => {
                 {
                     amount: {
                         currency_code: 'USD',
-                        value: amountInInr
+                        value: parseFloat(amountInUSD).toFixed(2)
                     }
                 }
             ]

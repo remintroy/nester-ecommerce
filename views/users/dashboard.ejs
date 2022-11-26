@@ -71,15 +71,12 @@
                         <span style="text-transform: capitalize;" class="d-flex align-items-center">
                           Order Status :
                           <!-- <%= e?.orders?.products?.status %> -->
-                          <% if(e?.orders?.products?.status=='orderd') {%>
+                          <% if(e?.orders?.products?.status=='ordered') {%>
                           <span class="badge badge-warning ml-2 mr-2" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.orders?.products?.update)%>"><%=e?.orders?.products?.status%></span>
                           <!-- <div class="spinner-grow spinner-grow-sm text-warning"></div> -->
-                          <% }else if(e?.orders?.products?.status=='packed'){ %>
+                          <% }else if(e?.orders?.products?.status=='shipped'){ %>
                           <span class="badge badge-info ml-2 mr-2" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.orders?.products?.update)%>"><%=e?.orders?.products?.status%></span>
                           <!-- <div class="spinner-grow spinner-grow-sm text-info"></div> -->
-                          <% }else if(e?.orders?.products?.status=='arriving today'){ %>
-                          <span class="badge badge-primary ml-2 mr-2" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.orders?.products?.update)%>"><%=e?.orders?.products?.status%></span>
-                          <!-- <div class="spinner-grow spinner-grow-sm text-primary"></div> -->
                           <% }else if(e?.orders?.products?.status=='out for delivery'){ %>
                           <span class="badge badge-secondary ml-2 mr-2" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.orders?.products?.update)%>"><%=e?.orders?.products?.status%></span>
                           <!-- <div class="spinner-grow spinner-grow-sm text-secondary"></div> -->
@@ -109,7 +106,9 @@
                     <% if(e?.orders?.products?.status!="cancelled" && e?.orders?.products?.status!="delivered"){ %>
                     <button class="btn rounded" onclick="cancelOrder('<%=e?.orders?._id%>','<%=e?.orders?.products?.PID%>',this)">Cancel
                       Order</button>
-                    <% }; %>
+                    <% }else if(e?.orders?.products?.status=="delivered"){ %>
+                    <button class="btn rounded  btn-primary" onclick="returnOrder('<%=e?.orders?._id%>','<%=e?.orders?.products?.PID%>',this)">Return order</button>
+                    <% } %>
                   </div>
                 </div>
 

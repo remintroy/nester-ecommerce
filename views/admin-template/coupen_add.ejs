@@ -1,12 +1,37 @@
-<!-- Custom styles for this page -->
-<link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
+  <div class="custom-modal" id="coupenDisplay" style="display: none;">
+    <div class="inner-cont rounded">
+      <div class="card rounded animate__animated  animate__bounceInUp">
+        <div class="card-body d-flex justify-content-center align-items-center position-relative">
+          <div class="text-center ">
+            <img src="/res/success-06.gif" id="couponresultSuccessImg" class="successImg" alt="">
+            <div class="coupon-card" id="couprnResulcard_cont">
+              <div class="times" id="coupenResultimes">1</div>
+              <h3 id="coupenResultTitle">Your title here</h3>
+              <di class="coupon-row">
+                <span class="cpnCode" id="coupenResultCode"><%= locals.util.randomId(8,'A') %> </span>
+                <span class="cpnBtn">Copy Code</span>
+              </di>
+              <p>Discount Amount : <span id="coupenResultAmountDisplay">0</span></p>
+              <p>Valid Till: <span id="coupenResultDateDisplay">YYYY-MM-DD</span></p>
+              <div class="circle1"></div>
+              <div class="circle2"></div>
+            </div>
+            <h3 class="mt-5"><b>Coupon created successfully</b></h3>
+          </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+          <div class="btn btn-info" onclick="closePopup()">Close</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="row">
     <div class="col-12 rounded bg-white p-5">
-      <h3 class="h3 d-flex gap-2"><i class="mdi mdi-ticket"></i>Add discount coupen</h3>
+      <h3 class="h3 d-flex gap-2"><i class="mdi mdi-ticket"></i>Add discount coupon</h3>
       <div class="row mt-4">
         <div class="col-6">
           <div class="coupon-card">
@@ -14,8 +39,8 @@
             <div class="times" id="timesDisplay">1</div>
             <h3 id="coupenTextDisplay">Your title here</h3>
             <di class="coupon-row">
-              <span id="cpnCode"><%= locals.util.randomId(8,'A') %> </span>
-              <span id="cpnBtn">Copy Code</span>
+              <span class="cpnCode">##########</span>
+              <span class="cpnBtn">Copy Code</span>
             </di>
             <p>Discount Amount : <span id="amountDisplay">0</span></p>
             <p>Valid Till: <span id="dateDisplay">YYYY-MM-DD</span></p>
@@ -44,7 +69,7 @@
                 <div class="input-group-prepend">
                   <div class="input-group-text d-flex align-items-center">
                     <div class="form-check form-switch p-0 m-0 d-flex justify-content-center align-items-center">
-                      <input class="form-check-input p-0 m-0" type="radio" name="flexSwitchCheckChecked">
+                      <input class="form-check-input p-0 m-0" type="radio" name="flexSwitchCheckChecked" checked>
                     </div>
                   </div>
                 </div>
@@ -99,7 +124,7 @@
           </div>
 
           <div class="btn-cont">
-            <div class="btn btn-info">Create coupen</div>
+            <div class="btn btn-info" onclick="validate()">Create coupen</div>
           </div>
 
         </div>
@@ -150,7 +175,7 @@
       timesDisplay.innerText = Number(value?.trim()) ? Number(value?.trim()) - 0 > 0 ? Number(value?.trim()) - 0 : 1 : 1;
     };
 
-    const validate = () => {
+    const validate = async () => {
       const title = document.getElementById("titleInput");
       const expiry = document.getElementById("dateInput");
       const amountInRS = document.getElementById("amountInRsInput");
@@ -159,6 +184,142 @@
       const maxSpend = document.getElementById("maxSpendInput");
       const maxUsage = document.getElementById("maxUsageInput");
       const category = document.getElementById("categoryInput");
+
+      const titleErr = title.parentElement.querySelector('span');
+      const expiryErr = expiry.parentElement.querySelector("span");
+      const amountInRSErr = amountInRS.parentElement.parentElement.querySelector("span");
+      const amountInPErr = amountInP.parentElement.parentElement.querySelector("span");
+      const minSpendErr = minSpend.parentElement.querySelector("span");
+      const maxSpendErr = maxSpend.parentElement.querySelector("span");
+      const maxUsageErr = maxUsage.parentElement.querySelector("span");
+      const categoryErr = category.parentElement.querySelector("span");
+
+      titleErr.innerText = '';
+      expiryErr.innerText = '';
+      amountInRSErr.innerText = '';
+      amountInPErr.innerText = '';
+      minSpendErr.innerText = '';
+      maxSpendErr.innerText = '';
+      maxUsageErr.innerText = '';
+      categoryErr.innerText = '';
+
+
+      let everythingGood = true;
+
+      if (title?.value?.trim()?.length < 7) {
+        everythingGood = false;
+        titleErr.innerText = `Title need ${7-Number(title.value.trim().length)} more characters`;
+      };
+
+      if (expiry.value?.trim()) {
+        if (new Date(expiry.value) < new Date()) {
+          everythingGood = false;
+          expiryErr.innerText = `Cant set past date as expiry`;
+        }
+      } else {
+        everythingGood = false;
+        expiryErr.innerText = `Expiry date required`;
+      };
+
+      if (amountInP.parentElement.querySelector('input[type=radio]').checked) {
+        if (isNaN(Number(amountInP.value)) || Number(amountInP.value) > 100 || Number(amountInP.value) < 1 || Number(amountInP.value) == 0 || amountInP.value?.trim().length == 0) {
+          everythingGood = false;
+          amountInPErr.innerText = 'Enter a valid discount persentage';
+        };
+      };
+
+      if (amountInRS.parentElement.querySelector('input[type=radio]').checked) {
+        if (isNaN(Number(amountInRS.value)) || Number(amountInRS.value) > 10000 || Number(amountInRS.value) < 1 || Number(amountInRS.value) == 0 || amountInRS.value?.trim().length == 0) {
+          everythingGood = false;
+          amountInRSErr.innerText = 'Enter a valid discount persentage';
+        };
+      };
+
+      if (minSpend.value?.trim().length > 0) {
+        if (isNaN(Number(minSpend.value)) || Number(minSpend.value) > 10000 || Number(minSpend.value) < 1) {
+          everythingGood = false;
+          minSpendErr.innerText = "Enter a valid amount";
+        }
+      };
+
+      if (maxSpend.value?.trim().length > 0) {
+        if (isNaN(Number(maxSpend.value)) || Number(maxSpend.value) > 10000 || Number(maxSpend.value) < 1 || Number(minSpend.value) + 5 > Number(maxSpend.value)) {
+          everythingGood = false;
+          maxSpendErr.innerText = "Enter a valid amount";
+        }
+      };
+
+      if (maxUsage.value?.trim().length > 0) {
+        if (isNaN(Number(maxUsage.value)) || Number(maxUsage.value) > 10 || Number(maxUsage.value) < 1) {
+          everythingGood = false;
+          maxUsage.innerText = "Enter a valid number";
+        }
+      } else {
+        everythingGood = false;
+        maxUsageErr.innerText = 'This field is required';
+      };
+
+      if (everythingGood) {
+        const valueData = amountInP.parentElement.querySelector('input[type=radio]').checked ? amountInP.value + "_P" : amountInRS.value + "_R";
+
+        // submit
+        const submit = await fetch('/coupen/add_coupen', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            title: title.value ? title.value.trim() : null,
+            expiry: expiry.value ? expiry.value : null,
+            value: valueData,
+            minSpend: minSpend.value ? minSpend.value.trim() : null,
+            maxSpend: maxSpend.value ? maxSpend.value.trim() : null,
+            maxUsage: maxUsage.value ? maxUsage.value.trim() : null,
+            category: category.value ? category.value : null
+          })
+        });
+
+        const res = await submit.json();
+
+        if (res.status == 'error') {
+          toast(res.message, 'error');
+        } else {
+          const disp_coupon = document.getElementById('coupenDisplay');
+          const times = document.getElementById('coupenResultimes');
+          const title = document.getElementById('coupenResultTitle');
+          const code = document.getElementById('coupenResultCode');
+          const img = document.getElementById('couponresultSuccessImg');
+          const container = document.getElementById('couprnResulcard_cont');
+          const discount = document.getElementById('coupenResultAmountDisplay');
+          const validity = document.getElementById('coupenResultDateDisplay');
+
+          disp_coupon.style.display = 'flex';
+
+          times.innerText = res.message.maxUsage ? res.message.maxUsage : '';
+          title.innerText = res.message.title ? res.message.title : '';
+          code.innerText = res.message.code ? res.message.code : '';
+          discount.innerText = res.message.value ? res.message.valueType == 'P' ? res.message.value + '%' : res.message.value + ' Rs' : '';
+          validity.innerText = res.message.expiry ? new Date(res.message.expiry).toDateString() : '';
+
+          setTimeout(() => {
+            img.style.display = 'none';
+            container.style.display = 'block';
+          }, 0000);
+
+        };
+
+      };
+
+    };
+
+    function closePopup() {
+      const container = document.getElementById('couprnResulcard_cont');
+      const img = document.getElementById('couponresultSuccessImg');
+      const disp_coupon = document.getElementById('coupenDisplay');
+      container.style.display = 'none'
+      img.style.display = 'block';
+      disp_coupon.style.display = 'none';
+      window.location.reload();
     };
   </script>
 

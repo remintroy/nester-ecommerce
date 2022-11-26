@@ -158,16 +158,6 @@
                     </tr>
                     <% }); %>
 
-                    <!-- <tr class="summary-subtotal">
-                      <td>Subtotal:</td>
-                      <td>₹ <%= locals?.cartProducts[0]?.subTotal %>
-                      </td>
-                    </tr> -->
-                    <!-- End .summary-subtotal -->
-                    <!-- <tr>
-                      <td>Shipping:</td>
-                      <td>Free shipping</td>
-                    </tr> -->
                     <tr class="summary-total">
                       <td>Total:</td>
                       <td>₹ <%= locals?.cartProducts[0]?.subTotal?locals?.cartProducts[0]?.subTotal:0  %>
@@ -178,21 +168,6 @@
 
                 <div class="accordion-summary" id="accordion-payment">
 
-                  <!-- <input type="radio" id="typeOfOrderCOD" name="typeOfOrder" value="COD" checked>
-                  <label for="typeOfOrderCOD" style="text-transform: capitalize;  cursor: pointer; ">
-                    COD (cash on delevery)
-                  </label><br>
-                  <input type="radio" id="typeOfOrderOnline" name="typeOfOrder" value="online">
-                  <label for="typeOfOrderOnline" style="text-transform: capitalize;  cursor: pointer; ">
-                    Online Payment
-                  </label> <br> -->
-
-                  <!-- <div class=" mt-2 alert alert-danger alert-dismissible fade" id="error_disp" role="alert">
-                    <strong>Error : </strong><span>cannot checkout</span>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div> -->
                   <div class="mt-3">
                     <div class="btn btn-light w-100 text-dark mb-2" onclick="finalSubmit('COD')" style="cursor:pointer; color: black !important; font-weight: bold; border-radius: 5px;">
                       COD <small>&nbsp; cash on delevery </small>
@@ -269,18 +244,28 @@
         })
         .then(res => res.json())
         .then(orderData => {
-          Swal.fire({
-              title: 'Payment success',
-              html: 'Ordered successfully',
-              icon: 'success'
-            })
-            .then(_ => {
-              if (orderData.action) {
-                window.location.href = orderData.action;
-              } else {
-                window.location.href = '/dashboard/orders';
-              };
+          console.log(orderData);
+          if (orderData.status == 'error') {
+            Swal.fire({
+              title: 'Error Creating order',
+              html: orderData.message,
+              icon: 'error'
             });
+
+          } else {
+            Swal.fire({
+                title: 'Payment success',
+                html: 'Ordered successfully',
+                icon: 'success'
+              })
+              .then(_ => {
+                if (orderData.action) {
+                  window.location.href = orderData.action;
+                } else {
+                  window.location.href = '/dashboard/orders';
+                };
+              });
+          }
         });
     }
   }).render('#paypal-button-container');

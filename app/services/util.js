@@ -25,6 +25,10 @@ export function randomId(length, pattern) {
     };
 };
 
+export const dateIsValid = (date) => {
+    return date instanceof Date && !isNaN(date);
+};
+
 export const nameFormatter = (name) => {
     let arryOfEachName = name?.split(' ') ? name.split(' ') : [];
     let arrayAfterFomatting = arryOfEachName.map(name => {

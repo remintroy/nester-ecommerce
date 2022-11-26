@@ -119,6 +119,13 @@ export const cancelOrder = (UID, orderID, PID) => {
         };
     });
 };
+export const returnOrder = async (UID, orderID, PID) => {
+    try {
+        return await orders.returnOrderByUID(UID, orderID, PID);
+    } catch (error) {
+        throw error;
+    }
+}
 export const updateUserData = (UID, { fNameInput, lNameInput, displayNameInput, emailInput, phoneInput, currentPasswordInput, newPasswordInput, confirmPasswordInput }) => {
     return new Promise(async (resolve, reject) => {
         try {

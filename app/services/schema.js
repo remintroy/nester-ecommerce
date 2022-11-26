@@ -138,6 +138,7 @@ export const orders = db.model("orders", new mongoose.Schema({
             products: Array,
             address: Object,
             trackingID: String,
+            couponCode:String,
             status: {
                 type: String,
                 default: 'pending'
@@ -231,9 +232,10 @@ export const coupens = db.model('coupens', new mongoose.Schema({
     code: String,
     title: String,
     value: Number,
+    valueType:String,
     expiry: Date,
-    minSpent: Number,
-    maxSpent: Number,
+    minSpend: Number,
+    maxSpend: Number,
     category: String,
     product: String,
     maxUsage: Number,

@@ -4,7 +4,7 @@
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+    <a href="/report" download class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm text-white" > Generate Report</a>
   </div>
 
   <!-- Content Row -->
@@ -78,39 +78,42 @@
       </div>
     </div>
 
-  <!-- Content Row -->
+    <!-- Content Row -->
 
-  <div class="row">
+    <div class="row">
 
-    <div class="col-lg-6 grid-margin stretch-card">
-      <div class="card rounded">
-        <div class="card-body">
-          <h4 class="card-title">Monthly product orders 2022</h4>
-          <canvas id="ordersChart"></canvas>
+      <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card rounded">
+          <div class="card-body">
+            <h4 class="card-title">Monthly product orders 2022</h4>
+            <canvas id="ordersChart"></canvas>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="col-lg-6 grid-margin stretch-card">
-      <div class="card rounded">
-        <div class="card-body">
-          <h4 class="card-title">page Request to server</h4>
-          <canvas id="requestsChart"></canvas>
+      <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card rounded">
+          <div class="card-body">
+            <h4 class="card-title">page Request to server</h4>
+            <canvas id="requestsChart"></canvas>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="col-lg-12 grid-margin stretch-card">
-      <div class="card rounded">
-        <div class="card-body">
-          <h4 class="card-title">Home page</h4>
-          <canvas id="userEveryPageChart"></canvas>
+      <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card rounded">
+          <div class="card-body">
+            <h4 class="card-title">Home page</h4>
+            <canvas id="userEveryPageChart"></canvas>
+          </div>
         </div>
       </div>
+
     </div>
 
   </div>
-
-</div>
-<script src="/js/admin/dashboard.js"></script>
-<!-- /.container-fluid -->
+  <script src="/js/admin/dashboard.js"></script>
+  <!-- /.container-fluid -->
+  <script>
+    
+  </script>

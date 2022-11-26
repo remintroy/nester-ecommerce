@@ -278,7 +278,7 @@ export const deleteCategory = ({ ID }) => {
         try {
             const existingCategory = await db.category.find({ _id: ID });
             if (existingCategory.length > 0) {
-                
+
                 const existingProducts = await db.products.find({ category: existingCategory[0].category });
 
                 if (existingProducts.length > 0) {

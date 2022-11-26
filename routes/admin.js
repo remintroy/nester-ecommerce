@@ -5,6 +5,10 @@ import * as apiRouter from './admin_api.js';
 
 const adminApp = express.Router();
 
+adminApp.use('/test',(req,res)=>{
+    res.render('admin-template/test',{layout:'admin-template/testLayout'})
+})
+
 adminApp.use('/api', auth.mustLoginAsAdmin, apiRouter.default);
 
 // admin auth routes
@@ -32,14 +36,21 @@ adminApp.delete('/products/delete_product/', auth.mustLoginAsAdminAPI, admin.del
 adminApp.put('/orders/cancel/', auth.mustLoginAsAdminAPI, admin.cancelOrderAPI);
 // api for update order status
 adminApp.put('/orders/update_status', auth.mustLoginAsAdminAPI, admin.updateStatusOrderAPI);
+// api for add coupen 
+adminApp.post('/coupen/add_coupen', auth.mustLoginAsAdminAPI, admin.AddcoupenAPI);
+// api for delete coupon
+adminApp.delete('/coupen/delete_coupen', auth.mustLoginAsAdminAPI, admin.DeletecoupenAPI);
+
 
 // auth checker 
 adminApp.use(auth.mustLoginAsAdmin);
 // render helper by setting locals
 adminApp.use(admin.localsForAdmin);
 
+adminApp.get('/report', admin.createReportPDF);
+
 // dashboard routes
-adminApp.get(['/','/index.html'], admin.dashboard);
+adminApp.get(['/', '/index.html'], admin.dashboard);
 // all users listing
 adminApp.get('/user_management', admin.users);
 // disabled users listing
@@ -63,9 +74,9 @@ adminApp.get('/orders', admin.ordres);
 // order full data page
 adminApp.get('/orders/:id', admin.ordresFromID);
 // coupen 
-adminApp.get('/coupen', admin.coupen)
-
-adminApp.get('/coupen/add_coupen',admin.Addcoupen)
+adminApp.get('/coupon', admin.coupen)
+// add coupon 
+adminApp.get('/coupon/add_coupon', admin.Addcoupen);
 
 // test page 
 adminApp.get('/test', admin.test);

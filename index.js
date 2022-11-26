@@ -6,8 +6,7 @@ import dotenv from 'dotenv';
 import fileUpload from 'express-fileupload';
 import Logger from 'morgan';
 
-import * as paypal from './app/services/paypal.js';
-
+import * as pdf from './app/services/pdf.js';
 import { randomId } from './app/services/util.js';
 import * as db from './app/services/schema.js';
 import * as auth from './app/services/auth.js';
@@ -99,7 +98,7 @@ adminApp.use(Express.json());
 adminApp.use(ExpressLayouts);
 adminApp.use('/product_images', Express.static(`${__dirname}/public/product_images`));
 adminApp.use(Express.static(`${__dirname}/public/adminTemplate`)); // TODO: change the folder name to admin after compltely changed the layout
-adminApp.use(auth.initAuth); 
+adminApp.use(auth.initAuth);
 
 adminApp.use('/api', adminAPIRouter.default);
 adminApp.use('/', adminRouter.default);

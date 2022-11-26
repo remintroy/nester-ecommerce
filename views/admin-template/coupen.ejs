@@ -10,7 +10,7 @@
       <h1 class="h3 d-flex gap-2"><i class="mdi mdi-ticket"></i> Coupens</h1>
     </div>
     <div>
-      <a href="/coupen/add_coupen" class="btn btn-info">+ Add new coupen</a>
+      <a href="/coupon/add_coupon" class="btn btn-info">+ Add new coupen</a>
     </div>
   </div>
 
@@ -31,33 +31,37 @@
               <th>Title</th>
               <th>Value</th>
               <th>Expires</th>
-              <th>status</th>
+              <th>Used</th>
+              <th>Limit</th>
               <th>More</th>
             </tr>
           </thead>
           <tbody>
-            <% categorys.forEach((category,index,array)=>{ %>
+            <% coupens.forEach((coupen,index,array)=>{ %>
             <tr>
               <td>
                 <%=index+1%>
               </td>
               <td>
-                <%= locals.util.randomId(8,'A') %>
+                <%= coupen.code %>
               </td>
               <td>
-                Today special
+                <%= coupen.title %>
               </td>
               <td>
-                ₹ <%= locals.util.randomId(4,'0') %>
+                <%= coupen.valueType=='P'?`${coupen.value}%`:`${coupen.value} Rs` %>
               </td>
               <td>
-                <%=category.creationTime%>
+                <%=coupen.expiry.toDateString()%>
+              </td>
+              <td>
+                <%=coupen.used?coupen.used:0 %>
               </td>
               <td style="text-transform:capitalize;">
-                active
+                <%=coupen.maxUsage%>
               </td>
-              <td style="cursor: pointer; text-align: center;">
-                <b> More</b>
+              <td style="cursor: pointer; text-align: center;" onclick="deleteCoupon('<%=coupen.code%>')">
+                <b> Delete</b>
               </td>
             </tr>
             <% }); %>
@@ -70,153 +74,10 @@
 <!-- /.container-fluid -->
 
 <script>
-  const disp = ({
-    message,
-    isGood,
-    returnVal
-  }) => {
-    let disp_state = document.getElementById("disp_state");
-    disp_state.style.color = isGood ? 'green' : 'red';
-    disp_state.style.display = message || returnVal == false ? 'flex' : 'none';
-    disp_state.innerText = message ? message : disp_state.innerText;
-    return isGood || message == '' ? true : returnVal;
-  };
+  function deleteCoupon(ID) {
 
-  function addCatogery() {
-    const category = document.getElementById("categoryInput");
-    const errDisp = category.parentElement.querySelector("span");
-    errDisp.innerText = '';
-
-    if (category.value.length > 2) {
-      fetch('/category/add_category', {
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          method: "POST",
-          body: JSON.stringify({
-            category: category.value ? category.value : null
-          })
-        })
-        .then(res => res.json())
-        .then(res => {
-          disp({
-            message: res.message,
-            isGood: res.status == 'error' ? false : true
-          });
-          if (res.status == 'good') {
-            if (res?.action) {
-              window.location.href = res.action;
-            } else {
-              window.location.reload();
-            };
-          };
-        })
-        .catch(error => {
-          disp({
-            message: "Error connecting to server"
-          });
-        });
-    } else {
-      errDisp.innerText = 'Enter a valid category';
-    };
-  };
-
-  function categoryName(ID, td) {
-    const categoryInput = td.querySelector('input');
-    categoryInput.removeAttribute('disabled');
-    categoryInput.focus();
-  };
-
-  const inputCollection = document.querySelectorAll('input.input_editable');
-
-  inputCollection.forEach(element => {
-    element.addEventListener('keyup', e => {
-      if (e.keyCode == 13) {
-        const value = e.target.value;
-        const ID = e.target.getAttribute('data-id');
-        const input = e.target;
-        saveCurrentValue(ID, value, input);
-      };
-    });
-    element.addEventListener('focusout', e => {
-      const value = e.target.value;
-      const ID = e.target.getAttribute('data-id');
-      const input = e.target;
-      saveCurrentValue(ID, value, input);
-    });
-  });
-
-  const xhtml = new XMLHttpRequest();
-
-  function saveCurrentValue(ID, value, input, isDelete) {
-
-    const progress_bar = document.getElementById('progressBar');
-    const progress_disp = document.getElementById('progressDisp');
-
-    progress_bar.classList.add('bg-primary')
-
-    progress_bar.parentElement.style.filter = 'opacity(100)';
-    progress_bar.style.width = '0';
-    progress_bar.style.transition = 'all 0s ease 0s';
-    progress_bar.parentElement.style.backgroundColor = '#eaecf4';
-
-    input.style.borderColor = 'black';
-
-
-    if (value?.length > 2) {
-
-      xhtml.abort();
-      xhtml.open('PUT', '/category/edit_category');
-
-      const formData = new FormData();
-
-      formData.append('ID', ID ? ID : null);
-      formData.append('category', value ? value : null);
-
-      xhtml.upload.addEventListener('progress', ({
-        loaded,
-        total
-      }) => {
-        const status = Math.floor((loaded / total) * 100);
-        progress_bar.parentElement.style.display = '';
-        progress_bar.style.width = `${status}%`;
-      });
-
-      xhtml.onreadystatechange = async (e) => {
-
-        if (xhtml.readyState === 4) {
-          if (xhtml.status == 200) {
-            const res = await JSON.parse(xhtml.response);
-
-            if (res.status == 'error') {
-              input.style.borderColor = 'red';
-              progress_bar.classList.remove('bg-primary');
-              progress_bar.classList.add('bg-danger');
-            } else {
-              input.style.borderColor = '';
-              progress_bar.classList.remove('bg-danger');
-              progress_bar.classList.add('bg-primary');
-              input.setAttribute('disabled', '');
-            };
-
-          } else {
-            // connection error server
-          };
-        };
-      };
-
-      xhtml.send(formData);
-
-    } else {
-      input.style.borderColor = 'red';
-    };
-  };
-
-  function deleteCategory(ID) {
-
-    if (prompt('Delete Category ? Type yes to confirm', 'yes')?.trim() == 'yes') {
-
-      fetch('/category/delete_category', {
+    if (prompt('Delete Coupon ? Type yes to confirm', 'yes')?.trim() == 'yes') {
+      fetch('/coupen/delete_coupen', {
           method: "DELETE",
           headers: {
             'Content-Type': 'application/json'

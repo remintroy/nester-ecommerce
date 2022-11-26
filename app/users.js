@@ -412,6 +412,21 @@ export const cancelOrderAPI = async (req, res) => {
     res.send({ status: "error", message: error });
   }
 };
+export const returnOrderAPI = async (req, res) => {
+  try {
+    // UID form session
+    const UID = req.user.UID;
+    //...
+    const result = await userService.returnOrder(
+      UID,
+      req.body.orderID,
+      req.body.PID
+    );
+    res.send({ status: "good", message: result });
+  } catch (error) {
+    res.send({ status: "error", message: error });
+  }
+};
 export const updateUserDataAPI = async (req, res) => {
   try {
     // UID form session

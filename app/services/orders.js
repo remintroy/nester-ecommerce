@@ -8,9 +8,10 @@ import * as razorpay from './razorpay.js';
 import * as paypal from './paypal.js';
 import * as analytics from './analytics.js';
 import * as wallets from './wallet.js';
+import * as coupon from './coupens.js';
 
 const ORDERID_LENGTH = 20;
-const ALL_ORDER_STATUS = ['ordered_OR', 'shipped_SH', 'out for delivery_OT', 'delivered_DD', 'cancelled_CC'];
+const ALL_ORDER_STATUS = ['ordered_OR', 'shipped_SH', 'out for delivery_OT', 'delivered_DD','returned_RD', 'cancelled_CC'];
 
 const createOrderID = async () => {
     let orderID = '';
@@ -46,7 +47,7 @@ export const checkout = async (UID, body) => {
         if (['COD', 'razorpay', 'paypal'].indexOf(paymentMethod) == -1) throw 'Invalid payment methord';
 
         // --------- gets all products in cart ---------
-        const products = await cart.getAllProductsWithTotal(UID);
+        const products = body?.coupon ? await coupon.check(UID, body?.coupon) : await cart.getAllProductsWithTotal(UID);
 
         // check for emplty cart
         if (products?.length == 0) throw 'Nothing to checkout';
@@ -120,6 +121,7 @@ export const checkout = async (UID, body) => {
                 paymentStatus: 'pending'
             };
 
+            if (body?.coupon) dataToDatabase['couponCode'] = body?.coupon?.trim();
             // if user has a orders collection
             if (existingOrdresCollection.length > 0) {
                 // updating existing document
@@ -179,6 +181,13 @@ export const checkout = async (UID, body) => {
                         products: []
                     }
                 });
+                if (body?.coupon) {
+                    const updateCouponUsage = await db.coupens.updateOne({ code: body?.coupon }, {
+                        $inc: {
+                            used: 1
+                        }
+                    });
+                };
             } catch (error) {
                 collectedErrors = 'Error while removing product from cart';
             };
@@ -301,6 +310,62 @@ export const cancelOrderProductWithUID = (UID, orderID, PID) => {
         };
     });
 };
+export const returnOrderByUID = async (UID, orderID, PID) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // valdiating user id ;
+            const userOutput = await auth.validatior({ UID: UID }, { UIDRequired: true });
+            const productOutput = await products.validatior({ PID: PID }, { PID: true }, 'updateproduct');
+            try {
+
+                // order data to find index and check for existence
+                const existingData = await db.orders.find({ UID: userOutput.UID });
+
+                if (existingData.length > 0) {
+
+                    const indexOrder = existingData[0].orders.map(e => e._id == (orderID + "").trim()).indexOf(true);
+                    const indexProduct = existingData[0].orders[indexOrder].products.map(e => e.PID == (productOutput.PID + "").trim()).indexOf(true);
+
+                    if (indexProduct == -1) reject("Order not found");
+                    else {
+
+                        const updated = await db.orders.updateOne({ UID: userOutput.UID }, {
+                            $set: {
+                                [`orders.${indexOrder}.products.${indexProduct}.status`]: 'returned',
+                                [`orders.${indexOrder}.products.${indexProduct}.update`]: new Date()
+                            }
+                        });
+
+                        // refund
+                        const amountToAdd = existingData[0].orders[indexOrder].products[indexProduct].total;
+                        const addAmountToWallet = await wallets.addAmount(existingData[0].UID, amountToAdd, 'Refund due to order return');
+
+                        // re updating the stock
+                        const stockToUpdate = existingData[0].orders[indexOrder].products[indexProduct].quantity;
+                        const updateStock = await db.products.updateOne({ PID: productOutput.PID }, {
+                            $inc: {
+                                stock: stockToUpdate
+                            }
+                        });
+
+                        resolve("Order successfully cancelled");
+                    };
+
+                } else {
+                    reject('Nothing to cancel');
+                };
+
+                //...
+            } catch (error) {
+                console.log('error => ', error);
+                reject('Error cancelling order');
+            };
+            //...
+        } catch (error) {
+            reject(error);
+        };
+    });
+};
 // paypal payment
 export const paymentConfirmPaypal = async (UID, id, orderID) => {
     try {
@@ -309,6 +374,7 @@ export const paymentConfirmPaypal = async (UID, id, orderID) => {
             try {
                 const dataFromDb = await db.orders.find({ UID: UID });
                 if (dataFromDb[0]) {
+
 
 
                     const indexOfOrder = dataFromDb[0].orders.map(e => e.orderID == orderID).indexOf(true);
@@ -337,6 +403,14 @@ export const paymentConfirmPaypal = async (UID, id, orderID) => {
                             products: []
                         }
                     });
+
+                    if (dataFromDb[0].orders[indexOfOrder].couponCode) {
+                        const updateCouponUsage = await db.coupens.updateOne({ code: dataFromDb[0].orders[indexOfOrder].couponCode }, {
+                            $inc: {
+                                used: 1
+                            }
+                        });
+                    };
                     // 
                     return 'Payment success';
                 } else {
@@ -386,6 +460,14 @@ export const paymentConfirmRazorpay = async (UID, body) => {
                         products: []
                     }
                 });
+
+                if (dataFromDb[0].orders[indexOfOrder].couponCode) {
+                    const updateCouponUsage = await db.coupens.updateOne({ code: dataFromDb[0].orders[indexOfOrder].couponCode }, {
+                        $inc: {
+                            used: 1
+                        }
+                    });
+                };
                 // 
                 return 'Payment success';
             } else {
@@ -605,7 +687,8 @@ export const updateOrderStatus = (PID, orderID, status) => {
                     try {
 
                         if (statusIndex == ALL_ORDER_STATUS.length - 1) throw `Can't update status of cancelled order`;
-                        if (statusIndex == ALL_ORDER_STATUS.length - 2) throw `Can't update status of delevered order`;
+                        if (statusIndex == ALL_ORDER_STATUS.length - 3) throw `Can't update status of delevered order`;
+                        if (statusIndex == ALL_ORDER_STATUS.length - 2) throw `Can't update status of returned order`;
 
                         if (status == 'next') {
                             if (statusIndex >= ALL_ORDER_STATUS.length - 2) throw ('Nothing to update');

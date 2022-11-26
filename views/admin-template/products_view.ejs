@@ -88,7 +88,7 @@
       <h5>Change visiblity of product <small><i></i></small></h5>
       <p class="text-muted"><b class="text-warning">Note :</b> This will prevent listing the products to users </p>
       <div class="mt-3">
-        <a href="/products/edit_product/<%= product.PID %>" class="btn btn-inverse-info">Make this product hidden</a>
+        <a href="#" class="btn btn-inverse-info">Make this product hidden</a>
       </div>
     </div>
 
@@ -96,7 +96,7 @@
       <h5>Delete product <small><i></i></small></h5>
       <p class="text-muted"><b class="text-danger">Note :</b> Once you delete the product the data cannot be recovered !</p>
       <div class="mt-3">
-        <a href="/products/edit_product/<%= product.PID %>" class="btn btn-inverse-danger">Delete product</a>
+        <a onclick="deleteProduct('<%=product.PID%>')" class="btn btn-inverse-danger">Delete product</a>
       </div>
     </div>
 
@@ -107,6 +107,40 @@
   </div>
 
   <script>
+    function deleteProduct(PID) {
+
+      Swal.fire({
+        title: 'Delete this product ?'
+      }).then(() => {
+
+        fetch('/products/delete_product', {
+            method: "DELETE",
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              message: "Delete me",
+              PID: PID
+            })
+          })
+          .then(res => res.json())
+          .then(res => {
+            if (res.status == 'good') {
+              if (res.action) {
+                window.location.href = res.action;
+              } else {
+                window.location.href = '/products'
+              }
+            } else {
+              toast(res.message, 'error');
+            };
+          })
+          .catch(error => {
+            console.error('Error form delete fetch => ', error)
+            toast("Error while connecting to server", 'error')
+          });
+      })
+    };
     (async function() {
       try {
         const reslut = await fetch('/api/products?analytics-pid=<%=product?.PID%>', {

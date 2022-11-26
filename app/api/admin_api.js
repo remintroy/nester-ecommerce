@@ -316,6 +316,7 @@ export const totalProductsSalesYear = async (year, noData) => {
             projectQuery._id = 0;
             projectQuery.length = '$length';
             projectQuery.month = '$_id';
+            projectQuery.total = '$total';
 
             if (!noData) projectQuery.orders = "$orders";
 
@@ -327,24 +328,28 @@ export const totalProductsSalesYear = async (year, noData) => {
                     $facet: {
                         OR: [
                             { $match: { 'orders.dateOFOrder': { $gte: new Date(`${year}-01-01`), $lte: new Date(`${year}-12-31`) }, 'orders.products.status': { $eq: 'ordered' } }, },
-                            { $group: { _id: { $month: "$orders.dateOFOrder" }, length: { $sum: 1 }, orders: { $addToSet: '$orders' } } },
+                            { $group: { _id: { $month: "$orders.dateOFOrder" }, length: { $sum: 1 }, orders: { $addToSet: '$orders' }, total: { $sum: '$orders.products.total' } } },
                             { $project: projectQuery }, { $sort: { month: 1 } }
                         ],
                         SH: [
                             { $match: { 'orders.dateOFOrder': { $gte: new Date(`${year}-01-01`), $lte: new Date(`${year}-12-31`) }, 'orders.products.status': { $eq: 'shipped' } }, },
-                            { $group: { _id: { $month: "$orders.dateOFOrder" }, length: { $sum: 1 }, orders: { $addToSet: '$orders' } } }, { $project: projectQuery }, { $sort: { month: 1 } }
+                            { $group: { _id: { $month: "$orders.dateOFOrder" }, length: { $sum: 1 }, orders: { $addToSet: '$orders' }, total: { $sum: '$orders.products.total' } } },
+                            { $project: projectQuery }, { $sort: { month: 1 } }
                         ],
                         OT: [
                             { $match: { 'orders.dateOFOrder': { $gte: new Date(`${year}-01-01`), $lte: new Date(`${year}-12-31`) }, 'orders.products.status': { $eq: 'out for delivery' } }, },
-                            { $group: { _id: { $month: "$orders.dateOFOrder" }, length: { $sum: 1 }, orders: { $addToSet: '$orders' } } }, { $project: projectQuery }, { $sort: { month: 1 } }
+                            { $group: { _id: { $month: "$orders.dateOFOrder" }, length: { $sum: 1 }, orders: { $addToSet: '$orders' }, total: { $sum: '$orders.products.total' } } },
+                            { $project: projectQuery }, { $sort: { month: 1 } }
                         ],
                         DD: [
                             { $match: { 'orders.dateOFOrder': { $gte: new Date(`${year}-01-01`), $lte: new Date(`${year}-12-31`) }, 'orders.products.status': { $eq: 'delivered' } }, },
-                            { $group: { _id: { $month: "$orders.dateOFOrder" }, length: { $sum: 1 }, orders: { $addToSet: '$orders' } } }, { $project: projectQuery }, { $sort: { month: 1 } }
+                            { $group: { _id: { $month: "$orders.dateOFOrder" }, length: { $sum: 1 }, orders: { $addToSet: '$orders' }, total: { $sum: '$orders.products.total' } } },
+                            { $project: projectQuery }, { $sort: { month: 1 } }
                         ],
                         CC: [
                             { $match: { 'orders.dateOFOrder': { $gte: new Date(`${year}-01-01`), $lte: new Date(`${year}-12-31`) }, 'orders.products.status': { $eq: 'cancelled' } }, },
-                            { $group: { _id: { $month: "$orders.dateOFOrder" }, length: { $sum: 1 }, orders: { $addToSet: '$orders' } } }, { $project: projectQuery }, { $sort: { month: 1 } }
+                            { $group: { _id: { $month: "$orders.dateOFOrder" }, length: { $sum: 1 }, orders: { $addToSet: '$orders' }, total: { $sum: '$orders.products.total' } } },
+                            { $project: projectQuery }, { $sort: { month: 1 } }
                         ],
                     }
                 }

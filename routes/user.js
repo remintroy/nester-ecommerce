@@ -48,6 +48,8 @@ app.post('/checkout/:id/capture/:orderID', auth.mustLoginAsUserAPI, users.checkO
 app.post('/checkout/address', auth.mustLoginAsUserAPI, users.getAddressByAddressID);
 // api for cancel order
 app.post('/orders/cancel/', auth.mustLoginAsUserAPI, users.cancelOrderAPI);
+// api for reutrn order
+app.post('/orders/return/', auth.mustLoginAsUserAPI, users.returnOrderAPI);
 // api for update user data
 app.put('/user_data/update', auth.mustLoginAsUserAPI, users.updateUserDataAPI);
 

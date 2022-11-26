@@ -1,5 +1,3 @@
-const address = '<%=locals?.address?.length%>';
-
 const inputActions = async (type, data) => {
 
     const inputsIDS = [{
@@ -81,28 +79,24 @@ const inputActions = async (type, data) => {
                 inputFields[e].setAttribute('disabled', '');
             });
             return true;
-            break;
         };
         case 'enable': {
             Object.keys(inputFields).forEach(e => {
                 inputFields[e].removeAttribute('disabled');
             });
             return true;
-            break;
         };
         case 'clear': {
             Object.keys(inputFields).forEach(e => {
                 inputFields[e].value = '';
             })
             return true;
-            break;
         }
         case 'set': {
             Object.keys(inputFields).forEach(e => {
                 inputFields[e].value = data[e];
             });
             return true;
-            break;
         }
         case 'validate': {
 
@@ -152,6 +146,7 @@ const inputActions = async (type, data) => {
             if (flag) {
                 try {
                     const paymentMetord = window?.typeOfPayment;
+                    const coupon = document.getElementById("checkout-discount-input");
                     if (paymentMetord == 'paypal') {
                         return {
                             type: 'address',
@@ -164,8 +159,9 @@ const inputActions = async (type, data) => {
                                 country: countryInput?.value?.trim() ? countryInput?.value?.trim() : null,
                                 postalCode: codeInput?.value ? codeInput?.value : null,
                                 phone: phoneInput?.value ? phoneInput.value : null,
-                                email: emailInput?.value?.trim() ? emailInput?.value?.trim() : null
+                                email: emailInput?.value?.trim() ? emailInput?.value?.trim() : null,
                             },
+                            coupon: coupon?.value?.trim() ? coupon?.value?.trim() : null,
                             method: window?.typeOfPayment
                         };
                     } else {
@@ -180,8 +176,9 @@ const inputActions = async (type, data) => {
                                 country: countryInput?.value?.trim() ? countryInput?.value?.trim() : null,
                                 postalCode: codeInput?.value ? codeInput?.value : null,
                                 phone: phoneInput?.value ? phoneInput.value : null,
-                                email: emailInput?.value?.trim() ? emailInput?.value?.trim() : null
+                                email: emailInput?.value?.trim() ? emailInput?.value?.trim() : null,
                             },
+                            coupon: coupon?.value?.trim() ? coupon?.value?.trim() : null,
                             method: window?.typeOfPayment
                         });
                     };
