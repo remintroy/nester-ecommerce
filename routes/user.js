@@ -1,7 +1,7 @@
 import express from 'express';
-import * as users from '../app/users.js';
-import * as auth from '../app/services/auth.js';
-import * as admin from '../app/admin.js';
+import * as users from '../controller/users.js';
+import * as auth from '../controller/services/auth.js';
+import * as admin from '../controller/admin.js';
 
 const app = express.Router();
 

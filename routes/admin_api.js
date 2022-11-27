@@ -1,6 +1,6 @@
 import Express from 'express';
-import * as apiService from '../app/admin_api.js';
-import * as auth from '../app/services/auth.js';
+import * as apiService from '../controller/admin_api.js';
+import * as auth from '../controller/services/auth.js';
 
 const api = Express.Router();
 

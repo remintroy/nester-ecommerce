@@ -1,6 +1,6 @@
 import express from 'express';
-import * as admin from '../app/admin.js';
-import * as auth from '../app/services/auth.js';
+import * as admin from '../controller/admin.js';
+import * as auth from '../controller/services/auth.js';
 import * as apiRouter from './admin_api.js';
 
 const adminApp = express.Router();
