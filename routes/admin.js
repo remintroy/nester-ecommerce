@@ -4,9 +4,11 @@ import * as auth from '../app/services/auth.js';
 import * as apiRouter from './admin_api.js';
 
 const adminApp = express.Router();
+const layout = `admin-template/layout`;
+const pagesBase = `admin-template`;
 
-adminApp.use('/test',(req,res)=>{
-    res.render('admin-template/test',{layout:'admin-template/testLayout'})
+adminApp.use('/test', (req, res) => {
+    res.render(pagesBase + '/test', { layout: 'admin-template/testLayout' })
 })
 
 adminApp.use('/api', auth.mustLoginAsAdmin, apiRouter.default);
@@ -96,7 +98,7 @@ adminApp.get('/test', admin.test);
 // 404 for admin
 adminApp.use((req, res) => {
     res.status(404);
-    res.render('admin/404', { layout: 'admin-template/layout', message: 'Page Not Found !' })
+    res.render(pagesBase + '/404', { layout: layout, message: 'Page Not Found !' })
 });
 
 export default adminApp;

@@ -1,106 +1,62 @@
-<!-- Sidebar -->
-<ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
-
-    <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/admin_panel">
-        <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-laugh-wink"></i>
-        </div>
-        <div class="sidebar-brand-text mx-3">Reminz panel</div>
-    </a>
-
-    <!-- Divider -->
-    <hr class="sidebar-divider my-0">
-
-    <!-- Nav Item - Dashboard -->
-    <li class="nav-item <%=locals.currentPage=='dashboard'?'active':'';%>  ">
-        <a class="nav-link" href="/admin_panel/">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span>
-        </a>
+<nav class="sidebar sidebar-offcanvas" id="sidebar">
+  <ul class="nav">
+    <li class="nav-item <%=locals.currentPage=='dashboard'?'active':'';%>">
+      <a class="nav-link" href="/">
+        <i class="mdi mdi-home menu-icon"></i>
+        <span class="menu-title">Dashboard</span>
+      </a>
     </li>
-
-    <!-- <i class="fas fa-fw fa-cog"></i> -->
-
-    <!-- Divider -->
-    <hr class="sidebar-divider">
-
-    <!-- Heading -->
-    <div class="sidebar-heading">
-        control panel
-    </div>
-
-
-    <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item <%=locals.currentPageA=='users'?'active':'';%>">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-            aria-expanded="true" aria-controls="collapseTwo">
-            <i class="fas fa-fw fa-table"></i>
-            <span>Users</span>
-        </a>
-        <div id="collapseTwo" class="collapse <%=locals.currentPageA=='users'?'show':'';%>" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">User management</h6>
-                <a class="collapse-item <%=locals.currentPage=='users'?'active':'';%>" href="/admin_panel/user_management">All users</a>
-                <a class="collapse-item <%=locals.currentPage=='diabledUsers'?'active':'';%>" href="/admin_panel//user_management/disabled_users">Disabled users</a>
-                <!-- <h6 class="collapse-header">more action</h6>
-                <a class="collapse-item" href="/admin_panel/user">Create user</a> -->
-            </div>
-        </div>
+      <a class="nav-link" href="/user_management">
+        <i class="mdi mdi-account menu-icon"></i>
+        <span class="menu-title">Users</span>
+      </a>
     </li>
-
-    <!-- Nav Item - Utilities Collapse Menu -->
     <li class="nav-item <%=locals.currentPageA=='products'?'active':'';%>">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-            aria-expanded="true" aria-controls="collapseUtilities">
-            <i class="fas fa-fw fa-wrench"></i>
-            <span>Product & Cateogery</span>
-        </a>
-        <div id="collapseUtilities" class="collapse <%=locals.currentPageA=='products'?'show':'';%>" aria-labelledby="headingUtilities"
-            data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">products</h6>
-                <a class="collapse-item <%=locals.currentPage=='products'?'active':'';%>" href="/admin_panel/products">All products</a>
-                <a class="collapse-item <%=locals.currentPage=='allCategory'?'active':'';%>" href="/admin_panel/products/categorys">All Cateogery</a>
-                <h6 class="collapse-header">more action</h6>
-                <a class="collapse-item <%=locals.currentPage=='addProducts'?'active':'';%>" href="/admin_panel/products/add_product">Add products</a>
-                <a class="collapse-item <%=locals.currentPage=='addCategory'?'active':'';%>" href="/admin_panel/products/add_category">Add category</a>
-            </div>
-        </div>
+      <a class="nav-link" href="/products">
+        <i class="mdi mdi-shopping menu-icon"></i>
+        <span class="menu-title">Products</span>
+      </a>
     </li>
-
-    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item <%=locals.currentPageA=='category'?'active':'';%>">
+      <a class="nav-link" href="/category">
+        <i class="mdi mdi-shape-plus menu-icon"></i>
+        <span class="menu-title">Category</span>
+      </a>
+    </li>
     <li class="nav-item <%=locals.currentPageA=='orders'?'active':'';%>">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-            aria-expanded="true" aria-controls="collapsePages">
-            <i class="fas fa-fw fa-folder"></i>
-            <span>Orders</span>
-        </a>
-        <div id="collapsePages" class="collapse  <%=locals.currentPageA=='orders'?'show':'';%>" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Orders</h6>
-                <a class="collapse-item <%=locals.currentPage=='orders'?'active':'';%>" href="/admin_panel/orders">All orders</a>
-                <a class="collapse-item <%=locals.currentPage=='cancelled'?'active':'';%>" href="/admin_panel/cancelled_orders">Cancelled orders</a>
-                <a class="collapse-item <%=locals.currentPage=='pendign'?'active':'';%>" href="/admin_panel/pending_orders">Pending Orders</a>
-                <div class="collapse-divider"></div>
-            </div>
-        </div>
+      <a class="nav-link" href="/orders">
+        <i class="mdi mdi-grid-large menu-icon"></i>
+        <span class="menu-title">Orders</span>
+      </a>
     </li>
-
-    <!-- Divider -->
-    <hr class="sidebar-divider d-none d-md-block">
-
-    <!-- Sidebar Toggler (Sidebar) -->
-    <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle"></button>
-    </div>
-
-    <!-- Sidebar Message -->
-    <!-- <div class="sidebar-card d-none d-lg-flex">
-        <img class="sidebar-card-illustration mb-2" src="/img/undraw_rocket.svg" alt="...">
-        <p class="text-center mb-2"><strong>Reminz</strong> Admin console, Explore tools and services !</p>
-        <a class="btn btn-success btn-sm" href="/admin_panel">Dashboard</a>
-    </div> -->
-
-</ul>
-<!-- End of Sidebar -->
+    <li class="nav-item  <%=locals.currentPageA=='coupen'?'active':'';%>">
+      <a class="nav-link" href="/coupon">
+        <i class="mdi mdi mdi-ticket menu-icon"></i>
+        <span class="menu-title">Coupens</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
+        <i class="mdi mdi-account menu-icon"></i>
+        <span class="menu-title">User Pages</span>
+        <i class="menu-arrow"></i>
+      </a>
+      <div class="collapse" id="auth">
+        <ul class="nav flex-column sub-menu">
+          <li class="nav-item"> <a class="nav-link" href="/pages/samples/login.html"> Login </a></li>
+          <li class="nav-item"> <a class="nav-link" href="/pages/samples/login-2.html"> Login 2 </a></li>
+          <li class="nav-item"> <a class="nav-link" href="/pages/samples/register.html"> Register </a></li>
+          <li class="nav-item"> <a class="nav-link" href="/pages/samples/register-2.html"> Register 2 </a></li>
+          <li class="nav-item"> <a class="nav-link" href="/pages/samples/lock-screen.html"> Lockscreen </a></li>
+        </ul>
+      </div>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/documentation/documentation.html">
+        <i class="mdi mdi-file-document-box-outline menu-icon"></i>
+        <span class="menu-title">Documentation</span>
+      </a>
+    </li>
+  </ul>
+</nav>

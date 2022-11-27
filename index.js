@@ -6,9 +6,6 @@ import dotenv from 'dotenv';
 import fileUpload from 'express-fileupload';
 import Logger from 'morgan';
 
-import * as pdf from './app/services/pdf.js';
-import { randomId } from './app/services/util.js';
-import * as db from './app/services/schema.js';
 import * as auth from './app/services/auth.js';
 import adminRoute from './routes/admin.js';
 import usersRoute from './routes/user.js';
@@ -42,9 +39,8 @@ app.use(fileUpload());
 app.use(Express.json());
 app.use(ExpressLayouts);
 app.use(Express.static(`${__dirname}/public`));
-app.use(Express.static(`${__dirname}/public/adminTemplate`));
 app.use(Express.static(`${__dirname}/public/templates`));
-app.use(Express.static(`${__dirname}/public/template`));
+// app.use(Express.static(`${__dirname}/public/template`)); //TODO : this must me removed
 app.use(auth.initAuth);
 
 app.use(function (req, res, next) {
@@ -97,7 +93,7 @@ adminApp.use(fileUpload());
 adminApp.use(Express.json());
 adminApp.use(ExpressLayouts);
 adminApp.use('/product_images', Express.static(`${__dirname}/public/product_images`));
-adminApp.use(Express.static(`${__dirname}/public/adminTemplate`)); // TODO: change the folder name to admin after compltely changed the layout
+adminApp.use(Express.static(`${__dirname}/public/admin`));
 adminApp.use(auth.initAuth);
 
 adminApp.use('/api', adminAPIRouter.default);

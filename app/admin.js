@@ -7,9 +7,10 @@ import * as util from './services/util.js';
 import * as coupenService from './services/coupens.js';
 import * as pdfService from './services/pdf.js';
 import * as path from 'path';
+import * as apiService from './api/admin_api.js';
 
-const layout = `admin-template/layout`;
-const pagesBase = `admin-template`;
+const layout = `admin_layout`;
+const pagesBase = `admin`;
 
 // set up all common locals for render
 export const localsForAdmin = async (req, res, next) => {
@@ -23,7 +24,7 @@ export const localsForAdmin = async (req, res, next) => {
 export const depricationWarn = async (req, res) => {
     res.locals.message = 'This page is currently unavailable or changed path';
     res.locals.code = 404;
-    res.render('admin/404');
+    res.render(pagesBase + '/404');
 };
 // admin dashboard
 export const dashboard = async (req, res) => {
@@ -36,7 +37,7 @@ export const dashboard = async (req, res) => {
         console.error(error);
         res.locals.message = `Internal error`;
         res.locals.code = 500;
-        res.render('admin/404');
+        res.render(pagesBase + '/404');
     };
 };
 // all user 
@@ -68,7 +69,7 @@ export const users = async (req, res) => {
     } catch (error) {
         res.locals.message = `Can't read user data from db `;
         res.locals.code = 500;
-        res.render('admin/404');
+        res.render(pagesBase + '/404');
     };
 };
 // all desabled users
@@ -102,7 +103,7 @@ export const disabledUsers = async (req, res) => {
     } catch (error) {
         res.locals.message = `Can't read user data from db `;
         res.locals.message = 500;
-        res.render('admin/404');
+        res.render(pagesBase + '/404');
     };
 };
 // all active users
@@ -136,7 +137,7 @@ export const activeUsers = async (req, res) => {
     } catch (error) {
         res.locals.message = `Can't read user data from db `;
         res.locals.message = 500;
-        res.render('admin/404');
+        res.render(pagesBase + '/404');
     };
 };
 // all products
@@ -150,7 +151,7 @@ export const allProducts = async (req, res) => {
     } catch (error) {
         res.locals.message = `Faild to fetch product data from db `;
         res.locals.code = 500;
-        res.render('admin/404');
+        res.render(pagesBase + '/404');
     };
 };
 // add product
@@ -166,16 +167,23 @@ export const addProducts = async (req, res) => {
         console.error(error);
         res.locals.message = `Interal error`;
         res.locals.code = 500;
-        res.render('admin/404');
+        res.render(pagesBase + '/404');
     };
 };
 // products home
 export const productHome = async (req, res) => {
-    const productData = await db.products.find().limit(10);
-    res.locals.products = productData;
-    res.locals.currentPage = 'products';
-    res.locals.currentPageA = 'products';
-    res.render(pagesBase + '/products');
+    try {
+        const pageNo = req.query.page && Number(req.query.page) > 1 ? req.query.page : 1;
+        const productData = await apiService.getProductInPages(pageNo);
+        res.locals.products = productData;
+        res.locals.currentPage = 'products';
+        res.locals.currentPageA = 'products';
+        res.render(pagesBase + '/products');
+    } catch (error) {
+        res.locals.message = error;
+        res.locals.code = 400;
+        res.render(pagesBase + '/404');
+    };
 };
 // api for adding product
 export const addProductsAPI = async (req, res) => {
@@ -202,7 +210,7 @@ export const editProduct = async (req, res) => {
             if (!product) {
                 res.locals.code = 404;
                 res.locals.message = `Can't find product with this PID`;
-                res.render('admin/404');
+                res.render(pagesBase + '/404');
                 return 0;
             };
 
@@ -221,11 +229,11 @@ export const editProduct = async (req, res) => {
         } catch (error) {
             res.locals.code = 500;
             res.locals.message = "Error fetching product data form db"
-            res.render('admin/404');
+            res.render(pagesBase + '/404');
         };
     } catch (error) {
         res.locals.message = error;
-        res.render('admin/404');
+        res.render(pagesBase + '/404');
     };
 };
 // view each product details
@@ -242,11 +250,11 @@ export const viewProduct = async (req, res) => {
         } catch (error) {
             res.locals.code = 500;
             res.locals.message = "Error fetching product data form db"
-            res.render('admin/404');
+            res.render(pagesBase + '/404');
         };
     } catch (error) {
         res.locals.message = error;
-        res.render('admin/404');
+        res.render(pagesBase + '/404');
     };
 }
 // api for edit product
@@ -280,7 +288,7 @@ export const ordres = async (req, res) => {
         console.log('ALL_ORDERS_PAGE_DB => ', error);
         res.locals.message = `Can't get order's from db `;
         res.locals.code = 500;
-        res.render('admin/404');
+        res.render(pagesBase + '/404');
     };
 };
 // order 
@@ -300,12 +308,12 @@ export const ordresFromID = async (req, res) => {
             console.log('ALL_ORDERS_PAGE_DB => ', error);
             res.locals.message = `Can't get order's from db `;
             res.locals.code = 500;
-            res.render('admin/404');
+            res.render(pagesBase + '/404');
         };
     } catch (error) {
         res.locals.message = error;
         res.locals.code = 404;
-        res.render('admin/404');
+        res.render(pagesBase + '/404');
     };
 };
 // api for cancel order
@@ -353,7 +361,7 @@ export const category = async (req, res) => {
         console.log('ALL_CATEGORY_PAGE_DB => ', error);
         res.locals.message = `Can't read category's from db `;
         res.locals.code = 500;
-        res.render('admin/404');
+        res.render(pagesBase + '/404');
     };
 };
 // add category
@@ -369,7 +377,7 @@ export const addCategory = async (req, res) => {
         console.error(error);
         res.locals.message = `Internal error`;
         res.locals.code = 500;
-        res.render('admin/404');
+        res.render(pagesBase + '/404');
     };
 };
 // api for adding category 
@@ -434,12 +442,12 @@ export const editUser = async (req, res) => {
             console.log(error);
             res.locals.message = 'Unable to fetch userdata';
             res.locals.code = 500;
-            res.render('admin/404');
+            res.render(pagesBase + '/404');
         };
     } catch (error) {
         res.locals.message = error;
         res.locals.code = 400;
-        res.render('admin/404');
+        res.render(pagesBase + '/404');
     };
 };
 // api for edit user
@@ -464,7 +472,7 @@ export const coupen = async (req, res) => {
         console.log('ALL_ORDERS_PAGE_DB => ', error);
         res.locals.message = `Can't get coupen's from db `;
         res.locals.code = 500;
-        res.render('admin/404');
+        res.render(pagesBase + '/404');
     };
 };
 // add coupen
@@ -479,7 +487,7 @@ export const Addcoupen = async (req, res) => {
         console.log('ALL_ORDERS_PAGE_DB => ', error);
         res.locals.message = `Can't get coupen's from db `;
         res.locals.code = 500;
-        res.render('admin/404');
+        res.render(pagesBase + '/404');
     };
 };
 // add coupen api

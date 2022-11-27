@@ -1,146 +1,130 @@
-<!-- Custom styles for this page -->
-<link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-
-<!-- Begin Page Content -->
 <div class="container-fluid">
 
-  <!-- Page Heading -->
-  <h1 class="h3 mb-2 text-gray-800">All Products</h1>
-  <p class="mb-4">View, Update, Create, and delete products
-    <br>Some fields can be updated within this page those fields are highlighted
-  </p>
+  <div class="d-flex justify-content-between my-3">
+    <div class="left">
+      <h1 class="h3 mb-4 d-flex gap-2"><i class="mdi mdi-shopping"></i> Products</h1>
+    </div>
+    <div class="right">
+      <a href="/" class="btn btn-inverse-warning">Draft's</a>
+      <a href="/products/add_product" class="btn btn-inverse-info">+ Add new product</a>
+    </div>
+  </div>
 
   <!-- DataTales Example -->
-  <div class="card shadow mb-4">
-    <div class="card-header py-3">
-      <h6 class="m-0 font-weight-bold text-primary">All users</h6>
+  <div class="card">
+    <div class="card-header bg-white p-3">
+      <h5 class="m-0">All Products</h5>
     </div>
-    <div class="card-body">
-      <div class="table-responsive">
+    <div class="card-body p-2">
+      <div class="table-responsive bg-white p-2 rounded">
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
               <th>#</th>
               <th>IMG</th>
               <th>Title</th>
-              <th>Description</th>
               <th>Price</th>
               <th>Quantitly</th>
-              <!-- <th>Discount</th> -->
               <th>Category</th>
               <th>Created</th>
               <th style="cursor: pointer; text-align: center;">-</th>
             </tr>
           </thead>
-          <tbody>
-            <% products.forEach((product,index,array)=>{ %>
+          <tbody id="tableToEdit">
+            <!-- table content -->
+            <% locals?.products?.data?.forEach((product,index) => { %>
             <tr>
               <td>
-                <%=index+1%>
-              </td>
-              <td style="text-transform:capitalize;">
-                <img style="width: 60px;" src="/product_images/<%=product.PID%>1.jpg" alt="IMG">
+                <%= index+1 %>
               </td>
               <td>
-                <%=product.title%>
+                <img src="/product_images/<%=product.PID%>1.jpg" class="img-fluid rounded" alt="">
               </td>
               <td>
-                <%=product.description%>
-              </td>
-              <td class="tabe_editable_TD" title="Click To edit" onclick="categoryName('<%=product.PID%>',this)">
-                <input type="text" class="input_editable" disabled data-id="<%=product.PID%>" value="<%=product.price%>" data-type="price">
-              </td>
-              <td class="tabe_editable_TD" title="Click To edit" onclick="categoryName('<%=product.PID%>',this)">
-                <input type="text" class="input_editable" disabled data-id="<%=product.PID%>" value="<%=product.stock%>" data-type="stock">
-              </td>
-              <!-- <td>
-                                    <%=product.offer?product.offer:'-'%>
-                                </td> -->
-              <td>
-                <%=product.category%>
+                <%= product?.title?.slice(0, 55) + '...' %>
               </td>
               <td>
-                <%=product.creationTime%>
+                ₹ <%= product?.price %>
               </td>
-              <td style="cursor: pointer; text-align: center;" onclick="window.location.href='/admin_panel/products/edit_product/<%=product.PID%>'">
-                <b>more</b>
-                <!-- &nbsp;<i class="fas fa-cog"></i> -->
+              <td>
+                <%= product?.stock %> Pcs
+              </td>
+              <td>
+                <%= product?.category %>
+              </td>
+              <td>
+                <%= locals?.util?.dataToReadable(product.creationTime) %>
+              </td>
+              <td>
+                <a href="/products/view_product/<%=product?.PID%>" class="btn p-0 m-0"><b>More</b></a>
               </td>
             </tr>
             <% }); %>
           </tbody>
         </table>
+        <div class="d-flex justify-content-end mt-3">
+          <nav aria-label="Page navigation example">
+            <ul class="pagination">
+
+              <% console.log(locals?.products) %> 
+
+              <% if(Number(locals?.products?.data[0]?.currentPage)<=1){%>
+              <li class="page-item disabled" id="btnE">
+                <a class="page-link" disabled data-current="1">Previous</a>
+              </li>
+              <% }else{; %>
+              <li class="page-item" id="btnE">
+                <a class="page-link" data-current="1" href="/products?page=<%=Number(locals?.products?.data[0]?.currentPage)-1%>">Previous</a>
+              </li>
+              <% }; %>
+
+              <% if(Number(locals?.products?.data[0]?.currentPage)==1){ %>
+              <li class="page-item active" id="btnB"><a class="page-link" href="/products?page=<%=Number(locals?.products?.data[0]?.currentPage)%>" data-current="1">1</a></li>
+
+              <% if(Number(locals?.products?.data[0]?.maxPage)>=2){ %>
+              <li class="page-item" id="btnC"><a class="page-link" href="/products?page=<%=Number(locals?.products?.data[0]?.currentPage)+1%>" data-current="1">2</a></li>
+              <% } %>
+
+              <% if(Number(locals?.products?.data[0]?.maxPage)>=3){ %>
+              <li class="page-item" id="btnC"><a class="page-link" href="/products?page=<%=Number(locals?.products?.data[0]?.currentPage)+2%>" data-current="1">3</a></li>
+              <% } %>
+
+              <% }else if(Number(locals?.products?.data[0]?.maxPage)==Number(locals?.products?.data[0]?.currentPage)){ %>
+
+
+              <% if(Number(locals?.products?.data[0]?.currentPage)-2>=1){ %>
+              <li class="page-item " id="btnB"><a class="page-link" href="/products?page=<%=Number(locals?.products?.data[0]?.currentPage)-2%>" data-current="1"><%=locals?.products?.data[0]?.currentPage-2%></a></li>
+              <% } %>
+              <% if(Number(locals?.products?.data[0]?.currentPage)-1>=1){ %>
+              <li class="page-item " id="btnB"><a class="page-link" href="/products?page=<%=Number(locals?.products?.data[0]?.currentPage)-1%>" data-current="1"><%=locals?.products?.data[0]?.currentPage-1%></a></li>
+              <% } %>
+              <li class="page-item active" id="btnB"><a class="page-link" href="/products?page=<%=Number(locals?.products?.data[0]?.currentPage)%>" data-current="1"><%=locals?.products?.data[0]?.currentPage%></a></li>
+
+              <% }else { %>
+
+              <li class="page-item" id="btnB"><a class="page-link" href="/products?page=<%=Number(locals?.products?.data[0]?.currentPage)-1%>" data-current="1"><%=locals?.products?.data[0]?.currentPage-1%></a></li>
+              <li class="page-item active" id="btnB"><a class="page-link" href="/products?page=<%=Number(locals?.products?.data[0]?.currentPage)%>" data-current="1"><%=locals?.products?.data[0]?.currentPage%></a></li>
+              <% if(Number(locals?.products?.data[0]?.maxPage)>Number(locals?.products?.data[0]?.currentPage)){ %>
+              <li class="page-item" id="btnB"><a class="page-link" href="/products?page=<%=Number(locals?.products?.data[0]?.currentPage)+1%>" data-current="1"><%=locals?.products?.data[0]?.currentPage+1%></a></li>
+              <% } %>
+
+              <% } %>
+
+              <% if(locals?.products?.data[0]?.maxPage==locals?.products?.data[0]?.currentPage){%>
+              <li class="page-item disabled" id="btnE">
+                <a class="page-link" disabled data-current="1">Next</a>
+              </li>
+              <% }else{; %>
+              <li class="page-item" id="btnE">
+                <a class="page-link" data-current="1" href="/products?page=<%=Number(locals?.products?.data[0]?.currentPage)+1%>">Next</a>
+              </li>
+              <% }; %>
+
+            </ul>
+          </nav>
+        </div>
       </div>
     </div>
   </div>
+
 </div>
-<!-- /.container-fluid -->
-
-
-<script>
-  function categoryName(ID, td, type) {
-    const categoryInput = td.querySelector('input');
-    categoryInput.removeAttribute('disabled');
-    categoryInput.focus();
-  };
-
-  const inputCollection = document.querySelectorAll('input.input_editable');
-
-  inputCollection.forEach(element => {
-    element.addEventListener('keyup', e => {
-      if (e.keyCode == 13) {
-        const value = e.target.value;
-        const PID = e.target.getAttribute('data-id');
-        const input = e.target;
-        const type = e.target.getAttribute('data-type');
-        saveCurrentValue(PID, value, input, type);
-      };
-    });
-    element.addEventListener('focusout', e => {
-      const value = e.target.value;
-      const PID = e.target.getAttribute('data-id');
-      const input = e.target;
-      const type = e.target.getAttribute('data-type');
-      saveCurrentValue(PID, value, input, type);
-    });
-  });
-
-  function saveCurrentValue(PID, value, input, type) {
-    input.style.borderColor = 'black';
-
-    if (value?.length > 2) {
-
-      fetch('/admin_panel/products/edit_product', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-
-            price: type == 'price' ? value : null,
-            stock: type = 'stock' ? value : null,
-            PID: PID ? PID : null,
-            type: type ? type : null
-
-          })
-        })
-        .then(res => res.json())
-        .then(res => {
-          if (res.status == 'error') {
-            console.log('ERROR_A => ', res.message);
-            input.style.borderColor = 'red';
-          } else {
-            input.style.borderColor = '';
-            input.setAttribute('disabled', '');
-          }
-        })
-        .catch(error => {
-          console.error(error);
-          input.style.borderColor = 'red';
-        });
-
-    } else {
-      input.style.borderColor = 'red';
-    };
-  };
-</script>

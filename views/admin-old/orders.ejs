@@ -1,0 +1,128 @@
+<!-- Custom styles for this page -->
+<link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+  <!-- Page Heading -->
+  <h1 class="h3 mb-2 text-gray-800">All Products</h1>
+  <p class="mb-4">View, Update, Create, and delete products
+    <br>Some fields can be updated within this page those fields are highlighted
+  </p>
+
+  <!-- DataTales Example -->
+  <div class="card mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">All users</h6>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table_for_orders" id="dataTable" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>status</th>
+              <th>Orderd by user</th>
+              <th>Purchased</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Date</th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% locals?.orders?.forEach((order,index,array)=>{ %>
+            <tr>
+              <td>
+                <%=index+1%>
+              </td>
+              <td class="status <%=order?.orders?.status%>">
+                <span style="text-transform: capitalize;" class="d-flex align-items-center">
+                  <% if(order?.orders?.status=='orderd') {%>
+                  <span class="badge badge-warning ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(order?.orders?.update)%>"><%=order?.orders?.status%></span>
+                  <!-- <div class="spinner-grow spinner-grow-sm text-warning"></div> -->
+                  <% }else if(order?.orders?.status=='packed'){ %>
+                  <span class="badge badge-info ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(order?.orders?.update)%>"><%=order?.orders?.status%></span>
+                  <!-- <div class="spinner-grow spinner-grow-sm text-info"></div> -->
+                  <% }else if(order?.orders?.status=='arriving today'){ %>
+                  <span class="badge badge-primary ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(order?.orders?.update)%>"><%=order?.orders?.status%></span>
+                  <!-- <div class="spinner-grow spinner-grow-sm text-primary"></div> -->
+                  <% }else if(order?.orders?.status=='out for delivery'){ %>
+                  <span class="badge badge-secondary ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(order?.orders?.update)%>"><%=order?.orders?.status%></span>
+                  <!-- <div class="spinner-grow spinner-grow-sm text-secondary"></div> -->
+                  <% }else if(order?.orders?.status=='delivered'){ %>
+                  <span class="badge badge-success ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(order?.orders?.update)%>"><%=order?.orders?.status%></span>
+                  <!-- <div class="spinner-grow spinner-grow-sm text-success"></div> -->
+                  <% }else if(order?.orders?.status=='cancelled'){ %>
+                  <span class="badge badge-danger ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(order?.orders?.update)%>"><%=order?.orders?.status%></span>
+                  <!-- <div class="spinner-grow spinner-grow-sm text-danger"></div> -->
+                  <% } %>
+                </span>
+                <%=order?.orders?.status%>
+              </td>
+              <td>
+                <%=order?.user[0]?.email?order?.user[0].email:order?.user[0]?.phone%>
+              </td>
+              <td>
+                <%=order?.orders?.products?.length%> Items
+              </td>
+              <td>
+                <%=order?.orders?.products[0]?.totalCount%> pcs
+              </td>
+              <td>
+                ₹ <%=order?.orders?.products[0]?.subTotal%>
+              </td>
+              <td>
+                <%=order?.orders?.dateOFOrder%>
+              </td>
+              <td style="cursor: pointer; text-align: center; color: white;" class="bg-dark" onclick="window.location.href='/admin_panel/orders/<%=order?.orders?.orderID%>'">
+                view
+              </td>
+              <% if(order?.orders?.status=='paid'){%>
+              <td class="status <%=order?.orders?.status%>" style="cursor: pointer;">
+                <%=order?.orders?.status%>
+              </td>
+              <%}else{%>
+              <td class="status <%=order?.orders?.status=='cancelled'?'err':'cancelled'%> " style="cursor: pointer;" onclick="cancelOrder('<%=order?.orders?._id%>',this)">
+                <!-- more&nbsp;<i class="fas fa-cog"></i> -->
+                <%=order?.orders?.status=='cancelled'?'Cancelled':'Cancel'%>
+              </td>
+              <%};%>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /.container-fluid -->
+
+<script>
+  function cancelOrder(orderID, tdBtn) {
+    console.log(tdBtn)
+    const td = tdBtn.parentElement.querySelector('td.status');
+
+    fetch('/admin_panel/orders/cancel', {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          orderID: orderID
+        })
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.status == 'error') {
+          tdBtn.setAttribute('class', 'status err');
+        } else {
+          td.setAttribute('class', 'status cancelled');
+          td.innerText = 'cancelled';
+          tdBtn.setAttribute('class', 'status err');
+        };
+      })
+      .catch(error => console.log('Error => ', error));
+  }
+</script>

@@ -34,9 +34,9 @@ export const addAmount = async (UID, amount, message) => {
                     }]
                 });
                 return await created.save();
-            }
+            };
         } catch (error) {
-            throw 'Error adding product to wallet';
+            throw 'Error adding amount to wallet';
         };
     } catch (error) {
         throw error;

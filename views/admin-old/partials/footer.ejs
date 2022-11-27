@@ -1,0 +1,77 @@
+<!-- Footer -->
+<footer class="sticky-footer bg-white">
+    <div class="container my-auto">
+        <div class="copyright text-center my-auto">
+            <span>Copyright &copy; Reminz-shop 2022</span>
+        </div>
+    </div>
+</footer>
+<!-- End of Footer -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+<!-- Logout Modal-->
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Select "Logout" below if you are ready to end your current session.
+            </div>
+            <div id="disp_state" class="err-disp mb-3 text-dark rounded pl-3 p-r-3 pt-2 pb-2" style="display: none;">
+                some err occured
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-primary" onclick="logout()">Logout</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function logout() {
+        let disp_state = document.getElementById("disp_state");
+
+        const disp = ({ message, isGood, returnVal }) => {
+            disp_state.style.backgroundColor = isGood ? 'rgb(205 255 196 / 56%)' : 'rgb(255 203 203 / 56%)';
+            disp_state.style.display = message || returnVal == false ? 'flex' : 'none';
+            disp_state.innerText = message ? message : disp_state.innerText;
+            return isGood || message == '' ? true : returnVal;
+        };
+        fetch('/admin_logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: "log me out"
+            })
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.status == 'error') {
+                    disp({
+                        message:res.message,
+                        isGood:false
+                    })
+                } else {
+                    window.location.href = '/admin_login';
+                };
+            })
+            .catch(error => {
+                disp({
+                    message:error,
+                    isGood:false
+                });
+            });
+    };
+</script>

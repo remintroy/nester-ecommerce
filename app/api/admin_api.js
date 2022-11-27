@@ -374,25 +374,54 @@ export const getProductInPages = async (pages) => {
 
     try {
         // number of products to list on each page
-        const listLenght = 5;
+        const listLenght = 10;
         const outputData = {};
 
         outputData.length = listLenght;
 
-        const countFromDb = await db.products.aggregate([{ $group: { _id: 'totalLenght', sum: { $sum: 1 } } }]);
+        let countFromDb;
+
+        try {
+            countFromDb = await db.products.aggregate([{ $group: { _id: 'totalLenght', sum: { $sum: 1 } } }]);
+        } catch (error) {
+            throw 'Error while fetching data from db';
+        };
+
         outputData.totalCount = countFromDb[0].sum;
 
+        const maxPG = parseInt(outputData.totalCount / listLenght) + (outputData.totalCount % listLenght != 0 ? 1 : 0);
+
+        if (Number(pages) > maxPG) throw 'No product data available';
+
         // getting and resolvind data
-        outputData.data = await db.products.aggregate([
-            { $sort: { 'creationTime': 1 } },
-            { $skip: ((pages - 1) * listLenght) },
-            { $limit: listLenght }
-        ]);
+        try {
+            outputData.data = await db.products.aggregate([
+                { $sort: { 'creationTime': 1 } },
+                { $skip: ((pages - 1) * listLenght) },
+                {
+                    $addFields: {
+                        currentPage: Number(pages),
+                        maxPage: maxPG
+                    }
+                },
+                {
+                    $project: {
+                        views: 0,
+                        reachedCheckout: 0,
+                        interactions: 0,
+                        impressions: 0
+                    }
+                },
+                { $limit: listLenght }
+            ]);
+        } catch (error) {
+            throw 'Error while fetching data from db';
+        };
 
         return outputData;
 
     } catch (error) {
-        throw 'Error while fetching data from db';
+        throw error;
     };
 };
 export const getProductsStatByPID = async (PID) => {

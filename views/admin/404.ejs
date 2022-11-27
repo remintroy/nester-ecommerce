@@ -1,13 +1,23 @@
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
-  <!-- 404 Error Text -->
-  <div class="text-center">
-    <div class="error mx-auto" data-text="<%if(locals.code){%><%=code%><%}else{%>404<%}%>"><%if(locals.code){%><%=code%><%}else{%>404<%}%></div>
-        <p class="lead text-gray-800 mb-5"><%if(locals.message){%><%=message%><%}else{%>Page Not Found<%}%></p>
-        <p class="text-gray-500 mb-0"><%if(locals.error){%><%=error%><%}else{%>It looks like you found a glitch in the matrix...<%}%></p>
-        <a href="<%if(locals.action){%><%=action%><%}else{%>/admin_panel<%}%>">&larr; <%if(locals.action){%><%=action%><%}else{%>Back to Dashboard<%}%></a>
+  <div class="d-flex align-items-center justify-content-center mt-5">
+    <div class="text-center">
+      <h1 class="display-1 fw-bold text-black"><%if(locals.code){%><%=code%><%}else{%>404<%}%></h1>
+      <h1 class="mb-2">
+        <%if(locals.message){%>
+          <%=message%>
+        <%}else{%>
+          Page Not Found
+        <%}%>
+        </h1>
+      <div class="text-gray-500 mt-5"><%if(locals.error){%><%=error%><%}else{%>It looks like you found a glitch in the matrix...<%}%></div>
+      <a class="btn btn-primary mt-4 text-white" href="<%if(locals.action){%><%=action%><%}else{%>/<%}%>">&larr; <%if(locals.action){%><%=action%><%}else{%>Back to Dashboard<%}%></a>
     </div>
+  </div>    
+
+  <!-- 404 Error Text -->  
+
 
 </div>
 <!-- /.container-fluid -->
