@@ -1,0 +1,70 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Roboto:wght@400;700&display=swap");
+html {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.card {
+  box-sizing: border-box;
+  padding: 30px;
+  max-width: 500px;
+  min-width: 400px;
+  font-family: "Poppins", sans-serif;
+  border-radius: 5px;
+  text-align: center;
+}
+.card .status_disp {
+  background-color: #c9ffc2;
+  padding: 10px;
+  border-radius: 3px;
+  margin-bottom: 15px;
+}
+.card .status_disp.err {
+  background-color: #ffc2c2;
+}
+.card .input-group input {
+  padding: 15px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 15px;
+  border-radius: 3px;
+  border: 1px solid grey;
+}
+.card .or {
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 10px;
+}
+.card button {
+  padding: 15px 15px;
+  box-sizing: border-box;
+  width: 100%;
+  border-radius: 3px;
+  font-size: 15px;
+  font-weight: bold;
+  border: 1px solid grey;
+  background-color: #818187;
+  color: white;
+  cursor: pointer;
+}
+.card button.google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  color: black;
+}
+.card button.google img {
+  width: 25px;
+}
+.card .Tosignup {
+  cursor: pointer;
+  color: rgb(145, 5, 238);
+}/*# sourceMappingURL=main.css.map */

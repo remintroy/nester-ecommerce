@@ -40,7 +40,8 @@ app.use(Express.json());
 app.use(ExpressLayouts);
 app.use(Express.static(`${__dirname}/public`));
 app.use(Express.static(`${__dirname}/public/templates`));
-// app.use(Express.static(`${__dirname}/public/template`)); //TODO : this must me removed
+app.use(Express.static(`${__dirname}/public/client`));
+app.use(Express.static(`${__dirname}/public/material_kit`));
 app.use(auth.initAuth);
 
 app.use(function (req, res, next) {

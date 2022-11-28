@@ -17,7 +17,7 @@ app.get('/test', (req, res) => {
 // app.post('/admin_logout', auth.mustLoginAsAdminAPI, auth.adminLogout);
 
 // apis - api for user sign in 
-app.post('/user_signin', auth.mustLogoutAsUserAPI, users.loginAPI);
+app.post('/user_signin', auth.mustLogoutAsUserAPI, users.signInInitAPI);
 // api for signin with google
 app.post('/user_signin_google', auth.mustLogoutAsUserAPI, users.loginWithGoogleAPI);
 // api for signin with phone
@@ -59,6 +59,10 @@ app.post('/cart_all', auth.mustLoginAsUserAPI, users.getAllProductsFormCartAPI);
 
 // usersign in page
 app.get('/user_signin', auth.mustLogoutAsUser, users.login);
+
+app.get('/user_signin/:id', auth.mustLogoutAsUser, users.loginSecond)
+// user signIN
+// app.get('/user_signin/:id', auth.mustLogoutAsUser, users.login);
 // usersign with phone in page
 app.get('/user_signin_phone', auth.mustLogoutAsUser, users.loginWithOtp);
 // create user page

@@ -50,11 +50,41 @@ export const analytics = (req, res, next) => {
 };
 
 // auth - pages
+// new
 export const login = (req, res) => {
   res.locals.currentPage = "login";
-  res.locals.layout = "users/auth/layout";
-  res.render("users/auth/login");
+  res.locals.layout = "client/auth/layout";
+  res.render("client/auth/login");
 };
+export const loginSecond = async (req, res) => {
+  try {
+
+    const id = req.params.id;
+
+    // check for authentic request from login initated user from login page
+    if (!req.session?.login?.code) throw 'Unautherized action';
+    if (req.session?.login?.code != id) throw {
+      message: 'Invalid Authentication ID',
+      code: 400
+    };
+
+    //..
+    res.locals.layout = "client/auth/layout";
+
+    // page to enter password
+    res.render('client/auth/password');
+
+  } catch (error) {
+    res.locals.message = error?.message ? error.message : 'Unautherized action';
+    res.locals.code = error?.code ? error.code : 401;
+    res.locals.layout = 'blank_layout';
+    res.locals.action = '/user_signin';
+    res.locals.action_message = 'Go to login page';
+    res.locals.error = 'You dont have permission to access this route !';
+    res.render('client/404');
+  };
+}
+// old
 export const signup = async (req, res) => {
   res.locals.currentPage = "signup";
   res.locals.layout = "users/auth/layout";
@@ -66,6 +96,17 @@ export const loginWithOtp = (req, res) => {
 };
 
 // auth - api's
+// new
+export const signInInitAPI = async (req, res) => {
+  try {
+    const result = await auth.signInInit(req.body);
+    req.session.login = result;
+    res.send({ status: "good", message: "Sign in initiated", action: result.action });
+  } catch (error) {
+    res.send({ status: "error", message: error });
+  }
+};
+// old 
 export const signupAPI = async (req, res) => {
   try {
     const result = await auth.userSignupWithEmail(req.body);
@@ -121,8 +162,9 @@ export const loginWithOtpAPI = async (req, res) => {
 // common - pages
 export const home = async (req, res) => {
   res.locals.user = req.user;
-  res.currentPage = "home";
-  res.render("users/index");
+  res.locals.currentPage = "home";
+  res.locals.layout = 'client_layout';
+  res.render("client/home");
   try {
     await analyticsService.addUserPageRequests('user_home_GET');
   } catch (error) {

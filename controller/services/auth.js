@@ -2,6 +2,7 @@ import * as db from './schema.js';
 import { randomId, getCountryByName, nameFormatter, getCountryBycode } from './util.js';
 import bCrypt from 'bcryptjs';
 import * as firebase from './firebase.js';
+import * as util from './util.js';
 
 /**
  * this function runs as the first level middleware
@@ -333,7 +334,11 @@ export function validatior(data, requiredIn, typeOfValidation) {
                         } catch (error) {
                             console.error('ValidatorPhoneUpdateUser_DB err => ', error); return 0;
                         };
+                    } else if (typeOfValidation == 'login') {
+                        const phoneIn = await db.users.find({ phone: phone });
+                        if (phoneIn.length == 0) { reject('Account not exist'); return 0; }
                     };
+
                     //..
                     output.phone = phone;
                 } else {
@@ -858,4 +863,49 @@ export const signInWithOTP = ({ idToken }) => {
             reject(error);
         };
     });
+};
+
+export const signInInit = async ({ data, type }) => {
+    try {
+        // primary layer of validation's
+        if (!data) throw `Can't signin user with empty data`;
+        if (data.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) || data.match(/^\+?[1-9][0-9]{7,14}$/)) { } else throw 'Enter a valid email or Phone number';
+
+        // for find the type of data form input 
+        const typeOfIncomingData = data.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) ? 'email' : 'phone';
+
+        const urlID = randomId(20, 'Aa');
+
+        // if login type is email
+        if (typeOfIncomingData == 'email') {
+
+            // validate data
+            const userData = await validatior({ email: data }, { emailRequired: true }, 'login');
+
+            return {
+                data: userData.email,
+                code: urlID,
+                type: typeOfIncomingData,
+                action: `/user_signin/${urlID}`
+            };
+
+        } else {
+            // if type of ligin is phone
+
+            // validate data
+            const userData = await validatior({ phone: data }, { phoneRequired: true }, 'login');
+
+            return {
+                data: userData.phone,
+                code: urlID,
+                type: typeOfIncomingData,
+                action: `/user_signin/${urlID}`
+            };
+
+        };
+
+    } catch (error) {
+        console.log(error);
+        throw error;
+    };
 };

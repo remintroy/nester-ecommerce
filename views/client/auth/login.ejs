@@ -1,0 +1,64 @@
+<div class="card">
+  <div class="title">
+    <h1>Login</h1>
+  </div>
+  <div class="status_disp" id="status_disp" style="display: none;"> </div>
+  <div class="input-group">
+    <input type="text" placeholder="Email / Mobile number" id="emailInput">
+    <button onclick="email_mobile_validate()">Continue</button>
+  </div>
+  <div class="or">
+    OR
+  </div>
+  <div class="social">
+    <button class="google"><img src="/icn/google.png" alt="">&nbsp; Login with Google</button>
+  </div>
+  <p>Don't have a account ? <b class="Tosignup">SIGNUP</b></p>
+</div>
+
+<script>
+  async function email_mobile_validate() {
+    const disp_state = document.getElementById('status_disp');
+    const emailInput = document.getElementById("emailInput");
+    disp_state.classList.remove('err');
+    disp_state.innerText = '';
+    disp_state.style.display = 'none';
+
+    try {
+      // primary layer of validation's
+      if (!emailInput.value) throw 'This field cannot be empty';
+      if (emailInput.value.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) || emailInput.value.match(/^\+?[1-9][0-9]{7,14}$/)) {} else throw 'Enter a valid email or Phone number';
+
+      // for find the type of data form input 
+      const typeOFLogin = emailInput.value.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
+
+      // sending request to server
+      const responseFromServer = await fetch('/user_signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          data: emailInput.value?.trim(),
+          type: typeOFLogin ? 'email' : 'phone'
+        })
+      });
+
+      // response form server 
+      const res = await responseFromServer.json();
+
+      // handling error messsages form server
+      if (res.status == 'error') throw res.message;
+
+      // sendign user to curresponding pages
+      if (res.status == 'good') window.location.href = res.action;
+
+    } catch (error) {
+      disp_state.classList.add('err')
+      disp_state.innerText = error;
+      disp_state.style.display = 'block';
+      return 0;
+    };
+
+  };
+</script>
