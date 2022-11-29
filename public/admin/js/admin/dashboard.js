@@ -38,14 +38,12 @@
       let yValuesB = [];
       let yValuesC = [];
       let yValuesD = [];
-      let yValuesE = [];
 
       for (let i = 0; i < 12; i++) {
         let outputA = '';
         let outputB = '';
         let outputC = '';
         let outputD = '';
-        let outputE = '';
 
         for (let j = 0; j < 12; j++) {
           if (dataFromServer['order-all-year-count'].OR[j]) {

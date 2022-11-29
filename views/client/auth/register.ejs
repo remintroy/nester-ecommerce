@@ -5,41 +5,33 @@
 
 <div class="card">
   <div class="title">
-    <h1>Welcome back</h1>
+    <h1>Get your account</h1>
   </div>
   <div class="status_disp" id="status_disp" style="display: none;"> </div>
   <div class="input-group">
-    <input type="text" placeholder="Email / Mobile number" id="emailInput">
-    <button onclick="email_mobile_validate()">Continue</button>
+    <input type="text" placeholder="Email" id="emailInput">
+    <input type="text" placeholder="Mobile number" id="phoneInput">
+    <button onclick="validate()">Continue</button>
   </div>
   <div class="or">
     OR
   </div>
   <div class="social">
-    <button id="googleLoginBtn" class="google"><img src="/icn/google.png" alt="">&nbsp; Login with Google</button>
+    <button id="googleLoginBtn" class="google"><img src="/icn/google.png" alt="">&nbsp; Signup with Google</button>
   </div>
-  <p>Don't have a account ? <b class="Tosignup" onclick="nextPage()">SIGNUP</b></p>
+  <p>Already have a account ? <b class="Tosignup" onclick="nextPage()">LOGIN</b></p>
 </div>
 
 <script>
   function nextPage() {
     const loader = document.getElementById('preloder');
     loader.style.display = 'flex';
-    window.location.href = '/user_registration';
+    window.location.href = '/user_signin';
   };
-  (() => {
-    const input = document.getElementById('emailInput');
-    input.addEventListener('focusin', () => {
-      window.addEventListener('keypress', e => {
-        if (e.keyCode == 13) {
-          email_mobile_validate();
-        }
-      })
-    });
-  })();
-  async function email_mobile_validate() {
+  async function validate() {
     const disp_state = document.getElementById('status_disp');
     const emailInput = document.getElementById("emailInput");
+    const phoneInput = document.getElementById("phoneInput");
     const loader = document.getElementById('preloder');
     disp_state.classList.remove('err');
     disp_state.innerText = '';
@@ -47,24 +39,23 @@
 
     try {
       // primary layer of validation's
-      if (!emailInput.value) throw 'This field cannot be empty';
-      if (emailInput.value.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) || emailInput.value.match(/^\+?[1-9][0-9]{7,14}$/)) {} else throw 'Enter a valid email or Phone number';
-
-      // for find the type of data form input 
-      const typeOFLogin = emailInput.value.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
+      if (!emailInput.value) throw 'Email field cannot be empty';
+      if (emailInput.value.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) {} else throw 'Enter a valid email';
+      if (!phoneInput.value) throw 'Phone number field cannot be empty';
+      if (phoneInput.value.match(/^\+?[1-9][0-9]{7,14}$/)) {} else throw 'Enter a valid phone number';
 
       // show loader
       loader.style.display = 'flex';
 
       // sending request to server
-      const responseFromServer = await fetch('/user_signin', {
+      const responseFromServer = await fetch('/user_registration', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          data: emailInput.value?.trim(),
-          type: typeOFLogin ? 'email' : 'phone'
+          email: emailInput.value?.trim(),
+          phone: phoneInput.value?.trim()
         })
       });
 
@@ -82,12 +73,10 @@
 
     } catch (error) {
       loader.style.display = 'none';
-      disp_state.classList.add('err')
+      disp_state.classList.add('err');
       disp_state.innerText = error;
       disp_state.style.display = 'block';
       return 0;
     };
-
   };
 </script>
-<script src="/js/login/auth.js" type="module"></script>

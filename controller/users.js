@@ -178,12 +178,44 @@ export const resetPassword = async (req, res) => {
   };
 };
 
-// old
+// new
 export const signup = async (req, res) => {
+  res.locals.title = 'Signup';
   res.locals.currentPage = "signup";
-  res.locals.layout = "users/auth/layout";
-  res.render("users/auth/signup");
+  res.locals.layout = "client/auth/layout";
+  res.render("client/auth/register");
 };
+export const signupStepTwo = async (req, res) => {
+  try {
+
+    const id = req.params.id;
+
+    // check for authentic request from login initated user from login page
+    if (!req.session?.signup?.regID) throw 'Unautherized action';
+    if (req.session?.signup?.regID != id) throw {
+      message: 'Invalid Authentication ID',
+      code: 401
+    };
+
+    //..
+    res.locals.title = 'Password & Name';
+    res.locals.layout = "client/auth/layout";
+    res.locals.regID = id;
+    // page to enter password and name
+    res.render('client/auth/register_two');
+
+  } catch (error) {
+    res.locals.message = error?.message ? error.message : 'Unautherized action';
+    res.locals.code = error?.code ? error.code : 401;
+    res.locals.layout = 'blank_layout';
+    res.locals.action = '/user_signin';
+    res.locals.action_message = 'Go to login page';
+    res.locals.error = 'You dont have permission to access this route !';
+    res.render('client/404');
+  };
+};
+
+// old
 export const loginWithOtp = (req, res) => {
   res.locals.layout = "users/auth/layout";
   res.render("users/auth/otp");
@@ -295,17 +327,46 @@ export const resetPasswordAPI = async (req, res) => {
     res.send({ status: "error", message: error.message ? error.message : error, code: error.code ? error.code : 400 });
   };
 };
-
-// old 
 export const signupAPI = async (req, res) => {
   try {
-    const result = await auth.userSignupWithEmail(req.body);
-    req.session.user = result.UID;
-    res.send({ status: "good", message: "Login success", action: "/" });
+    const result = await auth.signUpInit(req.body);
+    req.session.signup = result;
+    // response
+    res.send({ status: 'good', message: result?.message ? result.message : result, action: result.action });
   } catch (error) {
     res.send({ status: "error", message: error });
   }
 };
+export const signupSetpTwoAPI = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    // check for authentic request from login initated user from login page
+    if (!req.session?.signup?.regID) throw 'Unautherized action';
+    if (req.session?.signup?.regID != id) throw {
+      message: 'Invalid Authentication ID',
+      code: 401
+    };
+
+    // validating data
+    const { password, name } = req.body;
+    const data = { ...req.session.signup, password, name };
+
+    // verifying otp
+    const result = await auth.signUpStepTwo(data);
+
+    // logs in user
+    req.session.signup = {};
+    req.session.user = result.UID;
+
+    // response
+    res.send({ status: 'good', message: result?.message ? result.message : result, action: result.action });
+  } catch (error) {
+    res.send({ status: "error", message: error.message ? error.message : error, code: error.code ? error.code : 400 });
+  };
+};
+
+// old 
 export const logoutAPI = async (req, res) => {
   try {
     req.session.user = false;

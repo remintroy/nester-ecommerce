@@ -28,6 +28,8 @@ app.post('/user_signin_phone', auth.mustLogoutAsUserAPI, users.loginWithOtpAPI);
 app.post('/user_logout', auth.mustLoginAsUserAPI, users.logoutAPI);
 // api for user registration
 app.post('/user_registration', auth.mustLogoutAsUserAPI, users.signupAPI);
+// api for enter passewordd and name 
+app.post('/user_registration/:id', auth.mustLogoutAsUserAPI, users.signupSetpTwoAPI);
 // api for add to cart
 app.post('/cart_action', auth.mustLoginAsUserAPI, users.addTOCartAPI);
 // api for add to_car importance is to update
@@ -61,7 +63,7 @@ app.post('/cart_all', auth.mustLoginAsUserAPI, users.getAllProductsFormCartAPI);
 
 // usersign in page
 app.get('/user_signin', auth.mustLogoutAsUser, users.login);
-
+// userPassword prompt
 app.get('/user_signin/:id', auth.mustLogoutAsUser, users.loginSecond);
 // forget passowrd
 app.get('/forget_password/:id', auth.mustLogoutAsUser, users.forgetPassword);
@@ -75,6 +77,9 @@ app.get('/reset_password/:id', auth.mustLogoutAsUser, users.resetPassword);
 app.get('/user_signin_phone', auth.mustLogoutAsUser, users.loginWithOtp);
 // create user page
 app.get('/user_registration', auth.mustLogoutAsUser, users.signup);
+// step two create user
+app.get('/user_registration/:id', auth.mustLogoutAsUser, users.signupStepTwo);
+
 
 // to set essential locals for render
 app.use(users.localsForUser);

@@ -982,3 +982,65 @@ export const resetPasswordUser = async (data, password, resetID) => {
         throw error;
     };
 };
+
+// Signup user -------
+export const signUpInit = async ({ email, phone }) => {
+    try {
+
+        const userOutput = await validatior(
+            { email: email, phone: phone },
+            { emailRequired: true, phoneRequired: true },
+            'signup'
+        );
+
+        const regID = util.randomId(20, 'A0');
+
+        return {
+            email: userOutput.email,
+            phone: userOutput.phone,
+            UID: userOutput.UID,
+            regID: regID,
+            message: 'Signup successfully initiated',
+            action: `/user_registration/${regID}`
+        };
+
+    } catch (error) {
+        throw error;
+    };
+};
+export const signUpStepTwo = async ({ email, phone, password, name }) => {
+    try {
+        const userOutput = await validatior({ email, phone, password, name }, {
+            emailRequired: true,
+            phoneRequired: true,
+            UIDRequired: true,
+            passwordRequired: true,
+            nameRequired: true
+        }, 'signup');
+
+        try {
+
+            const userData = await db.users({
+                UID: userOutput.UID,
+                email: userOutput.email,
+                phone: userOutput.phone,
+                password: userOutput.password,
+                name: userOutput.name
+            });
+
+            await userData.save();
+
+            return {
+                message: 'Signup success',
+                action: '/',
+                UID: userData.UID
+            };
+
+        } catch (error) {
+            throw 'Error while creating user';
+        };
+
+    } catch (error) {
+        throw error;
+    };
+};
