@@ -52,6 +52,7 @@ export const analytics = (req, res, next) => {
 // auth - pages
 // new
 export const login = (req, res) => {
+  res.locals.title = 'Login';
   res.locals.currentPage = "login";
   res.locals.layout = "client/auth/layout";
   res.render("client/auth/login");
@@ -65,12 +66,13 @@ export const loginSecond = async (req, res) => {
     if (!req.session?.login?.code) throw 'Unautherized action';
     if (req.session?.login?.code != id) throw {
       message: 'Invalid Authentication ID',
-      code: 400
+      code: 401
     };
 
     //..
+    res.locals.title = 'Password confirmation';
     res.locals.layout = "client/auth/layout";
-
+    res.locals.authID = id;
     // page to enter password
     res.render('client/auth/password');
 
@@ -83,7 +85,99 @@ export const loginSecond = async (req, res) => {
     res.locals.error = 'You dont have permission to access this route !';
     res.render('client/404');
   };
-}
+};
+export const forgetPassword = async (req, res) => {
+  try {
+
+    const id = req.params.id;
+
+    // check for authentic request from login initated user from login page
+    if (!req.session?.login?.code) throw 'Unautherized action';
+    if (req.session?.login?.code != id) throw {
+      message: 'Invalid Authentication ID',
+      code: 401
+    };
+
+    //..
+    res.locals.layout = "client/auth/layout";
+    res.locals.title = 'Forget Password';
+    res.locals.authID = id;
+
+    // page to enter password
+    res.render('client/auth/forget');
+
+  } catch (error) {
+    res.locals.message = error?.message ? error.message : 'Unautherized action';
+    res.locals.code = error?.code ? error.code : 401;
+    res.locals.layout = 'blank_layout';
+    res.locals.action = '/user_signin';
+    res.locals.action_message = 'Go to login page';
+    res.locals.error = 'You dont have permission to access this route ! you may consider retrying';
+    res.render('client/404');
+  };
+};
+export const verifyEmailOTP = async (req, res) => {
+  try {
+
+    const id = req.params.id;
+
+    // check for authentic request from login initated user from login page
+    if (!req.session?.login?.code) throw 'Unautherized action';
+    if (req.session?.login?.code != id) throw {
+      message: 'Invalid Authentication ID',
+      code: 401
+    };
+
+    //..
+    res.locals.layout = "client/auth/layout";
+    res.locals.title = 'Verfy using email';
+    res.locals.authID = id;
+
+    // page to enter password
+    res.render('client/auth/email_verify');
+
+  } catch (error) {
+    res.locals.message = error?.message ? error.message : 'Unautherized action';
+    res.locals.code = error?.code ? error.code : 401;
+    res.locals.layout = 'blank_layout';
+    res.locals.action = '/user_signin';
+    res.locals.action_message = 'Go to login page';
+    res.locals.error = 'You dont have permission to access this route !';
+    res.render('client/404');
+  };
+};
+export const resetPassword = async (req, res) => {
+  try {
+
+    const id = req.params.id;
+
+    // check for authentic request from login initated user from login page
+    if (!req.session?.login?.resetCode) throw 'Unautherized action';
+    if (req.session?.login?.resetCode != id) throw {
+      message: 'Invalid Authentication ID',
+      code: 401
+    };
+
+    //..
+    res.locals.layout = "client/auth/layout";
+    res.locals.title = 'Reset password';
+    res.locals.authID = id;
+    res.locals.resetID = req.session.login.resetCode;
+
+    // page to enter password
+    res.render('client/auth/reset_password');
+
+  } catch (error) {
+    res.locals.message = error?.message ? error.message : 'Unautherized action';
+    res.locals.code = error?.code ? error.code : 401;
+    res.locals.layout = 'blank_layout';
+    res.locals.action = '/user_signin';
+    res.locals.action_message = 'Go to login page';
+    res.locals.error = 'You dont have permission to access this route !';
+    res.render('client/404');
+  };
+};
+
 // old
 export const signup = async (req, res) => {
   res.locals.currentPage = "signup";
@@ -106,19 +200,106 @@ export const signInInitAPI = async (req, res) => {
     res.send({ status: "error", message: error });
   }
 };
+export const signInWithPasswordAPI = async (req, res) => {
+  try {
+    const id = req.params.id;
+    // check for authentic request from login initated user from login page
+    if (!req.session?.login?.code) throw 'Unautherized action';
+    if (req.session?.login?.code != id) throw {
+      message: 'Invalid Authentication ID',
+      code: 401
+    };
+    const data = req.session.login.data;
+    const type = req.session.login.type;
+    const password = req.body.password;
+    const result = await auth.signInPassword(data, type, password);
+    req.session.user = result.UID;
+    req.session.login = {};
+    res.send({ status: 'good', message: result.message, action: result.action });
+  } catch (error) {
+    res.send({ status: "error", message: error.message ? error.message : error, code: error.code ? error.code : 400 });
+  }
+}
+export const signInRecoveryPasswordAPI = async (req, res) => {
+  try {
+    const id = req.params.id;
+    // check for authentic request from login initated user from login page
+    if (!req.session?.login?.code) throw 'Unautherized action';
+    if (req.session?.login?.code != id) throw {
+      message: 'Invalid Authentication ID',
+      code: 401
+    };
+
+    const data = req.session.login;
+    const type = req.body.type;
+    const result = await auth.sendPasswordForgetEmail(data, type, id);
+
+    req.session.login.OTP = result.OTP;
+
+    res.send({ status: 'good', message: result?.message ? result.message : result, action: result.action });
+  } catch (error) {
+    res.send({ status: "error", message: error.message ? error.message : error, code: error.code ? error.code : 400 });
+  };
+};
+export const verifyEmailOTPAPI = async (req, res) => {
+  try {
+    const id = req.params.id;
+    // check for authentic request from login initated user from login page
+    if (!req.session?.login?.code) throw 'Unautherized action';
+    if (req.session?.login?.code != id) throw {
+      message: 'Invalid Authentication ID',
+      code: 401
+    };
+
+    // validating data
+    const data = req.session.login;
+    const varificationCode = req.body.OTP;
+
+    // verifying otp
+    const result = await auth.verfyEmailOTP(data, varificationCode, id);
+
+    // saving reset password code to email
+    req.session.login.OTP = null;
+    req.session.login.resetCode = result.code;
+
+    // response
+    res.send({ status: 'good', message: result?.message ? result.message : result, action: result.action });
+  } catch (error) {
+    res.send({ status: "error", message: error.message ? error.message : error, code: error.code ? error.code : 400 });
+  };
+};
+export const resetPasswordAPI = async (req, res) => {
+  try {
+    const id = req.params.id;
+    // check for authentic request from login initated user from login page
+    if (!req.session?.login?.resetCode) throw 'Unautherized action';
+    if (req.session?.login?.resetCode != id) throw {
+      message: 'Invalid Authentication ID',
+      code: 401
+    };
+
+    // validating data
+    const data = req.session.login;
+    const password = req.body.password;
+
+    // verifying otp
+    const result = await auth.resetPasswordUser(data, password, id);
+
+    // logs in user
+    req.session.login = {};
+    req.session.user = result.UID;
+
+    // response
+    res.send({ status: 'good', message: result?.message ? result.message : result, action: result.action });
+  } catch (error) {
+    res.send({ status: "error", message: error.message ? error.message : error, code: error.code ? error.code : 400 });
+  };
+};
+
 // old 
 export const signupAPI = async (req, res) => {
   try {
     const result = await auth.userSignupWithEmail(req.body);
-    req.session.user = result.UID;
-    res.send({ status: "good", message: "Login success", action: "/" });
-  } catch (error) {
-    res.send({ status: "error", message: error });
-  }
-};
-export const loginAPI = async (req, res) => {
-  try {
-    const result = await auth.userLoginWithEmail(req.body);
     req.session.user = result.UID;
     res.send({ status: "good", message: "Login success", action: "/" });
   } catch (error) {

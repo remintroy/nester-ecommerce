@@ -9,15 +9,17 @@ app.get('/test', (req, res) => {
     res.send({ status: "good", message: "Test message form server" });
 })
 
-// // admin auth routes
-// app.get('/admin_login', auth.mustLogoutAsAdmin, admin.login);
-// // api for admin login 
-// app.post('/admin_login', auth.mustLogoutAsAdminAPI, admin.loginApi);
-// // api for admin logout
-// app.post('/admin_logout', auth.mustLoginAsAdminAPI, auth.adminLogout);
 
 // apis - api for user sign in 
 app.post('/user_signin', auth.mustLogoutAsUserAPI, users.signInInitAPI);
+// api for login user with password
+app.post('/user_signin_password/:id', auth.mustLogoutAsUserAPI, users.signInWithPasswordAPI);
+// api for forget password
+app.post('/forget_password/:id', auth.mustLogoutAsUserAPI, users.signInRecoveryPasswordAPI);
+// api for recover wit email 
+app.post('/forget_password/email/:id', auth.mustLogoutAsUserAPI, users.verifyEmailOTPAPI);
+// api for reset password 
+app.post('/reset_password/:id',auth.mustLogoutAsUser, users.resetPasswordAPI);
 // api for signin with google
 app.post('/user_signin_google', auth.mustLogoutAsUserAPI, users.loginWithGoogleAPI);
 // api for signin with phone
@@ -60,7 +62,13 @@ app.post('/cart_all', auth.mustLoginAsUserAPI, users.getAllProductsFormCartAPI);
 // usersign in page
 app.get('/user_signin', auth.mustLogoutAsUser, users.login);
 
-app.get('/user_signin/:id', auth.mustLogoutAsUser, users.loginSecond)
+app.get('/user_signin/:id', auth.mustLogoutAsUser, users.loginSecond);
+// forget passowrd
+app.get('/forget_password/:id', auth.mustLogoutAsUser, users.forgetPassword);
+// email forget password recovery 
+app.get('/forget_passowrd/email/:id', auth.mustLogoutAsUser, users.verifyEmailOTP);
+// new password creater 
+app.get('/reset_password/:id', auth.mustLogoutAsUser, users.resetPassword);
 // user signIN
 // app.get('/user_signin/:id', auth.mustLogoutAsUser, users.login);
 // usersign with phone in page

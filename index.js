@@ -6,6 +6,8 @@ import dotenv from 'dotenv';
 import fileUpload from 'express-fileupload';
 import Logger from 'morgan';
 
+import * as mail from './controller/services/email.js';
+
 import * as auth from './controller/services/auth.js';
 import adminRoute from './routes/admin.js';
 import usersRoute from './routes/user.js';

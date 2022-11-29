@@ -3,6 +3,7 @@ import { randomId, getCountryByName, nameFormatter, getCountryBycode } from './u
 import bCrypt from 'bcryptjs';
 import * as firebase from './firebase.js';
 import * as util from './util.js';
+import * as emailService from './email.js';
 
 /**
  * this function runs as the first level middleware
@@ -500,63 +501,7 @@ export const adminLogout = (req, res) => {
     res.send({ status: 'good', message: "Logout success" });
 };
 
-export const userLoginWithEmail = ({ email, password }) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let output = await validatior(
-                {
-                    email: email,
-                    password: password
-                },
-                {
-                    emailRequired: true,
-                    passwordRequired: true,
-                    blockedReqired: true,
-                },
-                'login'
-            );
 
-            try {
-
-                const userdata = await db.users.findOne({ email: output.email })
-
-                if (userdata.blocked) {
-
-                    reject("You account is disabled"); return 0;
-
-                } else if (output.password == true) {
-
-                    try {
-
-                        let userdata = await db.users.findOne({ email: email }, { password: 0 });
-                        let updateLastLoginTime = await db.users.updateOne(
-                            {
-                                email: email,
-                            },
-                            {
-                                $set: {
-                                    lastLogin: new Date()
-                                }
-                            }
-                        );
-                        resolve(userdata);
-
-                    } catch (error) {
-                        console.error('UserLogin_DB err => ', error);
-                    };
-                } else {
-                    reject('Incorrect password'); return 0;
-                };
-            } catch (error) {
-                console.log("Blocked_Lookup_Email_DB => ", error);
-                reject("Error fetching user data"); return 0;
-            };
-
-        } catch (error) {
-            reject(error); return 0;
-        };
-    });
-};
 export const userSignupWithEmail = ({ email, name, password, phone }) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -865,6 +810,7 @@ export const signInWithOTP = ({ idToken }) => {
     });
 };
 
+// login user -------
 export const signInInit = async ({ data, type }) => {
     try {
         // primary layer of validation's
@@ -874,7 +820,7 @@ export const signInInit = async ({ data, type }) => {
         // for find the type of data form input 
         const typeOfIncomingData = data.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) ? 'email' : 'phone';
 
-        const urlID = randomId(20, 'Aa');
+        const urlID = randomId(20, 'A0');
 
         // if login type is email
         if (typeOfIncomingData == 'email') {
@@ -882,9 +828,15 @@ export const signInInit = async ({ data, type }) => {
             // validate data
             const userData = await validatior({ email: data }, { emailRequired: true }, 'login');
 
+            const dataFromDb = await db.users.findOne({ email: userData.email });
+
+            // check if this user is blocked or not
+            if (dataFromDb.blocked) throw 'Your account is disabled';
+
             return {
                 data: userData.email,
                 code: urlID,
+                UID: dataFromDb.UID,
                 type: typeOfIncomingData,
                 action: `/user_signin/${urlID}`
             };
@@ -895,8 +847,14 @@ export const signInInit = async ({ data, type }) => {
             // validate data
             const userData = await validatior({ phone: data }, { phoneRequired: true }, 'login');
 
+            const dataFromDb = await db.users.findOne({ phone: userData.phone });
+
+            // check if this user is blocked or not
+            if (dataFromDb.blocked) throw 'Your account is disabled';
+
             return {
                 data: userData.phone,
+                UID: dataFromDb.UID,
                 code: urlID,
                 type: typeOfIncomingData,
                 action: `/user_signin/${urlID}`
@@ -905,7 +863,122 @@ export const signInInit = async ({ data, type }) => {
         };
 
     } catch (error) {
-        console.log(error);
+        throw error;
+    };
+};
+export const signInPassword = async (data, type, password) => {
+    try {
+
+        let email = data?.trim();
+
+        if (type == 'phone') {
+            const dataFromDb = await db.users.findOne({ phone: data?.trim() });
+            email = dataFromDb.email;
+        };
+
+        const userData = await db.users.findOne({ email: email });
+
+        if (userData.blocked) throw 'Your account is disabled';
+
+        let output = await validatior({
+            email: email,
+            password: password
+        }, {
+            emailRequired: true,
+            passwordRequired: true,
+        },
+            'login'
+        );
+
+        if (!output.password) throw 'Incorrect password';
+
+
+        return {
+            message: 'Login success',
+            action: '/',
+            UID: userData.UID
+        };
+
+        // return  message, action, UID
+    } catch (error) {
+        throw error;
+    };
+};
+export const sendPasswordForgetEmail = async (data, type, authID) => {
+
+    // generate otp
+    const OTP = util.randomId(6, '0');
+
+    try {
+        if (type == 'email') {
+            const userData = await db.users.findOne({ UID: data.UID });
+            const result = await emailService.sendFrogetPasswordOtp(userData.email, OTP);
+            if (result.accepted[0]) {
+                return {
+                    message: 'OTP send',
+                    action: `/forget_passowrd/email/${authID}`,
+                    OTP: OTP
+                };
+            } else {
+                throw 'Faild to send OTP';
+            };
+        } else { // TODO : add sms otp
+            throw 'Faild to send please try after sometime';
+        };
+    } catch (error) {
+        throw error;
+    };
+};
+export const verfyEmailOTP = async (data, code, authID) => {
+    try {
+        if (data?.OTP) {
+
+            if (data.OTP == code?.trim()) {
+
+                const resetPasswordID = `${authID}_${util.randomId(30, "A0")}`;
+
+                return {
+                    message: 'code vefication success',
+                    code: resetPasswordID,
+                    action: `/reset_password/${resetPasswordID}`,
+                }
+
+            } else {
+                throw 'Incorrect code';
+            };
+
+        } else {
+            throw 'Faild to validate please retry after sometimes';
+        };
+    } catch (error) {
+        throw error;
+    };
+};
+export const resetPasswordUser = async (data, password, resetID) => {
+    try {
+        if (!data.UID) throw 'Falid to change password please try after sometime';
+        const userOutput = await validatior({ password: password });
+
+        try {
+
+            const updatedData = await db.users.updateOne({ UID: data.UID }, {
+                $set: {
+                    password: userOutput.password
+                }
+            });
+
+            return {
+                UID: data.UID,
+                action: '/',
+                message: 'password successfully updated'
+            };
+
+        } catch (error) {
+            console.log(error);
+            throw 'Faild to update password kindly retry after sometime';
+        };
+
+    } catch (error) {
         throw error;
     };
 };
