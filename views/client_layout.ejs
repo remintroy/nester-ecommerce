@@ -21,6 +21,8 @@
   <link rel="stylesheet" href="/css/owl.carousel.min.css" type="text/css">
   <link rel="stylesheet" href="/css/slicknav.min.css" type="text/css">
   <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/vendor/css/swal.css">
+  <script src="/vendor/js/swal.js"></script>
   <!-- <link id="pagestyle" href="/css/material-kit.css?v=3.0.4" rel="stylesheet" /> -->
   <!-- CSS Files -->
 </head>
@@ -44,11 +46,56 @@
   <script src="/js/jquery.nice-select.min.js"></script>
   <script src="/js/jquery-ui.min.js"></script>
   <script src="/js/jquery.slicknav.js"></script>
+  <script src="/js/jquery.elevateZoom.min.js"></script>
   <script src="/js/mixitup.min.js"></script>
   <script src="/js/owl.carousel.min.js"></script>
   <script src="/js/main.js"></script>
   <script src="/js/material-kit.min.js?v=3.0.4" type="text/javascript"></script>
 
+  <script>
+    function addToCart(PID) {
+      fetch('/cart_action', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            PID: PID
+          })
+        })
+        .then(res => res.json())
+        .then(res => {
+          console.log(res);
+          if (res.status == 'good') {
+            document.getElementById("cart_total_count").innerText = res.message.totalCount;
+            document.getElementById("cart_total_sub_count").innerText = res.message.subTotal;
+            notify('added to cart', true);
+          } else {
+            notify(res.message);
+          };
+        })
+        .catch(error => console.log(error));
+    };
+  </script>
+
+  <!-- <script src="/js/swal/swal.min.js"></script> -->
+  <script>
+    function notify(message, isGood) {
+      Swal.fire({
+        title: message,
+        icon: isGood ? 'success' : 'error',
+        toast: true,
+        position: 'bottom-left',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+      });
+    };
+  </script>
 </body>
 
 </html>

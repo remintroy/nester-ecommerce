@@ -10,10 +10,7 @@ import * as analyticsService from './services/analytics.js';
 // locals for users
 export const localsForUser = async (req, res, next) => {
   try {
-    if (req.user)
-      res.locals.cartProducts = await userService.getAllCartProducts(
-        req.user?.UID
-      );
+    if (req.user) res.locals.cartProducts = await userService.getAllCartProducts(req.user?.UID);
     res.locals.categorys = await db.category.find();
     res.locals.user = req.user;
     res.locals.appName = appConfig.name;
@@ -403,7 +400,6 @@ export const loginWithOtpAPI = async (req, res) => {
 
 // common - pages
 export const home = async (req, res) => {
-  res.locals.user = req.user;
   res.locals.currentPage = "home";
   res.locals.layout = 'client_layout';
   res.render("client/home");
@@ -418,7 +414,8 @@ export const shop = async (req, res) => {
     const products = await db.products.find();
     res.locals.currentPage = "shop";
     res.locals.products = products;
-    res.render("users/shop");
+    res.locals.layout = 'client_layout';
+    res.render("client/shop");
     try {
       await analyticsService.addUserPageRequests('user_shop_GET');
     } catch (error) {
@@ -452,8 +449,9 @@ export const product = async (req, res) => {
 };
 export const cart = async (req, res) => {
   res.locals.currentPage = "cart";
+  res.locals.layout = 'client_layout';
   try {
-    res.render("users/cart");
+    res.render("client/cart");
     try {
       await analyticsService.addUserPageRequests('user_cart_GET');
     } catch (error) {

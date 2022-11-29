@@ -719,8 +719,8 @@ ol {
 }
 
 .header__cart ul li a span {
-  height: 13px;
-  width: 13px;
+  min-height: 13px;
+  min-width: 13px;
   background: #818187;
   font-size: 10px;
   color: #ffffff;
@@ -728,7 +728,7 @@ ol {
   text-align: center;
   font-weight: 700;
   display: inline-block;
-  border-radius: 50%;
+  border-radius: 5px;
   position: absolute;
   top: 0;
   right: -12px;
