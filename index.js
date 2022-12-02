@@ -16,7 +16,7 @@ const app = Express();
 const __dirname = process.cwd();
 export const appConfig = {
   name: "Reminz",
-  port: process.env.PORT | 3001,
+  port: process.env.PORT | 8080,
 };
 const mongoDbSesson = new ConnectMongoDBSession(session);
 
@@ -75,7 +75,7 @@ import * as adminAPIRouter from "./routes/admin_api.js";
 // -- admin -- app
 export const AdminAppConfig = {
   name: "Reminz",
-  port: process.env.PORT | 3000,
+  port: process.env.PORT | 8081,
 };
 // const __dirname = process.cwd();
 const adminApp = Express();
