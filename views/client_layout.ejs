@@ -16,13 +16,14 @@
   <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">
   <link rel="stylesheet" href="/css/font-awesome.min.css" type="text/css">
   <link rel="stylesheet" href="/css/elegant-icons.css" type="text/css">
-  <link rel="stylesheet" href="/css/nice-select.css" type="text/css">
+  <!-- <link rel="stylesheet" href="/css/nice-select.css" type="text/css"> -->
   <link rel="stylesheet" href="/css/jquery-ui.min.css" type="text/css">
   <link rel="stylesheet" href="/css/owl.carousel.min.css" type="text/css">
   <link rel="stylesheet" href="/css/slicknav.min.css" type="text/css">
   <link rel="stylesheet" href="/css/style.css" type="text/css">
   <link rel="stylesheet" href="/vendor/css/swal.css">
   <script src="/vendor/js/swal.js"></script>
+  <link rel="stylesheet" href="/custom/client/css/main/style.css">
   <!-- <link id="pagestyle" href="/css/material-kit.css?v=3.0.4" rel="stylesheet" /> -->
   <!-- CSS Files -->
 </head>
@@ -43,7 +44,13 @@
   <!-- Js Plugins -->
   <script src="/js/jquery-3.3.1.min.js"></script>
   <script src="/js/bootstrap.min.js"></script>
+
+  <% if(locals?.currentPage!='checkout'){ %>
+  
   <script src="/js/jquery.nice-select.min.js"></script>
+
+  <% } %> 
+
   <script src="/js/jquery-ui.min.js"></script>
   <script src="/js/jquery.slicknav.js"></script>
   <script src="/js/jquery.elevateZoom.min.js"></script>
@@ -65,7 +72,6 @@
         })
         .then(res => res.json())
         .then(res => {
-          console.log(res);
           if (res.status == 'good') {
             document.getElementById("cart_total_count").innerText = res.message.totalCount;
             document.getElementById("cart_total_sub_count").innerText = res.message.subTotal;

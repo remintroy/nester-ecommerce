@@ -197,49 +197,49 @@ const inputActions = async (type, data) => {
     };
 };
 
-(function checkEventSetter() {
-    const addresses = document.querySelectorAll('input[type=radio][name=address]');
-    addresses.forEach(e => {
-        if (e.value != '-1') {
-            e.addEventListener("change", ev => {
-                fetch('/checkout/address', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        addressID: e.value
-                    })
-                })
-                    .then(res => res.json())
-                    .then(res => {
-                        if (res.status == 'error') {
-                            console.log('Error => ', error);
-                        } else {
-                            const outputData = {
-                                fNameInput: res.message?.name?.split(' ')[0],
-                                lNameInput: res.message?.name?.split(' ')?.slice(1).join(' '),
-                                stateInput: res.message?.state,
-                                streetNumberInput: res.message?.streetNumber,
-                                houseNumberInput: res.message?.houseNumber,
-                                townInput: res.message?.town,
-                                countryInput: res.message?.countryCode,
-                                codeInput: res.message?.postalCode,
-                                phoneInput: res.message?.phone,
-                                emailInput: res.message?.email
-                            };
-                            inputActions('set', outputData);
-                        };
-                    })
-                    .catch(err => console.log(err));
-            });
+const setAddress = async (addressID) => {
+    try {
+
+        // clears all input field if there is no address id
+        if (!addressID) { inputActions('clear'); return 0; }
+
+        // getting address data form server
+        const dataFromServer = await fetch('/checkout/address', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                addressID: addressID
+            })
+        });
+
+        // parsign data form response
+        const res = await dataFromServer.json();
+
+        if (res.status == 'error') {
+            console.log('Error => ', error);
         } else {
-            e.addEventListener('change', e => {
-                inputActions('clear');
-            });
+            const outputData = {
+                fNameInput: res.message?.name?.split(' ')[0],
+                lNameInput: res.message?.name?.split(' ')?.slice(1).join(' '),
+                stateInput: res.message?.state,
+                streetNumberInput: res.message?.streetNumber,
+                houseNumberInput: res.message?.houseNumber,
+                townInput: res.message?.town,
+                countryInput: res.message?.countryCode,
+                codeInput: res.message?.postalCode,
+                phoneInput: res.message?.phone,
+                emailInput: res.message?.email
+            };
+            inputActions('set', outputData);
         };
-    });
-}());
+
+
+    } catch (error) {
+        notify('Error connecting to server');
+    };
+};
 
 const checkAddress = () => {
     const addresses = document.querySelectorAll('input[type=radio][name=address]');

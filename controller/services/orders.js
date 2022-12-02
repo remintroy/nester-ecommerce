@@ -46,7 +46,9 @@ export const checkout = async (UID, body) => {
         // guard for paymet methord
         if (['COD', 'razorpay', 'paypal'].indexOf(paymentMethod) == -1) throw 'Invalid payment methord';
 
-        // --------- gets all products in cart ---------
+        // TODO : check for availabe cart products
+
+        // --------- gets all products in cart --------- // Coupen ----
         const products = body?.coupon ? await coupon.check(UID, body?.coupon) : await cart.getAllProductsWithTotal(UID);
 
         // check for emplty cart

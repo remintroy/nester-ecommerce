@@ -2,7 +2,7 @@
 <div class="humberger__menu__overlay"></div>
 <div class="humberger__menu__wrapper">
   <div class="humberger__menu__logo">
-    <a href="#"><img src="img/logo.png" alt=""></a>
+    <a href="#"><img src="/img/logo.png" alt=""></a>
   </div>
   <div class="humberger__menu__cart">
     <ul>
@@ -13,7 +13,7 @@
   </div>
   <div class="humberger__menu__widget">
     <div class="header__top__right__language">
-      <img src="img/language.png" alt="">
+      <img src="/img/language.png" alt="">
       <div>English</div>
       <span class="arrow_carrot-down"></span>
       <ul>
@@ -92,7 +92,7 @@
     <div class="row">
       <div class="col-lg-3">
         <div class="header__logo">
-          <a href="./index.html"><img src="img/logo.png" alt=""></a>
+          <a href="./index.html"><img src="/img/logo.png" alt=""></a>
         </div>
       </div>
       <div class="col-lg-6">
@@ -110,9 +110,9 @@
         <div class="header__cart">
           <ul>
             <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
-            <li><a href="/cart"><i class="fa fa-shopping-bag"></i> <span id="cart_total_count"><%=locals?.cartProducts?locals?.cartProducts[0].totalCount?locals.cartProducts[0].totalCount:0:0%> </span></a></li>
+            <li><a href="/cart"><i class="fa fa-shopping-bag"></i> <span id="cart_total_count"><%=locals?.cartProducts?locals?.cartProducts[0]?locals?.cartProducts[0].totalCount?locals.cartProducts[0].totalCount:0:0:0%> </span></a></li>
           </ul>
-          <div class="header__cart__price">Item: ₹ <span id="cart_total_sub_count"> <%=locals?.cartProducts?locals?.cartProducts[0]?.subTotal?locals?.cartProducts[0]?.subTotal:0:0%>.00</span></div>
+          <div class="header__cart__price">Item: ₹ <span id="cart_total_sub_count"> <%=locals?.cartProducts?locals?.cartProducts[0]?locals?.cartProducts[0].subTotal?locals?.cartProducts[0]?.subTotal:0:0:0%>.00</span></div>
         </div>
       </div>
     </div>

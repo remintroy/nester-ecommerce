@@ -105,7 +105,8 @@ export const category = db.model("category", new mongoose.Schema({
     disabled: {
         type: Boolean,
         default: false
-    }
+    },
+    offer:String,
 }));
 
 export const cart = db.model("cart", new mongoose.Schema({

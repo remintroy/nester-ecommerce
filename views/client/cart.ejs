@@ -1,78 +1,178 @@
- <!-- Shoping Cart Section Begin -->
- <section class="shoping-cart spad">
-   <div class="container">
-     <div class="row">
-       <div class="col-lg-12">
-         <div class="shoping__cart__table">
-           <table>
-             <thead>
-               <tr>
-                 <th class="shoping__product">Products</th>
-                 <th>Price</th>
-                 <th>Quantity</th>
-                 <th>Total</th>
-                 <th></th>
-               </tr>
-             </thead>
-             <tbody>
+<div class="page-content mb-5" id="cartlock" <% if(locals?.cartProducts?.length>0){ %> style="display:none;" <% } %>>
+  <div class="container">
+    <div class="card bg-none p-5 text-center border-none">
+      <h4 class="mt-5">Your cart is empty</h4>
+      <div class="mt-4 mb-5">
+        <button class="btn btn-primary rounded" onclick="window.location.href='/shop'">Continue shopping</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-               <% locals?.cartProducts.forEach(e=>{ %>
-               <tr>
-                 <td class="shoping__cart__item d-flex">
-                   <img src="/product_images/<%=e.PID%>1.jpg" alt="" style="width: 100px;">
-                   <h5><%=e.title%></h5>
-                 </td>
-                 <td class="shoping__cart__price">
-                   <% if(e.offer){ %> <s style="color: #ff8b8b;">₹<%=e.price%></s>&nbsp;<%= e.price-e.offer %>
-                   <% }else{ %> ₹ <%=e.price%> <% }; %>
-                 </td>
-                 <td class="shoping__cart__quantity">
-                   <div class="quantity">
-                     <div class="pro-qty">
-                       <input type="text" value="1">
-                     </div>
-                   </div>
-                 </td>
-                 <td class="shoping__cart__total"> ₹ <%=e.quantity*(e.price-e.offer)%> </td>
-                 <td class="shoping__cart__item__close"> <span class="icon_close"></span> </td>
-               </tr>
-               <% }); %>
+<!-- Shoping Cart Section Begin -->
+<section class="shoping-cart spad" id="cartHook" <% if(locals?.cartProducts?.length==0){ %> style="display:none;" <% } %>>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="shoping__cart__table">
+          <table>
+            <thead>
+              <tr>
+                <th class="shoping__product">Products</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
 
-             </tbody>
-           </table>
-         </div>
-       </div>
-     </div>
-     <div class="row">
-       <div class="col-lg-12">
-         <div class="shoping__cart__btns">
-           <a href="#" class="primary-btn cart-btn">CONTINUE SHOPPING</a>
-           <a href="#" class="primary-btn cart-btn cart-btn-right"><span class="icon_loading"></span>
-             Upadate Cart</a>
-         </div>
-       </div>
-       <div class="col-lg-6">
-         <div class="shoping__continue">
-           <div class="shoping__discount">
-             <h5>Discount Codes</h5>
-             <form action="#">
-               <input type="text" placeholder="Enter your coupon code">
-               <button type="submit" class="site-btn">APPLY COUPON</button>
-             </form>
-           </div>
-         </div>
-       </div>
-       <div class="col-lg-6">
-         <div class="shoping__checkout">
-           <h5>Cart Total</h5>
-           <ul>
-             <li>Subtotal <span>$454.98</span></li>
-             <li>Total <span>$454.98</span></li>
-           </ul>
-           <a href="#" class="primary-btn">PROCEED TO CHECKOUT</a>
-         </div>
-       </div>
-     </div>
-   </div>
- </section>
- <!-- Shoping Cart Section End -->
+              <% locals?.cartProducts.forEach(e=>{ %>
+              <tr>
+                <td class="shoping__cart__item d-flex" onclick="window.location.href='/product/<%=e.PID%>'">
+                  <img src="/product_images/<%=e.PID%>1.jpg" alt="" style="width: 100px;">
+                  <h5><%=e.title%></h5>
+                </td>
+                <td class="shoping__cart__price">
+                  <% if(e.offer){ %> <s style="color: #ff8b8b;">₹<%=e.price%></s>&nbsp;<%= e.price-e.offer %>
+                  <% }else{ %> ₹ <%=e.price%> <% }; %>
+                </td>
+                <td class="shoping__cart__quantity">
+                  <div class="quantity">
+                    <div class="pro-qty">
+                      <input type="number" data-PID="<%=e.PID%>" value="<%=e.quantity%>" min="1" max="100" step="1" data-decimals="0" required onchange="updateProductQuantity('<%=e.PID%>',this)" oninput="updateProductQuantity('<%=e.PID%>',this)">
+                    </div>
+                  </div>
+                </td>
+                <td class="shoping__cart__total total-col"> ₹ <%=e.quantity*(e.price-e.offer)%> </td>
+                <td class="shoping__cart__item__close"> <span class="icon_close" onclick="deleteFromCart('<%=e.PID%>',this.parentElement.parentElement)"></span> </td>
+              </tr>
+              <% }); %>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="shoping__cart__btns">
+          <a href="/shop" class="primary-btn cart-btn">CONTINUE SHOPPING</a>
+          <a href="/cart" class="primary-btn cart-btn cart-btn-right"><span class="icon_loading"></span>
+            Upadate Cart</a>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        
+      </div>
+      <div class="col-lg-6">
+        <div class="shoping__checkout">
+          <h5>Cart Total</h5>
+          <ul>
+            <li>Subtotal <span id="display_subtotal">₹ <%= locals?.cartProducts[0]?.subTotal?locals?.cartProducts[0]?.subTotal:0 %></span></li>
+          </ul>
+          <a href="/checkout" class="primary-btn">PROCEED TO CHECKOUT</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Shoping Cart Section End -->
+
+<script>
+  function applyCoupen(coupenCode) {
+     
+  };
+
+  function cartEmpty() {
+    document.getElementById('cartHook').style.display = 'none';
+    document.getElementById('cartlock').style.display = 'block';
+  };
+
+  function cartContains() {
+    document.getElementById('cartHook').style.display = 'block';
+    document.getElementById('cartlock').style.display = 'none';
+  };
+
+  async function deleteFromCart(PID, deletable) {
+
+    // conformation popup
+    const result = await Swal.fire({
+      title: 'Delete product ?',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+    });
+
+    if (result?.isConfirmed) updateProductQuantity(PID, 0, true, deletable);
+
+  };
+
+  window.addEventListener('DOMContentLoaded', e => {
+    incCartCount();
+    decCartCount();
+  })
+
+  const incCartCount = () => {
+    const incBtns = document.querySelectorAll('span.inc.qtybtn');
+    incBtns.forEach(ele => {
+      ele.addEventListener('click', (e => {
+        const input = e.target.parentElement.querySelector('input');
+        const PID = input.getAttribute('data-PID');
+        const value = Number(input.value) + 1;
+        updateProductQuantity(PID, input, false, null, value);
+      }));
+    });
+  };
+
+  const decCartCount = () => {
+    const decBtns = document.querySelectorAll('span.dec.qtybtn');
+    decBtns.forEach(ele => {
+      ele.addEventListener('click', (e => {
+        const input = e.target.parentElement.querySelector('input');
+        const PID = input.getAttribute('data-PID');
+        const value = Number(input.value) - 1;
+        updateProductQuantity(PID, input, false, null, value);
+      }));
+    });
+  };
+
+  const updateProductQuantity = (PID, quantityToSet, isDeleteFromCart, deletable, incValue) => {
+
+    const subTotal = document.getElementById("display_subtotal");
+
+    fetch('/cart_action', {
+        method: `${isDeleteFromCart==true ? 'DELETE' : 'PUT'}`,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          PID: PID,
+          quantity: incValue ? incValue : quantityToSet.value
+        })
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.status == 'good') {
+          if (isDeleteFromCart) {
+            deletable.remove();
+            const value = res.message?.subTotal ? res.message?.subTotal : 0;
+            subTotal.innerText = `₹ ${value}`;
+            document.getElementById("cart_total_count").innerText = res.message.totalCount;
+            document.getElementById("cart_total_sub_count").innerText = res.message.subTotal + ".00";
+            if (res.message.totalCount == 0) cartEmpty();
+          } else {
+            quantityToSet.parentElement.parentElement.parentElement.parentElement
+              .querySelector('td.total-col').innerText = `₹ ${res.message.product.total}`;
+            subTotal.innerText = `₹ ${res.message.subTotal}`;
+            document.getElementById("cart_total_count").innerText = res.message.totalCount;
+            document.getElementById("cart_total_sub_count").innerText = res.message.subTotal + '.00';
+            if (res.message.totalCount != 0) cartContains();
+          };
+        } else {
+          notify(res.message);
+        };
+      })
+      .catch(error => console.log(error));
+  };
+</script>

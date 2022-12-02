@@ -466,6 +466,7 @@ export const mustLogoutAsUserAPI = (req, res, next) => {
     };
 };
 
+
 export const adminLogin = ({ email, password }) => {
     return new Promise(async (resolve, reject) => {
 
@@ -502,45 +503,6 @@ export const adminLogout = (req, res) => {
 };
 
 
-export const userSignupWithEmail = ({ email, name, password, phone }) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-
-            let output = await validatior(
-                {
-                    email: email,
-                    name: name,
-                    password: password,
-                    phone: phone,
-                },
-                {
-                    emailRequired: true,
-                    nameRequired: true,
-                    passwordRequired: true,
-                    phoneRequired: true,
-                    UIDRequired: true,
-                },
-                'signup'
-            );
-
-            let userData = await db.users({
-                email: output.email,
-                password: output.password,
-                name: output.name,
-                phone: output.phone,
-                UID: output.UID,
-                loginProvider: 'email',
-            });
-
-            userData.save();
-
-            resolve(userData); return 0;
-
-        } catch (error) {
-            reject(error); return 0;
-        };
-    });
-};
 export const userDataUpdate = ({ UID, email, password, name, phone, state }) => {
     return new Promise(async (resolve, reject) => {
         try {

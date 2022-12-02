@@ -227,7 +227,7 @@ export const signInInitAPI = async (req, res) => {
     res.send({ status: "good", message: "Sign in initiated", action: result.action });
   } catch (error) {
     res.send({ status: "error", message: error });
-  }
+  };
 };
 export const signInWithPasswordAPI = async (req, res) => {
   try {
@@ -433,7 +433,8 @@ export const product = async (req, res) => {
     const productData = await db.products.findOne({ PID: PID });
     res.locals.currentPage = "product";
     res.locals.product = productData;
-    res.render("users/product");
+    res.locals.layout = 'client_layout';
+    res.render("client/product");
     try {
       await analyticsService.addUserPageRequests('user_product_GET');
       await analyticsService.addProductViews(PID);
@@ -494,7 +495,8 @@ export const checkout = async (req, res) => {
     res.locals.country = await util.getAllCountries();
     res.locals.address = await userService?.getAllAddress(UID);
     res.locals.currentPage = "checkout";
-    res.render("users/checkout");
+    res.locals.layout = 'client_layout';
+    res.render("client/checkout");
     try {
       await analyticsService.addUserPageRequests('user_checkout_GET');
     } catch (error) {

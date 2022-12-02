@@ -2,6 +2,7 @@ import * as auth from './auth.js';
 import * as products from './products.js';
 import * as db from './schema.js';
 import * as analytics from './analytics.js';
+import * as util from './util.js';
 
 const MAX_PRODUCT_QUANTITY = 100;
 
@@ -408,3 +409,41 @@ export const addProduct = (UID, PID, quantity) => {
         };
     });
 };
+
+// const add = async (UID, PID, quantity) => {
+//     try {
+
+//         // start by validating user
+//         const userOutput = await auth.validatior({ UID: UID }, { UIDRequired: true });
+//         // check if product id is valid
+//         const productOutput = await products.validatior({ PID: PID }, { PID: true }, 'updateproduct');
+
+//         let checkForCartDB;
+
+//         try {
+//             // finding data form db with UID;
+//             checkForCartDB = await db.cart.find({ UID: userOutput.UID });
+
+//         } catch (error) {
+//             // error handling
+//             throw util.errorMessage('Error fetching data for cart', 500);
+//         };
+
+
+//         throw util.errorMessage('Some error'); // TODO
+
+
+//     } catch (error) {
+//         throw error?.error ? error : {...util.errorMessage(error, 400),action:'error'};
+//     };
+// };
+
+const test = async () => {
+    try {
+        const data = await add('6pxw23gPVG0AlKh3IE6or782V','Xa3aTKovaH_bFJ7OxS09',2);
+        console.log('TEST_RESULT => ', data);
+    } catch (error) {
+        console.log('TEST_ERR => ', error);
+    }
+};
+// test()

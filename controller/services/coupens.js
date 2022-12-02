@@ -97,6 +97,8 @@ export const check = async (UID, couponCode) => {
             if (couponData.maxSpend && Number(dataFromCart[0].subTotal) > Number(couponData.maxSpend)) throw `You need to spend below ${couponData.maxSpend} Rs to apply this coupon`;
             if (couponData.used && Number(couponData.maxUsage) <= Number(couponData.used)) throw `Coupon exeeded maximum usage limit`;
             if (couponData.category) {
+                // if coupen contanis category, validate category
+
                 const index = dataFromCart.map(product => product.category == couponData.category).indexOf(true);
 
                 if (index != -1) {
@@ -132,6 +134,8 @@ export const check = async (UID, couponCode) => {
                     throw `Your cart dosen't contain products form ${couponData.category} category to apply coupon`;
                 };
             } else {
+                // there is no categry limit to coupen
+
                 for (const product of dataFromCart) {
                     if (couponData.valueType == 'R' && Math.floor(Number(product.total) / Number(product.quantity)) > Number(couponData.value)) {
                         // decrese total of single prduct;

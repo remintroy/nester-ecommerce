@@ -1,0 +1,257 @@
+<!-- Checkout Section Begin -->
+<section class="spad">
+  <div class="container mt-0">
+    <div class="checkout__form">
+      <h4 >Billing Details</h4>
+
+      <p>Choose form Exisiting address <small> ( click to propagate address to fields below )</small></p>
+      <div class="row mb-5 address-selector">
+        <% locals?.address?.forEach((e,i)=>{ %>
+        <div class="col-4" onclick="setAddress('<%=e._id%>')">
+          <div class="card p-3 mt-3">
+            <h5> <%=e.name%></h5><br>
+            <p>
+              <span style="text-transform: capitalize;"><%=e.town%></span> <br>
+              <span style="text-transform: capitalize;"><%=e.state%>, <%=e.country%> ( <%=e.postalCode%> )</span><br>
+              <span style="text-transform: lowercase;"> <%=e.email%> <%=e.phone%> </span>
+            </p>
+          </div>
+        </div>
+        <% }); %>
+      </div>
+
+      <style>
+        .address-selector .card {
+          position: relative; 
+          border-radius: 5px;
+          transition: all .2s;
+        }
+
+        .address-selector .card:hover {
+          cursor: pointer;
+          box-shadow: 0 0 25px 2px rgba(0, 0, 0, 0.083);
+        }
+
+        .address-selector .card::after {
+          content: '';
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+          background-color: transparent;
+          filter: opacity(0);
+          border-radius: 5px;
+          transition: all .2s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+        }
+
+        .address-selector .card:hover::after {
+          filter: opacity(100%);
+          background-color: rgba(0, 0, 0, 0.069);
+        }
+      </style>
+
+      <form>
+        <p>Edit and confirm address</p>
+        <div class="row">
+          <div class="col-lg-8 col-md-6">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="checkout__input">
+                  <p class="labelInputForInput">First Name * <span></span></p>
+                  <input id="firstNameInput" type="text" value="<%= locals?.address[0]?.name?.split(' ')[0] %>" required>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="checkout__input">
+                  <p class="labelInputForInput">Last Name * <span></span></p>
+                  <input id="lastNameInput" type="text" value="<%= locals?.address[0]?.name?.split(' ')?.slice(1)?.join(" ") %>" required>
+                </div>
+              </div>
+            </div>
+            <div class="checkout__input">
+              <p class="labelInputForInput">State * <span></span></p>
+              <input id="stateInput" type="text" value="<%= locals?.address[0]?.state %>" required>
+            </div>
+            <div class="checkout__input">
+              <p class="labelInputForInput">Street address * <span></span></p>
+              <input id="streetNumber" type="text" value="<%= locals?.address[0]?.streetNumber %>" placeholder="Street number / name" required>
+              <input id="houseNumber" type="text" value="<%= locals?.address[0]?.houseNumber%>" placeholder="Appartments, suite, House number etc ..." required>
+            </div>
+            <div class="checkout__input">
+              <p class="labelInputForInput">Town / City * <span></span> </p>
+              <input id="townInput" type="text" value="<%= locals?.address[0]?.town%>" required>
+            </div>
+            <div class="checkout__input">
+              <p class="labelInputForInput">Country * <span></span></p>
+              <select class="checkout__input form-control w-100" name="country" id="countryInput">
+                <option value="<%=locals?.address[0]?.countryCode%>"><%= locals?.address[0]?.country?locals?.address[0]?.country:'Select you country'%></option>
+                <% locals?.country?.forEach(e=>{ %>
+                <option value="<%= e.code %>">
+                  <%- e.name %>
+                </option>
+                <% }) %>
+              </select>
+              <style>
+                .nice-select .list {
+                  max-height: 200px;
+                  overflow-y: scroll;
+                }
+              </style>
+            </div>
+            <div class="checkout__input">
+              <p class="labelInputForInput">Postcode / ZIP * <span></span></p>
+              <input id="codeInput" type="text" value="<%= locals?.address[0]?.postalCode%>" required>
+            </div>
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="checkout__input">
+                  <p class="labelInputForInput">Phone * <span></span></p>
+                  <input id="phoneInput" type="tel" value="<%= locals?.address[0]?.phone%>" required>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="checkout__input">
+                  <p class="labelInputForInput">Email address * <span></span></p>
+                  <input id="emailInput" type="email" value="<%= locals?.address[0]?.email%>" required>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="shoping__continue">
+                  <div class="shoping__discount">
+                    <h5>Discount Codes</h5>
+                    <div class="d-flex">
+                      <input type="text" id="checkout-discount-input" class="form-control h-100" placeholder="Enter your coupon code">
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <div class="checkout__order">
+              <h4>Your Order</h4>
+              <div class="checkout__order__products">Products <span>Total</span></div>
+              <ul>
+                <% locals?.cartProducts.forEach(product=>{ %>
+                <li>
+                  <a href="/product/<%=product?.PID%>" class="text-primary">
+                    <%= product?.title?.slice(0,20)+"..." %>
+                  </a>
+                  <span>₹ <%= product.total %></span>
+                </li>
+                <% }); %>
+              </ul>
+              <div class="checkout__order__total">Total <span>₹ <%= locals?.cartProducts[0]?.subTotal?locals?.cartProducts[0]?.subTotal:0  %></span></div>
+              <div class="checkout__input__checkbox">
+                <div class="mt-3">
+                  <div class="btn btn-dark w-100 text-white mb-2" onclick="finalSubmit('COD')" style="cursor:pointer; font-weight: bold; border-radius: 5px;">
+                    COD <small>&nbsp; cash on delevery </small>
+                  </div>
+                  <div class="btn btn-dark w-100 text-white" onclick="finalSubmit('razorpay')" style="cursor:pointer; font-weight: bold; border-radius: 5px;">
+                    Razorpay
+                  </div>
+                  <div class="text-center my-2">OR</div>
+                  <div id="paypal-button-container" style="background-color: white !important; padding: 10px; border-radius: 5px;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+<!-- Checkout Section End -->
+
+
+
+<script src="https://www.paypal.com/sdk/js?client-id=ATcPF7a4UqXClozwCABrTfuWMFHTCcLOn4tCYU6oKkPSEGCM2Kd7oiXKaX7VCeNdQEQI73eJH8yjxFBQ"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="/js/user/checkout.js"></script>
+
+
+<script>
+  paypal.Buttons({
+    // Sets up the transaction when a payment button is clicked
+    createOrder: (data, actions) => {
+      try {
+        window.typeOfPayment = 'paypal';
+
+        const submit = async () => {
+          const data = await inputActions('validate');
+          const resp = await fetch('/checkout', {
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(data)
+          });
+          const respData = await resp.json();
+
+          if (respData.status == 'error') {
+            Swal.fire({
+              title: 'Error Creating order',
+              html: respData.message,
+              icon: 'error'
+            });
+
+          } else {
+            window.orderID = respData.message.orderID;
+            return respData?.message?.id;
+          };
+        };
+
+        return submit();
+
+      } catch (error) {
+        Swal.fire({
+          title: 'connection error'
+        });
+      };
+    },
+    // Finalize the transaction after payer approval
+    onApprove: (data, actions) => {
+      console.log('Approved => ', actions);
+      return fetch(`/checkout/${data.orderID}/capture/${window.orderID}`, {
+          method: 'POST',
+          body: JSON.stringify({
+            orderID: window.orderID
+          })
+        })
+        .then(res => res.json())
+        .then(orderData => {
+          console.log(orderData);
+          if (orderData.status == 'error') {
+            Swal.fire({
+              title: 'Error Creating order',
+              html: orderData.message,
+              icon: 'error'
+            });
+
+          } else {
+            Swal.fire({
+                title: 'Payment success',
+                html: 'Ordered successfully',
+                icon: 'success'
+              })
+              .then(_ => {
+                if (orderData.action) {
+                  window.location.href = orderData.action;
+                } else {
+                  window.location.href = '/dashboard/orders';
+                };
+              });
+          }
+        });
+    }
+  }).render('#paypal-button-container');
+</script>
