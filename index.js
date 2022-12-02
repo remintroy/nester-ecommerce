@@ -16,7 +16,7 @@ const app = Express();
 const __dirname = process.cwd();
 export const appConfig = {
   name: "Reminz",
-  port: process.env.PORT | 8080,
+  port: process.env.PORT | 3000,
 };
 const mongoDbSesson = new ConnectMongoDBSession(session);
 
