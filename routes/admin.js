@@ -4,11 +4,11 @@ import * as auth from '../controller/services/auth.js';
 import * as apiRouter from './admin_api.js';
 
 const adminApp = express.Router();
-const layout = `admin-template/layout`;
-const pagesBase = `admin-template`;
+const layout = `admin_layout`;
+const pagesBase = `admin`;
 
 adminApp.use('/test', (req, res) => {
-    res.render(pagesBase + '/test', { layout: 'admin-template/testLayout' })
+    res.render(pagesBase + '/test', { layout: 'admin/testLayout' })
 })
 
 adminApp.use('/api', auth.mustLoginAsAdmin, apiRouter.default);

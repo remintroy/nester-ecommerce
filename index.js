@@ -97,7 +97,11 @@ adminApp.use(
     },
   })
 );
-adminApp.use(fileUpload());
+// new --- config for file upload
+adminApp.use(fileUpload({
+  useTempFiles : true,
+  tempFileDir : '/tmp/'
+}));
 adminApp.use(Express.json());
 adminApp.use(ExpressLayouts);
 adminApp.use(
