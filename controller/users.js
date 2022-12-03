@@ -477,7 +477,8 @@ export const dashboard = async (req, res) => {
   try {
     res.locals.orders = await orders.getByUID(req?.user?.UID);
     res.locals.currentPage = "dashboard";
-    res.render("users/dashboard");
+    res.locals.layout = 'client_layout';
+    res.render("client/dashboard");
     try {
       await analyticsService.addUserPageRequests('user_dashboard_GET');
     } catch (error) {

@@ -1,6 +1,6 @@
 <!-- Humberger Begin -->
-<div class="humberger__menu__overlay"></div>
-<div class="humberger__menu__wrapper">
+<div class="humberger__menu__overlay" style="z-index: 100;"></div>
+<div class="humberger__menu__wrapper" style="z-index: 101;">
   <div class="humberger__menu__logo">
     <a href="#"><img src="/img/logo.png" alt=""></a>
   </div>
@@ -50,107 +50,67 @@
 </div>
 <!-- Humberger End -->
 
-<!-- Header Section Begin -->
-<header class="header">
-  <!-- <div class="header__top">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6 col-md-6">
-                    <div class="header__top__left">
-                        <ul>
-                            <li><i class="fa fa-envelope"></i> hello@colorlib.com</li>
-                            <li>Free Shipping for all Order of $99</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <div class="header__top__right">
-                        <div class="header__top__right__social">
-                            <a href="#"><i class="fa fa-facebook"></i></a>
-                            <a href="#"><i class="fa fa-twitter"></i></a>
-                            <a href="#"><i class="fa fa-linkedin"></i></a>
-                            <a href="#"><i class="fa fa-pinterest-p"></i></a>
-                        </div>
-                        <div class="header__top__right__language">
-                            <img src="img/language.png" alt="">
-                            <div>English</div>
-                            <span class="arrow_carrot-down"></span>
-                            <ul>
-                                <li><a href="#">Spanis</a></li>
-                                <li><a href="#">English</a></li>
-                            </ul>
-                        </div>
-                        <div class="header__top__right__auth">
-                            <a href="#"><i class="fa fa-user"></i> Login</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-3">
-        <div class="header__logo">
-          <a href="./index.html"><img src="/img/logo.png" alt=""></a>
-        </div>
-      </div>
-      <div class="col-lg-6">
-        <nav class="header__menu">
-          <ul>
-            <li class="<%=locals.currentPage=='home'?'active':'';%>"><a href="/">Home</a></li>
-            <li class="<%=locals.currentPage=='shop'?'active':'';%>"><a href="/shop">Shop</a></li>
-            <li class="<%=locals.currentPage=='cart'?'active':'';%>"><a href="/cart">cart</a></li>
-            <li class="<%=locals.currentPage=='wishlist'?'active':'';%>"><a href="/wishlist">Wishlist</a></li>
-            <li class="<%=locals.currentPage=='dashboard'?'active':'';%>"><a href="/dashboard">Dashboard</a></li>
-          </ul>
-        </nav>
-      </div>
-      <div class="col-lg-3">
-        <div class="header__cart">
-          <ul>
-            <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
-            <li><a href="/cart"><i class="fa fa-shopping-bag"></i> <span id="cart_total_count"><%=locals?.cartProducts?locals?.cartProducts[0]?locals?.cartProducts[0].totalCount?locals.cartProducts[0].totalCount:0:0:0%> </span></a></li>
-          </ul>
-          <div class="header__cart__price">Item: ₹ <span id="cart_total_sub_count"> <%=locals?.cartProducts?locals?.cartProducts[0]?locals?.cartProducts[0].subTotal?locals?.cartProducts[0]?.subTotal:0:0:0%>.00</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="humberger__open">
-      <i class="fa fa-bars"></i>
-    </div>
-  </div>
-</header>
-<!-- Header Section End -->
+<nav class="custom-navbar bg-light">
 
-<!-- Hero Section Begin -->
-<section class="hero hero-normal">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="hero__search">
-          <div class="hero__search__form w-75">
-            <form action="#">
-              <div class="hero__search__categories">
-                All Categories
-                <span class="arrow_carrot-down"></span>
-              </div>
-              <input type="text" placeholder="What do yo u need?">
-              <button type="submit" class="site-btn">SEARCH</button>
-            </form>
-          </div>
-          <div class="hero__search__phone">
-            <div class="hero__search__phone__icon">
-              <i class="fa fa-phone"></i>
-            </div>
-            <div class="hero__search__phone__text">
-              <h5>+65 11.188.888</h5>
-              <span>support 24/7 time</span>
-            </div>
-          </div>
-        </div>
-      </div>
+  <div class="left-cont">
+    <div class="logo">
+      <a href="/"><img src="/img/logo.png" alt=""></a>
     </div>
   </div>
-</section>
-<!-- Hero Section End -->
+
+  <div class="middle-cont">
+    <input type="text" placeholder="What do yo u need?" id="search_input">
+    <button type="submit" class="site-btn">SEARCH</button>
+    <ul class="search-results container bg-white" id="search_result_container">
+      <li>First resutl</li>
+    </ul>
+  </div>
+
+  <div class="right-cont">
+    <a href="/wishlist"><i class="fa fa-heart"></i> <span>1</span></a>
+    <a href="/cart" class="text-primary"><i class="fa fa-shopping-bag"></i> <span id="cart_total_count"><%=locals?.cartProducts?locals?.cartProducts[0]?locals?.cartProducts[0].totalCount?locals.cartProducts[0].totalCount:0:0:0%> </span></a>
+    <a href="/dashboard" class="text-primary user-icn"><i class="fa-solid fa-user"></i><span>Manage</span></a>
+  </div>
+
+</nav>
+
+<div class="search-bg">
+</div>
+
+<script>
+  document.getElementById('search_input').addEventListener('keyup', (e) => {
+    search(e.target.value);
+  })
+
+  async function search(query) {
+    console.log(query);
+    try {
+
+      const data = await fetch(`/api/search?q=${query?.trim()}`, {
+        method: 'GET'
+      });
+
+      const res = await data.json();
+
+      if (res.status == 'error') throw res.message;
+
+      const result_cont = document.getElementById('search_result_container');
+      const searchResult = res.message;
+
+      result_cont.innerHTML = '';
+
+      searchResult.forEach(e => {
+        result_cont.innerHTML += `<li>   <img src="/product_images/${e.PID}1.jpg" alt=""> <a class="text-primary" href="/product/${e.PID}">${e.title}</a></li>`
+      });
+
+      if (!searchResult?.length || searchResult?.length == 0) {
+        result_cont.innerHTML = 'No result found';
+      };
+
+    } catch (error) {
+      notify(error);
+    };
+  }
+</script>
+
+<br><br><br><br><br><br>

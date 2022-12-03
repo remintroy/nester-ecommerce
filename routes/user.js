@@ -2,6 +2,7 @@ import express from 'express';
 import * as users from '../controller/users.js';
 import * as auth from '../controller/services/auth.js';
 import * as admin from '../controller/admin.js';
+import * as api_service from './user_api.js';
 
 const app = express.Router();
 
@@ -9,6 +10,7 @@ app.get('/test', (req, res) => {
     res.send({ status: "good", message: "Test message form server" });
 })
 
+app.use('/api', api_service.default);
 
 // apis - api for user sign in 
 app.post('/user_signin', auth.mustLogoutAsUserAPI, users.signInInitAPI);
@@ -19,7 +21,7 @@ app.post('/forget_password/:id', auth.mustLogoutAsUserAPI, users.signInRecoveryP
 // api for recover wit email 
 app.post('/forget_password/email/:id', auth.mustLogoutAsUserAPI, users.verifyEmailOTPAPI);
 // api for reset password 
-app.post('/reset_password/:id',auth.mustLogoutAsUser, users.resetPasswordAPI);
+app.post('/reset_password/:id', auth.mustLogoutAsUser, users.resetPasswordAPI);
 // api for signin with google
 app.post('/user_signin_google', auth.mustLogoutAsUserAPI, users.loginWithGoogleAPI);
 // api for signin with phone

@@ -43,10 +43,34 @@ export const addAmount = async (UID, amount, message) => {
     };
 };
 
+export const getWalletInfo = async (UID) => {
+    try {
+
+        const userOutput = await auth.validatior({ UID: UID }, { UIDRequired: true });
+
+        let walletData;
+
+        try {
+
+            walletData = await db.wallets.findOne({ UID: userOutput.UID });
+
+        } catch (error) {
+            throw 'Error fetching information';
+        };
+
+        if (!walletData) throw 'Nothig to show';
+
+        return walletData;
+
+    } catch (error) {
+        throw error;
+    };
+};
+
 const test = async () => {
     try {
 
-        const data = await addAmount('6pxw23gPVG0AlKh3IE6or782V', 100);
+        const data = await getWalletInfo('6pxw23gPVG0AlKh3IE6or782V', 100);
 
         console.log('TEST_RESULT => ', data);
     } catch (error) {
