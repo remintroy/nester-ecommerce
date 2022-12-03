@@ -91,12 +91,6 @@ input[type=number] {
   justify-content: center;
   align-items: flex-start;
 }
-.custom-navbar .middle-cont.is-focused .search-results {
-  display: flex;
-}
-.custom-navbar .middle-cont.is-focused .search-bg {
-  display: flex;
-}
 .custom-navbar .right-cont {
   display: flex;
   align-items: center;

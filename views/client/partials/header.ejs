@@ -64,7 +64,7 @@
     <ul class="search-results container bg-white" id="search_result_container">
       Type to search
     </ul>
-    <div class="search-bg">
+    <div class="search-bg" id="search_result_container_bg">
     </div>
   </div>
 
@@ -80,6 +80,16 @@
 <script>
   document.getElementById('search_input').addEventListener('keyup', (e) => {
     search(e.target.value);
+  })
+
+  document.getElementById('search_input').addEventListener('focus', (e) => {
+    document.getElementById('search_result_container').style.display = 'flex';
+    document.getElementById('search_result_container_bg').style.display = 'flex';
+  })
+
+  document.getElementById('search_result_container_bg').addEventListener('click', (e) => {
+    document.getElementById('search_result_container').style.display = 'none';
+    document.getElementById('search_result_container_bg').style.display = 'none';
   })
 
   async function search(query) {
