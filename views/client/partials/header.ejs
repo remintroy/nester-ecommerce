@@ -62,8 +62,10 @@
     <input type="text" placeholder="What do yo u need?" id="search_input">
     <button type="submit" class="site-btn">SEARCH</button>
     <ul class="search-results container bg-white" id="search_result_container">
-      <li>First resutl</li>
+      Type to search
     </ul>
+    <div class="search-bg">
+    </div>
   </div>
 
   <div class="right-cont">
@@ -74,8 +76,6 @@
 
 </nav>
 
-<div class="search-bg">
-</div>
 
 <script>
   document.getElementById('search_input').addEventListener('keyup', (e) => {
@@ -83,8 +83,10 @@
   })
 
   async function search(query) {
-    console.log(query);
     try {
+      const result_cont = document.getElementById('search_result_container');
+
+      result_cont.innerHTML = 'Loading...';
 
       const data = await fetch(`/api/search?q=${query?.trim()}`, {
         method: 'GET'
@@ -94,7 +96,6 @@
 
       if (res.status == 'error') throw res.message;
 
-      const result_cont = document.getElementById('search_result_container');
       const searchResult = res.message;
 
       result_cont.innerHTML = '';
