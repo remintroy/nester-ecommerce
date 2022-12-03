@@ -9,13 +9,16 @@ import Logger from "morgan";
 import * as auth from "./controller/services/auth.js";
 import adminRoute from "./routes/admin.js";
 import usersRoute from "./routes/user.js";
+import DeviceDetetor from 'device-detector-js';
+
+const deviceDetetor = new DeviceDetetor();
 
 dotenv.config();
 
 const app = Express();
 const __dirname = process.cwd();
 export const appConfig = {
-  name: "Reminz",
+  name: "Nester",
   port: process.env.PORT | 8080,
 };
 const mongoDbSesson = new ConnectMongoDBSession(session);
@@ -54,16 +57,25 @@ app.use(function (req, res, next) {
   next();
 });
 
+app.use((req, res, next) => {
+  const userAgent = deviceDetetor.parse(req.headers['user-agent']);
+
+  if(userAgent.device.type == 'smartphone'){
+    res.send(`This site is currently not available on smartphone's`);
+  }else next();
+});
+
 // for admin
-app.use("/admin_panel", adminRoute);
 app.use("/", usersRoute);
 
 app.use((req, res) => {
+  res.locals.layout = 'blank_layout';
+  res.locals.appName = appConfig.name;
   res.status(404);
-  res.render("users/404", { message: "404 !" });
+  res.render("client/404", { message: "404 !" });
 });
 
-app.listen(appConfig.port,'localhost', () => {
+app.listen(appConfig.port, 'localhost', () => {
   console.log(`[-] User Server started on port : ${appConfig.port}`);
 });
 
@@ -74,7 +86,7 @@ import * as adminAPIRouter from "./routes/admin_api.js";
 
 // -- admin -- app
 export const AdminAppConfig = {
-  name: "Reminz",
+  name: "Nester",
   port: process.env.PORT | 8081,
 };
 // const __dirname = process.cwd();
@@ -99,8 +111,8 @@ adminApp.use(
 );
 // new --- config for file upload
 adminApp.use(fileUpload({
-  useTempFiles : true,
-  tempFileDir : '/tmp/'
+  useTempFiles: true,
+  tempFileDir: '/tmp/'
 }));
 adminApp.use(Express.json());
 adminApp.use(ExpressLayouts);

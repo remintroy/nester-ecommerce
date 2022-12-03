@@ -50,13 +50,21 @@
 </div>
 <!-- Humberger End -->
 
-<nav class="custom-navbar bg-light">
+<nav class="custom-navbar bg-white">
 
   <div class="left-cont">
     <div class="logo">
       <a href="/"><img src="/img/logo.png" alt=""></a>
     </div>
   </div>
+
+  <ul class="middle-cont start">
+    <li class="<%=locals.currentPage=='home'?'active':'';%>"><a href="/">Home</a></li>
+    <li class="<%=locals.currentPage=='shop'?'active':'';%>"><a href="/shop">Shop</a></li>
+    <li class="<%=locals.currentPage=='cart'?'active':'';%>"><a href="/cart">cart</a></li>
+    <li class="<%=locals.currentPage=='wishlist'?'active':'';%>"><a href="/wishlist">Wishlist</a></li>
+    <li class="<%=locals.currentPage=='dashboard'?'active':'';%>"><a href="/dashboard">Dashboard</a></li>
+  </ul>
 
   <div class="middle-cont">
     <input type="text" placeholder="What do yo u need?" id="search_input">
@@ -68,10 +76,21 @@
     </div>
   </div>
 
+
   <div class="right-cont">
+    <% if(locals.user){ %>
     <a href="/wishlist"><i class="fa fa-heart"></i> <span>1</span></a>
     <a href="/cart" class="text-primary"><i class="fa fa-shopping-bag"></i> <span id="cart_total_count"><%=locals?.cartProducts?locals?.cartProducts[0]?locals?.cartProducts[0].totalCount?locals.cartProducts[0].totalCount:0:0:0%> </span></a>
-    <a href="/dashboard" class="text-primary user-icn"><i class="fa-solid fa-user"></i><span>Manage</span></a>
+    <a href="/dashboard" class="circle">
+      <p class="circle-inner"><%= locals.user.name[0] %> </p>
+    </a>
+    <% }else{ %>
+
+    <div class="btn btn-dark" onclick="window.location.href='/user_signin'">
+      Login
+    </div>
+
+    <% } %>
   </div>
 
 </nav>
@@ -124,4 +143,6 @@
   }
 </script>
 
-<br><br><br><br><br><br>
+<div class="nav-remover" style="margin-top:60px;">
+
+</div>

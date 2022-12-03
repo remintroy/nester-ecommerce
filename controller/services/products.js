@@ -462,3 +462,59 @@ export const deleteProduct = (PID) => {
         };
     });
 };
+
+// retreve top selling products
+export const topSellingProducts = async (productCount) => {
+    try {
+
+        productCount = productCount ? productCount : 5;
+        if (isNaN(Number(productCount))) throw 'Enter a valid product count number';
+
+        const data = db.orders.aggregate([
+            { $unwind: '$orders' },
+            { $unwind: '$orders.products' },
+            {
+                $group: {
+                    _id: '$orders.products.PID',
+                    orderCount: {
+                        $sum: 1
+                    }
+                }
+            },
+            { $sort: { 'orderCount': -1 } },
+            {
+                $lookup: {
+                    from: 'products',
+                    foreignField: "PID",
+                    localField: '_id',
+                    as: 'product'
+                }
+            },
+            {
+                $match: {
+                    'product.PID': {
+                        $exists: true
+                    }
+                }
+            },
+            {
+                $limit: productCount
+            }
+        ]);
+
+        return data;
+
+    } catch (error) {
+        throw 'Error while fetching data from db';
+    };
+};
+
+const test = async () => {
+    try {
+        const data = await topSellingProducts(10);
+        console.log('TEST_RESULT => ', data);
+    } catch (error) {
+        console.log('TEST_ERR => ', error);
+    }
+};
+// test();

@@ -1,3 +1,7 @@
+<section class="container">
+  <h2 class="py-4"><b>Explore and find yor favorate products</b></h2>
+</section>
+
 <!-- Hero Section Begin -->
 <section class="hero">
   <div class="container">
@@ -22,31 +26,13 @@
   <div class="container">
     <div class="row">
       <div class="categories__slider owl-carousel">
-        <div class="col-lg-3">
-          <div class="categories__item set-bg" data-setbg="img/categories/cat-1.jpg">
-            <h5><a href="#">Fresh Fruit</a></h5>
+        <% locals.topSellingProducts.forEach(product=>{ %>
+          <div class="col-lg-3">
+            <div class="categories__item set-bg" style="padding: 50px;" data-setbg="/product_images/<%= product.product[0].PID %>1.jpg">
+              <h5><a href="/c/<%= product.product[0].category %>"><%= product.product[0].category %> </a></h5>
+            </div>
           </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="categories__item set-bg" data-setbg="img/categories/cat-2.jpg">
-            <h5><a href="#">Dried Fruit</a></h5>
-          </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="categories__item set-bg" data-setbg="img/categories/cat-3.jpg">
-            <h5><a href="#">Vegetables</a></h5>
-          </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="categories__item set-bg" data-setbg="img/categories/cat-4.jpg">
-            <h5><a href="#">drink fruits</a></h5>
-          </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="categories__item set-bg" data-setbg="img/categories/cat-5.jpg">
-            <h5><a href="#">drink fruits</a></h5>
-          </div>
-        </div>
+        <% }); %>
       </div>
     </div>
   </div>

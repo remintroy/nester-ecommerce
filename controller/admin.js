@@ -511,6 +511,19 @@ export const createReportPDF = async (req, res) => {
     await pdfService.createPdf();
     res.sendFile(path.join(process.cwd(), '/reports/report.pdf'));
 };
+export const banner = async (req, res) => {
+    try {
+
+        res.locals.currentPage = 'banner';
+        res.locals.currentPageA = 'banner';
+        res.render(pagesBase + '/banner');
+
+    } catch (error) {
+        res.locals.message = `Can't get banner's from db `;
+        res.locals.code = 500;
+        res.render(pagesBase + '/404');
+    };
+};
 
 export const test = async (req, res) => {
     res.render('admin/test');

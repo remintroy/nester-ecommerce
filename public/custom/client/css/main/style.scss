@@ -21,9 +21,28 @@ input[type="number"] {
   align-items: center;
   transition: all .3s;
   display: grid;
-  grid-template-columns: 100px auto 250px;
+  grid-template-columns: 100px auto auto 150px;
   gap: 20px;
   padding: 0 50px;
+  border: 1px solid rgb(224, 224, 224);
+
+  .circle {
+    display: inline-block;
+    background-color: #8d0052;
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+  }
+
+  .circle-inner {
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    font-size: 20px;
+  }
 
   .left-cont {
 
@@ -39,11 +58,26 @@ input[type="number"] {
 
   }
 
+  ul.middle-cont {
+    gap: 20px;
+
+    li a {
+      color: black !important;
+      font-weight: bold;
+    }
+  }
+
+  .middle-cont.start{
+    justify-content: start;
+  }
+
   .middle-cont {
     display: flex;
     justify-content: end;
     max-height: 40px;
     position: relative;
+
+    list-style: none;
 
     input {
       width: 100%;
@@ -53,12 +87,13 @@ input[type="number"] {
       outline: none;
     }
 
-    button{
+    button {
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .search-results{
+
+    .search-results {
       position: absolute;
       top: 135%;
       list-style: none;
@@ -72,7 +107,7 @@ input[type="number"] {
       gap: 10px;
       z-index: 81;
 
-      li{
+      li {
         border-radius: 5px;
         padding: 10px;
         border: 1px solid rgb(221, 221, 221);
@@ -80,15 +115,16 @@ input[type="number"] {
         display: flex;
         gap: 15px;
 
-        img{
+        img {
           width: 50px;
           height: 50px;
           object-fit: scale-down;
         }
-        
+
       }
     }
-    .search-bg{
+
+    .search-bg {
       position: fixed;
       right: 0;
       top: 60px;
@@ -99,18 +135,20 @@ input[type="number"] {
       display: none;
       justify-content: center;
       align-items: flex-start;
-    
-    };
+
+    }
+
+    ;
   }
 
 
-  .right-cont{
+  .right-cont {
     display: flex;
     align-items: center;
     gap: 15px;
     justify-content: end;
 
-    .user-icn{
+    .user-icn {
       padding: 10px;
       border-radius: 5px;
       border: 1px solid rgb(220, 220, 220);
@@ -119,11 +157,11 @@ input[type="number"] {
       gap: 10px;
     }
 
-    a{
+    a {
       color: black !important;
     }
 
-    i{
+    i {
       cursor: pointer;
     }
   }

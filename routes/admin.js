@@ -79,6 +79,8 @@ adminApp.get('/orders/:id', admin.ordresFromID);
 adminApp.get('/coupon', admin.coupen)
 // add coupon 
 adminApp.get('/coupon/add_coupon', admin.Addcoupen);
+// banners 
+adminApp.get('/banner',admin.banner);
 
 // test page 
 adminApp.get('/test', admin.test);

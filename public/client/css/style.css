@@ -955,21 +955,24 @@ ol {
 -----------------------*/
 
 .categories__item {
-  height: 270px;
+  height: 300px;
   position: relative;
+  /* background-color: red; */
+  background-size: contain;
 }
 
 .categories__item h5 {
   position: absolute;
   left: 0;
   width: 100%;
-  padding: 0 20px;
-  bottom: 20px;
+  box-sizing: border-box;
+  bottom: 0px;
   text-align: center;
 }
 
 .categories__item h5 a {
   font-size: 18px;
+  width: 100%;
   color: #1c1c1c;
   font-weight: 700;
   text-transform: uppercase;

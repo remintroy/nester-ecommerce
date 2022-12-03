@@ -21,9 +21,26 @@ input[type=number] {
   align-items: center;
   transition: all 0.3s;
   display: grid;
-  grid-template-columns: 100px auto 250px;
+  grid-template-columns: 100px auto auto 150px;
   gap: 20px;
   padding: 0 50px;
+  border: 1px solid rgb(224, 224, 224);
+}
+.custom-navbar .circle {
+  display: inline-block;
+  background-color: #8d0052;
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+}
+.custom-navbar .circle-inner {
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  font-size: 20px;
 }
 .custom-navbar .left-cont .logo {
   display: flex;
@@ -33,11 +50,22 @@ input[type=number] {
 .custom-navbar .left-cont .logo img {
   height: 40px;
 }
+.custom-navbar ul.middle-cont {
+  gap: 20px;
+}
+.custom-navbar ul.middle-cont li a {
+  color: black !important;
+  font-weight: bold;
+}
+.custom-navbar .middle-cont.start {
+  justify-content: start;
+}
 .custom-navbar .middle-cont {
   display: flex;
   justify-content: end;
   max-height: 40px;
   position: relative;
+  list-style: none;
 }
 .custom-navbar .middle-cont input {
   width: 100%;

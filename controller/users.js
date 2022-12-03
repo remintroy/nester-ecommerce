@@ -6,6 +6,7 @@ import { appConfig } from "../index.js";
 import * as orders from "./services/orders.js";
 import * as address from "./services/address.js";
 import * as analyticsService from './services/analytics.js';
+import * as productService from './services/products.js';
 
 // locals for users
 export const localsForUser = async (req, res, next) => {
@@ -400,6 +401,7 @@ export const loginWithOtpAPI = async (req, res) => {
 
 // common - pages
 export const home = async (req, res) => {
+  res.locals.topSellingProducts = await productService.topSellingProducts(10);
   res.locals.currentPage = "home";
   res.locals.layout = 'client_layout';
   res.render("client/home");
