@@ -515,7 +515,8 @@ export const ordersPg = async (req, res) => {
     res.locals.orders = await orders.getByUIDEach(req?.user?.UID);
     res.locals.currentPageA = "dashboard";
     res.locals.currentPage = "orders";
-    res.render("users/dashboard");
+    res.locals.layout = 'client_layout';
+    res.render("client/dash_orders");
     try {
       await analyticsService.addUserPageRequests('user_dash/orders_GET');
     } catch (error) {

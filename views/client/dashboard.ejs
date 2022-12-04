@@ -7,28 +7,34 @@
   <div class="row">
     <div class="col-3">
       <ul style="list-style: none;" class="list_features">
-        <li class="p-3 card d-flex <%= locals?.currentPage == 'account'?'bg-light':'' %>">
+        <li class="p-3 card d-flex <%= locals?.currentPage == 'account'?'bg-light':'' %>" onclick="window.location.href='/dashboard'">
           <div>
             <i class="fa-solid fa-user"></i>
             <span class="ml-2">Account</span>
           </div>
         </li>
-        <li class="p-3 card mt-2 d-flex ">
+        <li class="p-3 card mt-2 d-flex  <%= locals?.currentPage == 'orders'?'bg-light':'' %>" onclick="window.location.href='/dashboard/orders'">
           <div>
             <i class="fa-solid fa-bag-shopping"></i>
             <span class="ml-2">Orders</span>
           </div>
         </li>
-        <li class="p-3 card mt-2 d-flex ">
+        <li class="p-3 card mt-2 d-flex " onclick="window.location.href='/dashboard/address'">
           <div>
             <i class="fa-solid fa-address-book"></i>
             <span class="ml-2">Address</span>
           </div>
         </li>
-        <li class="p-3 card mt-2 d-flex ">
+        <li class="p-3 card mt-2 d-flex " onclick="window.location.href='/dashboard/wallet'">
           <div>
             <i class="fa-solid fa-wallet"> </i>
             <span class="ml-2">Wallets</span>
+          </div>
+        </li>
+        <li class="p-3 card mt-2 d-flex " onclick="window.location.href='/dashboard/wallet'">
+          <div>
+            <i class="fa-solid fa-lock"></i>
+            <span class="ml-2">Security</span>
           </div>
         </li>
       </ul>
@@ -37,68 +43,169 @@
       <div class="card h-100 p-4">
 
         <!-- Selection for account page -->
-        <section>
+        <section class="account_dash">
+          <!-- <div style="position: absolute ; top: 20px; right:30px; cursor: pointer;">
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+          </div> -->
+
           <div class="row w-100">
+            <!-- user profile preview -->
             <div class="col-4">
-              <div>
-                <div class="card-body text-center">
-                  <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
-                  <h5 class="my-3"><%= locals?.user?.name?locals.user.name:'Name' %> </h5>
-                  <p class="text-muted mb-1"><%= locals?.user?.phone?locals.user.phone:'Phone' %></p>
-                  <p class="text-muted"><%= locals?.user?.email?locals.user.email:'user@mail.com' %></p>
-                </div>
+              <div class="card-body  preview_card text-center">
+                <!-- <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar" class="rounded-circle img-fluid" style="width: 150px;"> -->
+                <div class="profile_img_preview mb-4"><%= locals?.user?.name[0] %> </div>
+                <h5 class="my-3"><%= locals?.user?.name?locals.user.name:'Name' %> </h5>
+                <p class="text-muted mb-1"><%= locals?.user?.phone?locals.user.phone:'Phone' %></p>
+                <p class="text-muted"><%= locals?.user?.email?locals.user.email:'user@mail.com' %></p>
               </div>
             </div>
+
+            <!-- user info -->
             <div class="col-8">
-              <div class=" mb-4">
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-sm-3">
-                      <p class="mb-0">Full Name</p>
-                    </div>
-                    <div class="col-sm-9">
-                      <p class="text-muted mb-0"><%= locals?.user?.name?locals.user.name:'Name' %></p>
-                    </div>
+              <div class="card-body user_details_card">
+                <div class="row">
+                  <div class="col-sm-3">
+                    <p class="mb-0">Full Name</p>
                   </div>
-                  <hr>
-                  <div class="row">
-                    <div class="col-sm-3">
-                      <p class="mb-0">Email</p>
-                    </div>
-                    <div class="col-sm-9">
-                      <p class="text-muted mb-0"><%= locals?.user?.email?locals.user.email:'user@mail.com' %></p>
-                    </div>
+                  <div class="col-sm-9">
+                    <p class="text-muted mb-0">
+                      <input type="text" value="<%= locals?.user?.name?locals.user.name:'' %>" disabled>
+                      <i onclick="editUserData('<%=locals.user.UID%>',this,'name')" class="fa-solid fa-pen-to-square"></i>
+                    </p>
                   </div>
-                  <hr>
-                  <div class="row">
-                    <div class="col-sm-3">
-                      <p class="mb-0">Phone</p>
-                    </div>
-                    <div class="col-sm-9">
-                      <p class="text-muted mb-0"><%= locals?.user?.phone?locals.user.phone:'000-000-000' %></p>
-                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                  <div class="col-sm-3">
+                    <p class="mb-0">Email</p>
                   </div>
-                  <hr>
-                  <div class="row">
-                    <div class="col-sm-3">
-                      <p class="mb-0">Mobile</p>
-                    </div>
-                    <div class="col-sm-9">
-                      <p class="text-muted mb-0">(098) 765-4321</p>
-                    </div>
+                  <div class="col-sm-9">
+                    <p class="text-muted mb-0">
+                      <input type="text" value="<%= locals?.user?.email?locals.user.email:'' %>" disabled>
+                      <i onclick="editUserData('<%=locals.user.UID%>',this,'email')" class="fa-solid fa-pen-to-square"></i>
+                    </p>
                   </div>
-                  <hr>
-                  <div class="row">
-                    <div class="col-sm-3">
-                      <p class="mb-0">Address</p>
-                    </div>
-                    <div class="col-sm-9">
-                      <p class="text-muted mb-0">Bay Area, San Francisco, CA</p>
-                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                  <div class="col-sm-3">
+                    <p class="mb-0">Phone</p>
+                  </div>
+                  <div class="col-sm-9">
+                    <p class="text-muted mb-0">
+                      <input type="text" value="<%= locals?.user?.phone?locals.user.phone:'' %>" disabled>
+                      <i onclick="editUserData('<%=locals.user.UID%>',this,'phone')" class="fa-solid fa-pen-to-square"></i>
+                    </p>
+                  </div>
+                </div>
+                <hr>
+                <div class="row">
+                  <div class="col-sm-3">
+                    <p class="mb-0">Login mode</p>
+                  </div>
+                  <div class="col-sm-9">
+                    <p class="text-muted mb-0 mx-2"><%= locals.user.loginProvider == 'google'?'Google':'Email / Phone' %> </p>
+                  </div>
+                </div>
+                <hr>
+                <div class="row">
+                  <div class="col-sm-3">
+                    <p class="mb-0">Last login</p>
+                  </div>
+                  <div class="col-sm-9">
+                    <p class="text-muted mb-0 mx-2"><%= locals.util.dataToReadable(locals?.user?.lastLogin) %> </p>
                   </div>
                 </div>
               </div>
             </div>
+
+            <!-- edit button -->
+            <div class="row w-100">
+              <div class="col-12 d-flex justify-content-center mt-3">
+                <p><span class="text-info">NOTE : </span>A reload is required to reflect changes all across the page</p>
+              </div>
+            </div>
+
+            <script>
+              // edit user data 
+              const editUserData = (UID, btn, type) => {
+                const input = btn.parentElement.querySelector('input');
+
+                //activating input box
+                input.classList.remove('err');
+                input.removeAttribute('disabled');
+                btn.setAttribute('class', 'fa-solid fa-floppy-disk');
+                btn.setAttribute('onclick', `saveUserData('${UID}',this,'${type}')`);
+
+                //..
+              };
+
+              // save user data
+              const saveUserData = async (UID, btn, type) => {
+                const input = btn.parentElement.querySelector('input');
+                let output;
+
+                try {
+                  // validating input
+                  if (type == 'name') {
+                    if (input.value.trim().match(/^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$/g)) output = input.value.trim();
+                    else throw 'Enter a valid name';
+                  };
+
+                  if (type == 'email') {
+                    if (input.value.trim().match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) output = input.value.trim();
+                    else throw 'Enter a valid email';
+                  };
+
+                  if (type == 'phone') {
+                    if (input.value.trim().match(/^\+?[1-9][0-9]{7,14}$/)) output = input.value.trim();
+                    else throw 'Enter a valid phone number';
+                  };
+
+                } catch (error) {
+                  notify(error);
+                  input.classList.add('err')
+                };
+
+                if (output) {
+                  try {
+                    // sending request to server
+                    const dataFromServer = await fetch('/user_data/update', {
+                      method: 'PUT',
+                      headers: {
+                        'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({
+                        UID: UID,
+                        emailInput: type == 'email' ? output : '',
+                        phoneInput: type == 'phone' ? output : '',
+                        lNameInput: type == 'name' ? output.split(' ').slice(1) ? output.split(' ').slice(1).join(' ' ) : '' : '',
+                        fNameInput: type == 'name' ? output.split(' ')[0] ? output.split(' ')[0] : '' : '',
+                      })
+                    });
+
+                    // parsing response form server to json
+                    const res = await dataFromServer.json();
+
+                    if (res.status == 'error') throw res.message;
+
+                    input.setAttribute('disabled', '');
+                    input.classList.remove('err');
+                    input.classList.remove('on');
+                    btn.setAttribute('class', 'fa-solid fa-pen-to-square');
+                    btn.setAttribute('onclick', `editUserData('${UID}',this,'${type}')`)
+                    notify(res.message, 'success');
+
+                  } catch (error) {
+                    // handling error
+                    console.log('Updation err => ', error);
+                    notify(error);
+                  };
+                }
+
+              };
+            </script>
+
         </section>
         <!-- account page selection end -->
 

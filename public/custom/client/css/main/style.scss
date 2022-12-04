@@ -67,7 +67,7 @@ input[type="number"] {
     }
   }
 
-  .middle-cont.start{
+  .middle-cont.start {
     justify-content: start;
   }
 
@@ -167,12 +167,68 @@ input[type="number"] {
   }
 
 }
-.list_features{
-  li{
+
+.account_dash {
+  .preview_card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .profile_img_preview {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #8d0052;
+    font-size: 50px;
+    color: white;
+  }
+
+  .user_details_card {
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    p {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    i {
+      cursor: pointer;
+    }
+
+    input:disabled {
+      border: 1px solid transparent;
+    }
+
+    input.err {
+      border: 1px solid red;
+    }
+
+    input {
+      padding: 7px 15px;
+      background-color: white;
+      border: 1px solid blue;
+      border-radius: 3px;
+    }
+  }
+}
+
+.list_features {
+  li {
     cursor: pointer;
     transition: all .3s;
   }
-  li:hover{
+
+  li:hover {
     box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.066);
   }
 }

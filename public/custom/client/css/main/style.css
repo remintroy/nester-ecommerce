@@ -140,6 +140,49 @@ input[type=number] {
   cursor: pointer;
 }
 
+.account_dash .preview_card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.account_dash .profile_img_preview {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #8d0052;
+  font-size: 50px;
+  color: white;
+}
+.account_dash .user_details_card .row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.account_dash .user_details_card p {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.account_dash .user_details_card i {
+  cursor: pointer;
+}
+.account_dash .user_details_card input:disabled {
+  border: 1px solid transparent;
+}
+.account_dash .user_details_card input.err {
+  border: 1px solid red;
+}
+.account_dash .user_details_card input {
+  padding: 7px 15px;
+  background-color: white;
+  border: 1px solid blue;
+  border-radius: 3px;
+}
+
 .list_features li {
   cursor: pointer;
   transition: all 0.3s;

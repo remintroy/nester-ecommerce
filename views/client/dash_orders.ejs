@@ -1,0 +1,130 @@
+<section class="container">
+  <h2 class="py-4"><b>Dashboard</b></h2>
+  <p style="text-transform: capitalize;">Dashboard <%= locals?.currentPage?' > '+locals.currentPage:'' %> </p>
+</section>
+
+<section class="container mb-5">
+  <div class="row">
+    <div class="col-3">
+      <ul style="list-style: none;" class="list_features">
+        <li class="p-3 card d-flex" onclick="window.location.href='/dashboard'">
+          <div>
+            <i class="fa-solid fa-user"></i>
+            <span class="ml-2">Account</span>
+          </div>
+        </li>
+        <li class="p-3 card mt-2 d-flex bg-light" onclick="window.location.href='/dashboard/orders'">
+          <div>
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span class="ml-2">Orders</span>
+          </div>
+        </li>
+        <li class="p-3 card mt-2 d-flex " onclick="window.location.href='/dashboard/address'">
+          <div>
+            <i class="fa-solid fa-address-book"></i>
+            <span class="ml-2">Address</span>
+          </div>
+        </li>
+        <li class="p-3 card mt-2 d-flex " onclick="window.location.href='/dashboard/wallet'">
+          <div>
+            <i class="fa-solid fa-wallet"> </i>
+            <span class="ml-2">Wallets</span>
+          </div>
+        </li>
+        <li class="p-3 card mt-2 d-flex " onclick="window.location.href='/dashboard/wallet'">
+          <div>
+            <i class="fa-solid fa-lock"></i>
+            <span class="ml-2">Security</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="col-9">
+      <div class="card h-100 p-4">
+
+        <!-- Selection for account page -->
+        <section class="account_dash">
+          <!-- <div style="position: absolute ; top: 20px; right:30px; cursor: pointer;">
+              <i class="fa-solid fa-ellipsis-vertical"></i>
+            </div> -->
+
+          <% locals?.orders?.forEach((e,i)=>{ %>
+          <div class=" mt-2 p-3">
+            <div class="row">
+              <div class="col-2">
+                <img class="img-fluid" src="/product_images/<%=e?.orders?.products?.PID %>1.jpg" alt="">
+              </div>
+              <div class="col-10">
+                <h6 class="mb-0">
+                  <%= e?.orders?.products?.title?.slice(0,45)+"..." %>
+                  <small style="float: right;">
+                    <%= e?.orders?.dateOFOrder?.toDateString() %>
+                  </small>
+                </h6>
+                <p>Order ID : <%= e?.orders?.orderID %></p>
+                <p> ₹ <%= e?.orders?.products?.price %> &times; <%= e?.orders?.products?.quantity %> pcs = ₹ <%=  e?.orders?.products?.total %> <br>
+                  <span style="text-transform: capitalize;" class="d-flex align-items-center">
+                    Order Status :
+                    <!-- <%= e?.orders?.products?.status %> -->
+                    <% if(e?.orders?.products?.status=='ordered') {%>
+                    <span class="badge badge-warning ml-2 mr-2" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.orders?.products?.update)%>"><%=e?.orders?.products?.status%></span>
+                    <!-- <div class="spinner-grow spinner-grow-sm text-warning"></div> -->
+                    <% }else if(e?.orders?.products?.status=='shipped'){ %>
+                    <span class="badge badge-info ml-2 mr-2" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.orders?.products?.update)%>"><%=e?.orders?.products?.status%></span>
+                    <!-- <div class="spinner-grow spinner-grow-sm text-info"></div> -->
+                    <% }else if(e?.orders?.products?.status=='out for delivery'){ %>
+                    <span class="badge badge-secondary ml-2 mr-2" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.orders?.products?.update)%>"><%=e?.orders?.products?.status%></span>
+                    <!-- <div class="spinner-grow spinner-grow-sm text-secondary"></div> -->
+                    <% }else if(e?.orders?.products?.status=='delivered'){ %>
+                    <span class="badge badge-success ml-2 mr-2" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.orders?.products?.update)%>"><%=e?.orders?.products?.status%></span>
+                    <!-- <div class="spinner-grow spinner-grow-sm text-success"></div> -->
+                    <% }else if(e?.orders?.products?.status=='cancelled'){ %>
+                    <span class="badge badge-danger ml-2 mr-2" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.orders?.products?.update)%>"><%=e?.orders?.products?.status%></span>
+                    <!-- <div class="spinner-grow spinner-grow-sm text-danger"></div> -->
+                    <% } %>
+                  </span>
+                  <span class="order_status_info" style="text-transform: capitalize;">Payment Status : <%= e?.orders?.products?.paymentStatus %></span> <br>
+                  <span style="text-transform: capitalize ;">
+                    <%=e?.orders?.address?.houseNumber?e?.orders?.address?.houseNumber:''%>
+                    <%=e?.orders?.address?.town?', '+e?.orders?.address?.town:''%>
+                    <%=e?.orders?.address?.state? ' , '+e?.orders?.address?.state:''%>
+                    <%=e?.orders?.address?.country? ' , '+e?.orders?.address?.country:''%>
+                    <%=e?.orders?.address?.postalCode? ' , '+e?.orders?.address?.postalCode:''%>
+                    <%=e?.orders?.address?.phone? ' ('+e?.orders?.address?.phone+')...':''%>
+                  </span>
+                </p>
+              </div>
+            </div>
+            <div class="mt-3">
+              <button class="btn btn-primary rounded" onclick="window.location.href='/product/<%=e?.orders?.products?.PID%>'">View
+                Product</button>
+              <% if(e?.orders?.products?.status!="cancelled" && e?.orders?.products?.status!="delivered"){ %>
+              <button class="btn rounded" onclick="cancelOrder('<%=e?.orders?._id%>','<%=e?.orders?.products?.PID%>',this)">Cancel
+                Order</button>
+              <% }else if(e?.orders?.products?.status=="delivered"){ %>
+              <button class="btn rounded  btn-primary" onclick="returnOrder('<%=e?.orders?._id%>','<%=e?.orders?.products?.PID%>',this)">Return order</button>
+              <% } %>
+            </div>
+          </div>
+
+          <% }); %>
+
+          <!-- edit button -->
+          <div class="row w-100">
+            <div class="col-12 d-flex justify-content-center mt-3">
+              <p><span class="text-info">NOTE : </span>A reload is required to reflect changes all across the page</p>
+            </div>
+          </div>
+
+          <script>
+            // orders scripts here
+          </script>
+          <script src="/js/user/dashboard.js"></script>
+        </section>
+        <!-- account page selection end -->
+
+      </div>
+    </div>
+  </div>
+
+</section>

@@ -60,9 +60,10 @@ app.use(function (req, res, next) {
 app.use((req, res, next) => {
   const userAgent = deviceDetetor.parse(req.headers['user-agent']);
 
-  if(userAgent.device.type == 'smartphone'){
+  if(userAgent?.device?.type == 'smartphone'){
     res.send(`This site is currently not available on smartphone's`);
   }else next();
+
 });
 
 // for admin
