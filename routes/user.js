@@ -101,13 +101,11 @@ app.get('/cart', auth.mustLoginAsUser, users.cart);
 // wishlist page
 app.get('/wishlist', auth.mustLoginAsUser, users.wishlist);
 // dashboard page
-app.get('/dashboard', auth.mustLoginAsUser, users.dashboard);
+app.get(['/dashboard','/dashboard/account'], auth.mustLoginAsUser, users.dashboard);
 // ordres page
 app.get('/dashboard/orders', auth.mustLoginAsUser, users.ordersPg);
 // address page
 app.get('/dashboard/address', auth.mustLoginAsUser, users.addressPg);
-// account page 
-app.get('/dashboard/account', auth.mustLoginAsUser, users.accountPg);
 // checkout page
 app.get('/checkout', auth.mustLoginAsUser, users.checkout);
 

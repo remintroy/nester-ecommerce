@@ -475,23 +475,6 @@ export const wishlist = async (req, res) => {
     //...
   };
 };
-export const dashboard = async (req, res) => {
-  try {
-    res.locals.orders = await orders.getByUID(req?.user?.UID);
-    res.locals.currentPage = "dashboard";
-    res.locals.layout = 'client_layout';
-    res.render("client/dashboard");
-    try {
-      await analyticsService.addUserPageRequests('user_dashboard_GET');
-    } catch (error) {
-      //...
-    };
-  } catch (error) {
-    res.locals.code = "500";
-    res.locals.message = error;
-    res.render("users/404");
-  }
-};
 export const checkout = async (req, res) => {
   try {
     const UID = req.user.UID;
@@ -508,6 +491,22 @@ export const checkout = async (req, res) => {
   } catch (error) {
     res.locals.message = "Cant display this page now...";
     res.locals.error = "Faild to fetch address related data form database";
+    res.render("users/404");
+  }
+};
+export const dashboard = async (req, res) => {
+  try {
+    res.locals.currentPage = "account";
+    res.locals.layout = 'client_layout';
+    res.render("client/dashboard");
+    try {
+      await analyticsService.addUserPageRequests('user_dashboard_GET');
+    } catch (error) {
+      //...
+    };
+  } catch (error) {
+    res.locals.code = "500";
+    res.locals.message = error;
     res.render("users/404");
   }
 };
@@ -545,22 +544,6 @@ export const addressPg = async (req, res) => {
     res.locals.error = "Faild to fetch address related data form database";
     res.render("users/404");
   }
-};
-export const accountPg = async (req, res) => {
-  try {
-    res.locals.currentPageA = "dashboard";
-    res.locals.currentPage = "account";
-    res.render("users/dashboard");
-    try {
-      await analyticsService.addUserPageRequests('user_dash/account_GET');
-    } catch (error) {
-      //...
-    };
-  } catch (error) {
-    res.locals.message = "Cant display this page now...";
-    res.locals.error = "Faild to fetch account related data form database";
-    res.render("users/404");
-  };
 };
 
 // common - api's

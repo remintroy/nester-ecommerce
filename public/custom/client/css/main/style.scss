@@ -167,3 +167,12 @@ input[type="number"] {
   }
 
 }
+.list_features{
+  li{
+    cursor: pointer;
+    transition: all .3s;
+  }
+  li:hover{
+    box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.066);
+  }
+}

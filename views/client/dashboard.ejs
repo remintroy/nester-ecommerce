@@ -1,16 +1,107 @@
 <section class="container">
-  <h2>Dashboard </h2>
+  <h2 class="py-4"><b>Dashboard</b></h2>
+  <p style="text-transform: capitalize;">Dashboard <%= locals?.currentPage?' > '+locals.currentPage:'' %> </p>
+</section>
 
-  <div class="card mt-5 mb-5">
+<section class="container mb-5">
   <div class="row">
-      <div class="col-3">
-        <ul style="list-style: none;" class="p-3">
-          <li class="p-3 card mt-2">Account</li>
-          <li class="p-3 card mt-2">Orders</li>
-          <li class="p-3 card mt-2">Address</li>
-          <li class="p-3 card mt-2">Orders</li>
-          <li class="p-3 card mt-2">Orders</li>
-        </ul>
+    <div class="col-3">
+      <ul style="list-style: none;" class="list_features">
+        <li class="p-3 card d-flex <%= locals?.currentPage == 'account'?'bg-light':'' %>">
+          <div>
+            <i class="fa-solid fa-user"></i>
+            <span class="ml-2">Account</span>
+          </div>
+        </li>
+        <li class="p-3 card mt-2 d-flex ">
+          <div>
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span class="ml-2">Orders</span>
+          </div>
+        </li>
+        <li class="p-3 card mt-2 d-flex ">
+          <div>
+            <i class="fa-solid fa-address-book"></i>
+            <span class="ml-2">Address</span>
+          </div>
+        </li>
+        <li class="p-3 card mt-2 d-flex ">
+          <div>
+            <i class="fa-solid fa-wallet"> </i>
+            <span class="ml-2">Wallets</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="col-9">
+      <div class="card h-100 p-4">
+
+        <!-- Selection for account page -->
+        <section>
+          <div class="row w-100">
+            <div class="col-4">
+              <div>
+                <div class="card-body text-center">
+                  <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
+                  <h5 class="my-3"><%= locals?.user?.name?locals.user.name:'Name' %> </h5>
+                  <p class="text-muted mb-1"><%= locals?.user?.phone?locals.user.phone:'Phone' %></p>
+                  <p class="text-muted"><%= locals?.user?.email?locals.user.email:'user@mail.com' %></p>
+                </div>
+              </div>
+            </div>
+            <div class="col-8">
+              <div class=" mb-4">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Full Name</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0"><%= locals?.user?.name?locals.user.name:'Name' %></p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Email</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0"><%= locals?.user?.email?locals.user.email:'user@mail.com' %></p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Phone</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0"><%= locals?.user?.phone?locals.user.phone:'000-000-000' %></p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Mobile</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0">(098) 765-4321</p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Address</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0">Bay Area, San Francisco, CA</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </section>
+        <!-- account page selection end -->
+
       </div>
     </div>
   </div>
