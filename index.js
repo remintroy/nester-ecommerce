@@ -124,9 +124,6 @@ adminApp.use(
 adminApp.use(Express.static(`${__dirname}/public/admin`));
 adminApp.use(auth.initAuth);
 
-adminApp.use("/api", adminAPIRouter.default);
-adminApp.use("/", adminRouter.default);
-
 adminApp.use(function (req, res, next) {
   res.header(
     "Cache-Control",
@@ -134,6 +131,10 @@ adminApp.use(function (req, res, next) {
   );
   next();
 });
+
+adminApp.use("/api", adminAPIRouter.default);
+adminApp.use("/", adminRouter.default);
+
 
 adminApp.listen(AdminAppConfig.port, () => {
   console.log(`[-] Admin Server started on port : ${AdminAppConfig.port}`);
