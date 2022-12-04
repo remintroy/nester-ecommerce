@@ -7,6 +7,10 @@ import * as orders from "./services/orders.js";
 import * as address from "./services/address.js";
 import * as analyticsService from './services/analytics.js';
 import * as productService from './services/products.js';
+import * as walletService from "./services/wallet.js";
+import DeviceDectector from 'device-detector-js';
+
+const device = new DeviceDectector();
 
 // locals for users
 export const localsForUser = async (req, res, next) => {
@@ -244,6 +248,7 @@ export const signInWithPasswordAPI = async (req, res) => {
     const password = req.body.password;
     const result = await auth.signInPassword(data, type, password);
     req.session.user = result.UID;
+    req.session.userLogin ={...device.parse(req.headers['user-agent']),date:new Date()};
     req.session.login = {};
     res.send({ status: 'good', message: result.message, action: result.action });
   } catch (error) {
@@ -318,6 +323,7 @@ export const resetPasswordAPI = async (req, res) => {
     // logs in user
     req.session.login = {};
     req.session.user = result.UID;
+    req.session.userLogin ={...device.parse(req.headers['user-agent']),date:new Date()};
 
     // response
     res.send({ status: 'good', message: result?.message ? result.message : result, action: result.action });
@@ -356,6 +362,7 @@ export const signupSetpTwoAPI = async (req, res) => {
     // logs in user
     req.session.signup = {};
     req.session.user = result.UID;
+    req.session.userLogin ={...device.parse(req.headers['user-agent']),date:new Date()};
 
     // response
     res.send({ status: 'good', message: result?.message ? result.message : result, action: result.action });
@@ -507,8 +514,22 @@ export const dashboard = async (req, res) => {
   } catch (error) {
     res.locals.code = "500";
     res.locals.message = error;
-    res.render("users/404");
+    res.locals.layout = 'blank_layout';
+    res.render("client/404");
   }
+};
+export const walletPg = async (req, res) => {
+  try {
+    res.locals.wallet = await walletService.getWalletInfo(req.user.UID);
+    res.locals.currentPage = "wallet";
+    res.locals.layout = 'client_layout';
+    res.render("client/dash_wallet");
+  } catch (error) {
+    res.locals.code = "500";
+    res.locals.layout = 'blank_layout';
+    res.locals.message = error;
+    res.render("client/404");
+  };
 };
 export const ordersPg = async (req, res) => {
   try {
@@ -525,7 +546,8 @@ export const ordersPg = async (req, res) => {
   } catch (error) {
     res.locals.message = "Cant display this page now...";
     res.locals.error = "Faild to fetch orders related data form database";
-    res.render("users/404");
+    res.locals.layout = 'blank_layout';
+    res.render("client/404");
   }
 };
 export const addressPg = async (req, res) => {
@@ -543,8 +565,27 @@ export const addressPg = async (req, res) => {
   } catch (error) {
     res.locals.message = "Cant display this page now...";
     res.locals.error = "Faild to fetch address related data form database";
-    res.render("users/404");
+    res.locals.layout = 'blank_layout';
+    res.render("client/404");
   }
+};
+export const securityPg = async (req, res) => {
+  try {
+    res.locals.session = req.sessionID;
+    res.locals.security = await db.DB.db.collection('session').find({ 'session.user': req?.user?.UID }).toArray();
+    res.locals.currentPageA = "dashboard";
+    res.locals.currentPage = "security";
+    res.locals.layout = 'client_layout';
+    res.render("client/dash_security");
+
+  } catch (error) {
+    console.log(error);
+    res.locals.code = 500;
+    res.locals.message = "Cant display this page now...";
+    res.locals.error = "Faild to fetch security related data form database";
+    res.locals.layout = 'blank_layout';
+    res.render("client/404");
+  };
 };
 
 // common - api's

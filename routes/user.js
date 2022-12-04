@@ -104,8 +104,12 @@ app.get('/wishlist', auth.mustLoginAsUser, users.wishlist);
 app.get(['/dashboard','/dashboard/account'], auth.mustLoginAsUser, users.dashboard);
 // ordres page
 app.get('/dashboard/orders', auth.mustLoginAsUser, users.ordersPg);
+// wallet page
+app.get('/dashboard/wallet', auth.mustLoginAsUser, users.walletPg);
 // address page
 app.get('/dashboard/address', auth.mustLoginAsUser, users.addressPg);
+// security page dash
+app.get('/dashboard/security',auth.mustLoginAsUser, users.securityPg);
 // checkout page
 app.get('/checkout', auth.mustLoginAsUser, users.checkout);
 

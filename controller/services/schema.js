@@ -11,6 +11,8 @@ const db = mongoose.createConnection(process.env.USERDB_URL);
 db.on('error', (error) => console.error(error));
 db.once('open', () => dbLatencyLogger());
 
+export const DB = db;
+
 export const ObjectID = mongoose.Types.ObjectId;
 export const users = db.model("user", new mongoose.Schema({
     name: String,

@@ -1,0 +1,162 @@
+<section class="container">
+  <h2 class="py-4"><b>Dashboard</b></h2>
+  <p style="text-transform: capitalize;">Dashboard <%= locals?.currentPage?' > '+locals.currentPage:'' %> </p>
+</section>
+
+<section class="container mb-5">
+  <div class="row">
+    <div class="col-3">
+      <ul style="list-style: none;" class="list_features">
+        <li class="p-3 card d-flex" onclick="window.location.href='/dashboard'">
+          <div>
+            <i class="fa-solid fa-user"></i>
+            <span class="ml-2">Account</span>
+          </div>
+        </li>
+        <li class="p-3 card mt-2 d-flex" onclick="window.location.href='/dashboard/orders'">
+          <div>
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span class="ml-2">Orders</span>
+          </div>
+        </li>
+        <li class="p-3 card mt-2 d-flex " onclick="window.location.href='/dashboard/address'">
+          <div>
+            <i class="fa-solid fa-address-book"></i>
+            <span class="ml-2">Address</span>
+          </div>
+        </li>
+        <li class="p-3 card mt-2 d-flex " onclick="window.location.href='/dashboard/wallet'">
+          <div>
+            <i class="fa-solid fa-wallet"> </i>
+            <span class="ml-2">Wallets</span>
+          </div>
+        </li>
+        <li class="p-3 card mt-2 d-flex bg-light" onclick="window.location.href='/dashboard/security'">
+          <div>
+            <i class="fa-solid fa-lock"></i>
+            <span class="ml-2">Security</span>
+          </div>
+        </li>
+        <li class="p-3 card mt-2 d-flex " onclick="logout()">
+          <div>
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span class="ml-2">Logout</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="col-9">
+      <div class="card h-100 p-4">
+
+        <!-- Selection for account page -->
+        <section class="account_dash">
+          <!-- <div style="position: absolute ; top: 20px; right:30px; cursor: pointer;">
+              <i class="fa-solid fa-ellipsis-vertical"></i>
+            </div> -->
+
+          <h3>Login & security </h3>
+
+          <div class="row">
+            <div class="col-12 mt-3">
+              <p>Change password</p>
+              <div class="psw_input_cont">
+                <div class="form-group">
+                  <label for="">Old password</label>
+                  <input type="text" class="form-control" placeholder="Your password">
+                </div>
+                <div class="form-group">
+                  <label for="">new password</label>
+                  <input type="text" class="form-control" placeholder="new password">
+                </div>
+                <div class="form-group">
+                  <label for="">Confirm</label>
+                  <input type="text" class="form-control" placeholder="confirm">
+                </div>
+                <div class="btn btn-dark px-3">
+                  Change
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr>
+
+          <ul class="security_dash">
+            <div class="d-flex align-items-center justify-content-between mt-3">
+              <p class="p-0 m-0">Logged in devices</p>
+              <span>Last login : <%= locals?.util?.dateToReadable(locals?.user.lastLogin) %> </span>
+            </div>
+            <% locals?.security?.reverse().forEach(e=>{ %>
+
+            <li class="p-3 bg-light rounded my-2">
+              <% if(e.session.userLogin) {%>
+              <div class="d-flex align-items-center justify-content-between">
+
+                <div class="d-flex align-items-center">
+                  <% if(e.session?.userLogin?.device?.type =='smartphone'){ %>
+                  <i class="fa-solid fa-mobile"></i>
+                  <% } %>
+                  <% if(e.session?.userLogin?.device?.type =='desktop'){ %>
+                  <i class="fa-solid fa-desktop"></i>
+                  <% } %>
+                  <span class="mx-2">
+                    Logged In from
+                    <span style="text-transform: capitalize;"><%= e.session?.userLogin?.device?.type %> </span>
+                    at
+                    <span><%= locals?.util?.dateToReadable(e.session?.userLogin?.date) %> </span>
+                  </span>
+                </div>
+
+                <small>Will stay logged in till : <%= locals?.util?.dateToReadable(e.expires) %> </small>
+              </div>
+              <% }else{ %>
+              <small>Will stay logged in till : <%= locals?.util?.dateToReadable(e.expires) %> </small>
+              <% }; %>
+
+              <div>
+                <% if(locals?.session == e?._id){ %>
+                <p class="m-0 mt-2 p-0">This device</p>
+                <% }else{ %>
+                <div class="btn btn-warning mt-3 px-4" onclick="logoutSessoin('<%=e?.id%>')">logout</div>
+                <%  } %>
+              </div>
+            </li>
+
+            <% }); %>
+          </ul>
+
+        </section>
+        <!-- account page selection end -->
+
+      </div>
+    </div>
+  </div>
+  <script>
+    async function logoutSessoin(sid) {
+      fetch()
+    }
+
+    function logout() {
+
+      fetch('/user_logout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: "log me out"
+          })
+        })
+        .then(res => res.json())
+        .then(res => {
+          if (res.status == 'error') {
+            notify(res.message);
+          } else {
+            window.location.href = res.action;
+          };
+        })
+        .catch(error => {
+          notify(error)
+        });
+    };
+  </script>
+</section>

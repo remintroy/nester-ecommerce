@@ -220,6 +220,34 @@ input[type="number"] {
       border-radius: 3px;
     }
   }
+
+  .wallet_list{
+    list-style: none;
+    margin:0;
+    padding: 0;
+
+    p{
+      padding: 0;
+      margin: 0;
+    }
+
+    li.cr{
+      background-color: rgb(237, 255, 237);
+    }
+    li.dr{
+      background-color: rgb(255, 240, 240);
+    }
+  }k
+
+  .security_dash{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li{
+
+    }
+  }
 }
 
 .list_features {

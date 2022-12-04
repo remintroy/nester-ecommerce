@@ -135,6 +135,13 @@ export const dataToReadable = (date) => {
     let yyyy = date_.getFullYear();
     return `${isNaN(dd) ? '00' : dd}-${isNaN(mm) ? '00' : mm}-${isNaN(yyyy) ? '0000' : yyyy}`;
 };
+export const dateToReadable = (date) => {
+    const date_ = new Date(date);
+    let dd = date_.getDate();
+    let mm = date_.getMonth() + 1;
+    let yyyy = date_.getFullYear();
+    return `${isNaN(dd) ? '00' : dd}-${isNaN(mm) ? '00' : mm}-${isNaN(yyyy) ? '0000' : yyyy}`;
+};
 // no dependencies --- end
 
 
