@@ -1,3 +1,8 @@
+<section class="container">
+  <h2 class="pt-4"><b>Nester flash sales</b></h2>
+  <p style="text-transform: capitalize;">Nester <%= locals?.product.category?' > '+locals?.product.category:'' %> </p>
+</section>
+
 <!-- Product Details Section Begin -->
 <section class="product-details spad">
   <div class="container">
@@ -38,7 +43,7 @@
           <a onclick="addToCart('<%=product.PID%>')" style="cursor: pointer;" class="primary-btn">ADD TO CARD</a>
           <a href="#" class="heart-icon"><span class="icon_heart_alt"></span></a>
           <ul>
-            <li><b>Availability</b> <span>In Stock</span></li>
+            <li><b>Availability</b> <span><%= locals.product.stock!=0?product.stock<10?`Only ${product.stock} stock is avaiable`:'In Stock':'Out of stock' %> </span></li>
             <li><b>Shipping</b> <span>01 day shipping. <samp>Free pickup today</samp></span></li>
             <li><b>Weight</b> <span>0.5 kg</span></li>
             <li><b>Share on</b>

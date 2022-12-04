@@ -248,7 +248,7 @@ export const signInWithPasswordAPI = async (req, res) => {
     const password = req.body.password;
     const result = await auth.signInPassword(data, type, password);
     req.session.user = result.UID;
-    req.session.userLogin ={...device.parse(req.headers['user-agent']),date:new Date()};
+    req.session.userLogin = { ...device.parse(req.headers['user-agent']), date: new Date() };
     req.session.login = {};
     res.send({ status: 'good', message: result.message, action: result.action });
   } catch (error) {
@@ -323,7 +323,7 @@ export const resetPasswordAPI = async (req, res) => {
     // logs in user
     req.session.login = {};
     req.session.user = result.UID;
-    req.session.userLogin ={...device.parse(req.headers['user-agent']),date:new Date()};
+    req.session.userLogin = { ...device.parse(req.headers['user-agent']), date: new Date() };
 
     // response
     res.send({ status: 'good', message: result?.message ? result.message : result, action: result.action });
@@ -362,7 +362,7 @@ export const signupSetpTwoAPI = async (req, res) => {
     // logs in user
     req.session.signup = {};
     req.session.user = result.UID;
-    req.session.userLogin ={...device.parse(req.headers['user-agent']),date:new Date()};
+    req.session.userLogin = { ...device.parse(req.headers['user-agent']), date: new Date() };
 
     // response
     res.send({ status: 'good', message: result?.message ? result.message : result, action: result.action });
@@ -404,6 +404,30 @@ export const loginWithOtpAPI = async (req, res) => {
   } catch (error) {
     res.send({ status: "error", message: error });
   }
+};
+export const logoutSessionAPI = async (req, res) => {
+  try {
+    const sessionID = req.params.id?.trim();
+
+    if (sessionID == req.sessionID) throw 'You cannot logout of you own device form this menu!';
+
+    if (sessionID) {
+
+      const updatedData = await db.DB.db.collection('session').deleteOne({ _id: sessionID });
+
+      if (updatedData.deletedCount) {
+        res.send({ status: "good", message: 'Successfully logged out' });
+      } else {
+        res.send({ status: 'error', message: `Failed to logout` });
+      };
+
+      return 0;
+
+    } else throw 'Invalid session id';
+
+  } catch (error) {
+    res.send({ status: 'error', message: error });
+  };
 };
 
 // common - pages

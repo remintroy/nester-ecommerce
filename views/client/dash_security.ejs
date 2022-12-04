@@ -116,7 +116,7 @@
                 <% if(locals?.session == e?._id){ %>
                 <p class="m-0 mt-2 p-0">This device</p>
                 <% }else{ %>
-                <div class="btn btn-warning mt-3 px-4" onclick="logoutSessoin('<%=e?.id%>')">logout</div>
+                <div class="btn btn-warning mt-3 px-4" onclick="logoutSessoin('<%=e?._id%>')">logout</div>
                 <%  } %>
               </div>
             </li>
@@ -132,7 +132,40 @@
   </div>
   <script>
     async function logoutSessoin(sid) {
-      fetch()
+      const pop = await Swal.fire({
+        title: 'Are you sure ?',
+        icon: "warning",
+        html: 'By confirmg you will be logged out of form specified device',
+      });
+
+      if (pop.isConfirmed) {
+        try {
+
+          const dataFromServer = await fetch(`/user_logout/from/${sid}`, {
+            method: 'POST'
+          });
+
+          const res = await dataFromServer.json();
+
+          try {
+
+            // handling error
+            if (res.status == 'error') throw res.message;
+          } catch (error) {
+            // showing popup;
+            notify(error); return 0;
+          };
+
+          notify(res.message, 'success');
+
+          // to update all data across the page a reload is required so....
+          window.location.reload();
+
+        } catch (error) {
+          console.log(error);
+          notify('Error connecting to srever');
+        };
+      }
     }
 
     function logout() {

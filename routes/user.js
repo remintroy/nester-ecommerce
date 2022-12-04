@@ -27,7 +27,8 @@ app.post('/user_signin_google', auth.mustLogoutAsUserAPI, users.loginWithGoogleA
 // api for signin with phone
 app.post('/user_signin_phone', auth.mustLogoutAsUserAPI, users.loginWithOtpAPI);
 // api for user logout
-app.post('/user_logout', auth.mustLoginAsUserAPI, users.logoutAPI);
+app.post('/user_logout', auth.mustLoginAsUserAPI, users.logoutAPI)
+    .post('/user_logout/from/:id',auth.mustLoginAsUserAPI,users.logoutSessionAPI);
 // api for user registration
 app.post('/user_registration', auth.mustLogoutAsUserAPI, users.signupAPI);
 // api for enter passewordd and name 
@@ -101,7 +102,7 @@ app.get('/cart', auth.mustLoginAsUser, users.cart);
 // wishlist page
 app.get('/wishlist', auth.mustLoginAsUser, users.wishlist);
 // dashboard page
-app.get(['/dashboard','/dashboard/account'], auth.mustLoginAsUser, users.dashboard);
+app.get(['/dashboard', '/dashboard/account'], auth.mustLoginAsUser, users.dashboard);
 // ordres page
 app.get('/dashboard/orders', auth.mustLoginAsUser, users.ordersPg);
 // wallet page
@@ -109,7 +110,7 @@ app.get('/dashboard/wallet', auth.mustLoginAsUser, users.walletPg);
 // address page
 app.get('/dashboard/address', auth.mustLoginAsUser, users.addressPg);
 // security page dash
-app.get('/dashboard/security',auth.mustLoginAsUser, users.securityPg);
+app.get('/dashboard/security', auth.mustLoginAsUser, users.securityPg);
 // checkout page
 app.get('/checkout', auth.mustLoginAsUser, users.checkout);
 

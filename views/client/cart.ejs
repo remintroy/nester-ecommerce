@@ -1,3 +1,10 @@
+<section class="container">
+  <h2 class="pt-4"><b>Nester Shopping cart</b></h2>
+  <p style="text-transform: capitalize;">Nester > Shoping cart </p>
+</section>
+
+
+
 <div class="page-content mb-5" id="cartlock" <% if(locals?.cartProducts?.length>0){ %> style="display:none;" <% } %>>
   <div class="container">
     <div class="card bg-none p-5 text-center border-none">
@@ -10,8 +17,8 @@
 </div>
 
 <!-- Shoping Cart Section Begin -->
-<section class="shoping-cart spad" id="cartHook" <% if(locals?.cartProducts?.length==0){ %> style="display:none;" <% } %>>
-  <div class="container">
+<section class="shoping-cart mt-0 pt-0 spad" id="cartHook" <% if(locals?.cartProducts?.length==0){ %> style="display:none;" <% } %>>
+  <div class="container mt-0">
     <div class="row">
       <div class="col-lg-12">
         <div class="shoping__cart__table">
