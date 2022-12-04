@@ -197,7 +197,7 @@ input[type=number] {
 .account_dash .wallet_list li.dr {
   background-color: rgb(255, 240, 240);
 }
-.account_dash k .security_dash {
+.account_dash .security_dash {
   list-style: none;
   padding: 0;
   margin: 0;
