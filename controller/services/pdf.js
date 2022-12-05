@@ -1,49 +1,55 @@
-import puppeteer from 'puppeteer';
+// import puppeteer from 'puppeteer';
 import fs from 'fs-extra';
 import path from 'path';
 import ejs from 'ejs';
+import pdf from 'html-pdf';
 import * as reports from '../api/admin_api.js';
 
 let count = 1;
 
-export const createPdf = async () => {
+export const createPdf = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            
+        // data to use in pdf
+        const dataToDisplay = { yearReport: await reports.totalProductsSalesYearCount(2022) };
 
-    const dataToDisplay = {
-        yearReport: await reports.totalProductsSalesYearCount(2022)
-    };
+        // path of ejs template
+        const templateDirPath = path.join(process.cwd(), 'views', 'pdf-templates');
+        const templateFilePath = path.join(templateDirPath, 'report.ejs');
 
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
+        // rendering pdf template
+        const renderedTemplate = await ejs.renderFile(templateFilePath, dataToDisplay);
 
-    const folderPath = path.join(process.cwd(), 'views', 'pdf-templates');
-    const pageFileData = await fs.readFile(folderPath + '/report.ejs', 'utf-8');
-    const resultFolderPath = path.join(process.cwd(), 'reports');
+        const data = pdf.create(renderedTemplate, {
+            height: "11.25in",
+            width: "8.5in",
+            header: {
+                height: "0mm"
+            },
+            footer: {
+                height: "0mm",
+            },
+            childProcessOptions: {
+                env: {
+                    OPENSSL_CONF: '/dev/null',
+                },
+            }
+        })
+            .toFile(path.join(templateDirPath, 'report.pdf'), (err, data) => {
+                console.log(++count);
+                resolve(data);
+            });
 
-    try {
-        const pageContent = ejs.render(pageFileData, dataToDisplay);
-
-        await page.setContent(pageContent);
-        await page.addStyleTag({ path: folderPath + '/style.css' });
-        await page.emulateMediaType('screen');
-        await page.pdf({
-            path: resultFolderPath + '/report.pdf',
-            format: 'A4',
-            printBackground: true
-        });
-        await browser.close();
-    } catch (error) {
-        console.log(error);
-    }
-
-    return (`PDF-${count++}?  DONE :)`);
+        } catch (error) {
+            resolve(error)            
+        }
+    });
 };
-
-// createPdf()
 
 async function test() {
     while (true) {
         console.log(await createPdf());
     };
 };
-
-// test();
+test()

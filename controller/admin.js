@@ -525,6 +525,21 @@ export const banner = async (req, res) => {
     };
 };
 
+// sales report
+export const report = async (req,res)=>{
+    try {
+        
+        res.render(pagesBase+'/reports');
+
+    } catch (error) {
+        // handling errors
+        res.locals.message = `Can't get sales data from db `;
+        res.locals.code = 500;
+        res.render(pagesBase + '/404');
+    };
+};
+
+// test -- fucntion
 export const test = async (req, res) => {
     res.render('admin/test');
-}
+};

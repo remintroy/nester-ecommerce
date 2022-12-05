@@ -11,11 +11,17 @@
 </head>
 
 <body>
+
+  <style>
+    html {
+      font-size: small;
+    }
+  </style>
+
   <div class="p-5">
     <h1 class="text-center mt-3">Sales report </h1>
     <% const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-    console.log(yearReport); 
     let totalSalesValue = 0;
     yearReport.OR.map(e=> totalSalesValue = totalSalesValue+e.total )
     yearReport.SH.map(e=> totalSalesValue = totalSalesValue+e.total )
@@ -23,88 +29,57 @@
     yearReport.DD.map(e=> totalSalesValue = totalSalesValue+e.total )
     yearReport.CC.map(e=> totalSalesValue = totalSalesValue-e.total )
     
-    
     %>
 
-    <p class="mt-5">This year we manage to make total of <%= totalSalesValue %>Rs /- <br>
+    <p class="mt-5">This year we manage to make total of <%= yearReport?.DD[0]?.total? yearReport?.DD[0]?.total:0%>Rs /- <br>
       <small> Each moths sales and order status listed below</small>
     </p>
 
     <table class="table table-borderless mt-4 rounded bg-light">
       <thead>
-        <tr>
-          <th scope="col">Month</th>
-          <th scope="col">Ordered</th>
-          <th scope="col">Total amount</th>
+        <tr style="font-weight: bold;">
+          <td>Month</td>
+          <td>Placed</td>
+          <td>Revenue</td>
         </tr>
       </thead>
       <tbody>
-        <% yearReport.OR.forEach((e,i) => { %>
+        <% const OR = []; %>
+
+        <!-- get values for each month -->
+        <% for(let i=0; i<12; i++){  
+          let acc = {};
+
+          // loop for find values
+          for (let j = 0; j < 12; j++) {
+
+            if(yearReport.DD[j]?.month == (i+1)) {
+              acc = yearReport.DD[j];
+              break;
+            }else{
+              acc = {};
+            };
+          };
+          // output
+          OR.push(acc);
+        } %>
+
+        <% for(let i=0; i<12; i++){ %>
         <tr>
-          <td><%=months[Number(e.month)-1]%></td>
-          <td><%= e.length %> </td>
-          <td>₹ <%= e.total %></td>
+          <td><%= months[i] %> </td>
+          <td><%= OR[i]?.length?OR[i].length:'-' %> </td>
+          <td><%= OR[i]?.total?' ₹ '+ OR[i].total:'-' %></td>
         </tr>
-        <% }); %>
+        <% }; %>
+
       </tbody>
     </table>
 
-    <table class="table table-borderless mt-4 rounded bg-light">
-      <thead>
-        <tr>
-          <th scope="col">Month</th>
-          <th scope="col">Shipped</th>
-          <th scope="col">Total amount</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% yearReport.SH.forEach((e,i) => { %>
-        <tr>
-          <td><%=months[Number(e.month)-1]%></td>
-          <td><%= e.length %> </td>
-          <td>₹ <%= e.total %></td>
-        </tr>
-        <% }); %>
-      </tbody>
-    </table>
-
-    <table class="table table-borderless mt-4 rounded bg-light">
-      <thead>
-        <tr>
-          <th scope="col">Month</th>
-          <th scope="col">Reached</th>
-          <th scope="col">Total amount</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% yearReport.OT.forEach((e,i) => { %>
-        <tr>
-          <td><%=months[Number(e.month)-1]%></td>
-          <td><%= e.length %> </td>
-          <td>₹ <%= e.total %></td>
-        </tr>
-        <% }); %>
-      </tbody>
-    </table>
-    <table class="table table-borderless mt-4 rounded bg-light">
-      <thead>
-        <tr>
-          <th scope="col">Month</th>
-          <th scope="col">Deleverd</th>
-          <th scope="col">Total amount</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% yearReport.DD.forEach((e,i) => { %>
-        <tr>
-          <td><%=months[Number(e.month)-1]%></td>
-          <td><%= e.length %> </td>
-          <td>₹ <%= e.total %></td>
-        </tr>
-        <% }); %>
-      </tbody>
-    </table>
-
+    <h3 class="mx-2" style="margin-top: 30px;"><b>NOTE:</b> Report listed above contains data of placed orders of every month of this year</h3>
+    <div class="" style="margin-top: 50px;"> 
+    <img src="http://localhost:8080/img/logo.png" style="width: 100px;" alt="">
+      <p class="mx-2">This is an auto generated report, Created for </p>
+    </div>
   </div>
 </body>
 

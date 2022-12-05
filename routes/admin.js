@@ -49,7 +49,7 @@ adminApp.use(auth.mustLoginAsAdmin);
 // render helper by setting locals
 adminApp.use(admin.localsForAdmin);
 
-adminApp.get('/report', admin.createReportPDF);
+// adminApp.get('/report', admin.createReportPDF);
 
 // dashboard routes
 adminApp.get(['/', '/index.html'], admin.dashboard);
@@ -81,6 +81,8 @@ adminApp.get('/coupon', admin.coupen)
 adminApp.get('/coupon/add_coupon', admin.Addcoupen);
 // banners 
 adminApp.get('/banner',admin.banner);
+// reports
+adminApp.get('/report',admin.report);
 
 // test page 
 adminApp.get('/test', admin.test);
