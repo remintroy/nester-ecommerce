@@ -280,14 +280,14 @@ export const deleteProductAPI = async (req, res) => {
 // all orders page
 export const ordres = async (req, res) => {
     try {
-        res.locals.orders = await orders.getAllWithFromattedDate();
+        const page = req.query.page;
+        res.locals.orders = await orders.getAllWithFromattedDate(page);
         res.locals.currentPage = 'orders';
         res.locals.currentPageA = 'orders';
         res.render(pagesBase + '/orders');
     } catch (error) {
-        console.log('ALL_ORDERS_PAGE_DB => ', error);
-        res.locals.message = `Can't get order's from db `;
-        res.locals.code = 500;
+        res.locals.message = error;
+        res.locals.code = 400;
         res.render(pagesBase + '/404');
     };
 };

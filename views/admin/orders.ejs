@@ -76,6 +76,66 @@
             <% }); %>
           </tbody>
         </table>
+        <div class="d-flex justify-content-end mt-3">
+          <nav aria-label="Page navigation example">
+            <ul class="pagination">
+
+
+              <% if(Number(locals?.orders[0]?.currentPage)<=1){%>
+              <li class="page-item disabled" id="btnE">
+                <a class="page-link" disabled data-current="1">Previous</a>
+              </li>
+              <% }else{; %>
+              <li class="page-item" id="btnE">
+                <a class="page-link" data-current="1" href="/orders?page=<%=Number(locals?.orders[0]?.currentPage)-1%>">Previous</a>
+              </li>
+              <% }; %>
+
+              <% if(Number(locals?.orders[0]?.currentPage)==1){ %>
+              <li class="page-item active" id="btnB"><a class="page-link" href="/orders?page=<%=Number(locals?.orders[0]?.currentPage)%>" data-current="1">1</a></li>
+
+              <% if(Number(locals?.orders[0]?.maxPage)>=2){ %>
+              <li class="page-item" id="btnC"><a class="page-link" href="/orders?page=<%=Number(locals?.orders[0]?.currentPage)+1%>" data-current="1">2</a></li>
+              <% } %>
+
+              <% if(Number(locals?.orders[0]?.maxPage)>=3){ %>
+              <li class="page-item" id="btnC"><a class="page-link" href="/orders?page=<%=Number(locals?.orders[0]?.currentPage)+2%>" data-current="1">3</a></li>
+              <% } %>
+
+              <% }else if(Number(locals?.orders?.maxPage)==Number(locals?.orders[0]?.currentPage)){ %>
+
+
+              <% if(Number(locals?.orders[0]?.currentPage)-2>=1){ %>
+              <li class="page-item " id="btnB"><a class="page-link" href="/orders?page=<%=Number(locals?.orders[0]?.currentPage)-2%>" data-current="1"><%=locals?.orders[0]?.currentPage-2%></a></li>
+              <% } %>
+              <% if(Number(locals?.orders[0]?.currentPage)-1>=1){ %>
+              <li class="page-item " id="btnB"><a class="page-link" href="/orders?page=<%=Number(locals?.orders[0]?.currentPage)-1%>" data-current="1"><%=locals?.orders[0]?.currentPage-1%></a></li>
+              <% } %>
+              <li class="page-item active" id="btnB"><a class="page-link" href="/orders?page=<%=Number(locals?.orders[0]?.currentPage)%>" data-current="1"><%=locals?.orders[0]?.currentPage%></a></li>
+
+              <% }else { %>
+
+              <li class="page-item" id="btnB"><a class="page-link" href="/orders?page=<%=Number(locals?.orders[0]?.currentPage)-1%>" data-current="1"><%=locals?.orders[0]?.currentPage-1%></a></li>
+              <li class="page-item active" id="btnB"><a class="page-link" href="/orders?page=<%=Number(locals?.orders[0]?.currentPage)%>" data-current="1"><%=locals?.orders[0]?.currentPage%></a></li>
+              <% if(Number(locals?.orders[0]?.maxPage)>Number(locals?.orders[0]?.currentPage)){ %>
+              <li class="page-item" id="btnB"><a class="page-link" href="/orders?page=<%=Number(locals?.orders[0]?.currentPage)+1%>" data-current="1"><%=locals?.orders[0]?.currentPage+1%></a></li>
+              <% } %>
+
+              <% } %>
+
+              <% if(locals?.orders[0]?.maxPage==locals?.orders[0]?.currentPage){%>
+              <li class="page-item disabled" id="btnE">
+                <a class="page-link" disabled data-current="1">Next</a>
+              </li>
+              <% }else{; %>
+              <li class="page-item" id="btnE">
+                <a class="page-link" data-current="1" href="/orders?page=<%=Number(locals?.orders[0]?.currentPage)+1%>">Next</a>
+              </li>
+              <% }; %>
+
+            </ul>
+          </nav>
+        </div>
       </div>
     </div>
   </div>

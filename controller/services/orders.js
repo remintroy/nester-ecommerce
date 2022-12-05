@@ -519,42 +519,78 @@ export const paymentConfirmRazorpay = async (UID, body) => {
 };
 
 //.. admin 
-export const getAll = () => {
-    return new Promise((resolve, reject) => {
+export const getAll = async (page) => {
+    try {
+        // validating request values
+        if (isNaN(Number(page)) && page) throw ('Invalid query parameters');
+
+        page = Number(page) > 0 ? page : 1;
+        page = Number(page) ? page : 1;
+
+        const listLenght = 10;
+        const outputData = {};
+
+        outputData.length = listLenght;
+
+        let countFromDb;
+
         try {
-            const data = db.orders.aggregate([
-                {
-                    $unwind: '$orders'
-                },
-                {
-                    $lookup: {
-                        localField: 'UID',
-                        foreignField: 'UID',
-                        from: 'users',
-                        as: "user"
-                    }
-                },
-                {
-                    $sort: {
-                        'orders.dateOFOrder': -1
-                    }
-                },
-                {
-                    $project: {
-                        _id: 0,
-                    }
-                }
-            ]);
-            resolve(data);
+            countFromDb = await db.orders.aggregate([{$unwind:'$orders'},{ $group: { _id: 'totalLenght', sum: { $sum: 1 } } }]);
         } catch (error) {
-            reject(error);
+            throw 'Error while fetching data from db';
         };
-    });
+
+        outputData.totalCount = countFromDb[0].sum; 
+
+        const maxPG = parseInt(outputData.totalCount / listLenght) + (outputData.totalCount % listLenght != 0 ? 1 : 0);
+
+        if (Number(page) > maxPG) throw 'No orders data available';
+
+
+        const data = await db.orders.aggregate([
+            {
+                $unwind: '$orders'
+            },
+            {
+                $lookup: {
+                    localField: 'UID',
+                    foreignField: 'UID',
+                    from: 'users',
+                    as: "user"
+                }
+            },
+            {
+                $addFields: {
+                    maxPage: maxPG,
+                    currentPage: page,
+                }
+            },
+            {
+                $sort: {
+                    'orders.dateOFOrder': -1
+                }
+            },
+            { $skip: ((page - 1) * listLenght) },
+            { $limit: listLenght },
+            {
+                $project: {
+                    _id: 0,
+                }
+            }
+        ]);
+
+        //resolving data
+        return (data);
+
+    } catch (error) {
+        //handling error
+        throw (error);
+    };
 };
-export const getAllWithFromattedDate = () => {
+export const getAllWithFromattedDate = (page) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const data = await getAll();
+            const data = await getAll(page);
             const result = [];
             data.forEach((e, i, a) => {
                 const output = {};
