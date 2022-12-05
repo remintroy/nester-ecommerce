@@ -88,6 +88,9 @@
                   <% }else if(e?.order?.products?.status=='delivered'){ %>
                   <span class="badge bg-success ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.order?.products?.update)%>"><%=e?.order?.products?.status%></span>
                   <!-- <div class="spinner-grow spinner-grow-sm text-success"></div> -->
+                  <% }else if(e?.order?.products?.statusUpdate['4']){ %>
+                  <span class="badge bg-dark ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.order?.products?.update)%>"><%=e?.order?.products?.status%></span>
+                  <!-- <div class="spinner-grow spinner-grow-sm text-success"></div> -->
                   <% }else if(e?.order?.products?.status=='cancelled'){ %>
                   <span class="badge bg-danger ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.order?.products?.update)%>"><%=e?.order?.products?.status%></span>
                   <!-- <div class="spinner-grow spinner-grow-sm text-danger"></div> -->
@@ -131,11 +134,17 @@
 
             <div class="row">
               <div class="p-0 d-flex justify-content-between">
-                <button class="btn btn-sm btn-danger d-flex align-items-center" <% if(e?.order?.products?.status=='delivered' || e?.order?.products?.status=='cancelled'  ){ %> disabled <% } %> onclick="cancel('<%=e?.order?.products?.PID%>','<%=locals?.orders[0]?.order?.orderID%>', this)">
+                <button class="btn btn-sm btn-danger d-flex align-items-center" <% if(e?.order?.products?.statusUpdate['5'] || e?.order?.products?.statusUpdate['3']  ){ %> disabled <% } %> onclick="cancel('<%=e?.order?.products?.PID%>','<%=locals?.orders[0]?.order?.orderID%>', this)">
                   <span class="spinner-border spinner-border-sm mr-2" style="display: none;"></span>
                   <span class="text text-white">Cancel Order</span>
                 </button>
-                <button class="btn btn-sm btn-info d-flex align-items-center" <% if(e?.order?.products?.status=='cancelled' || e?.order?.products?.status=='delivered'){ %> disabled <% } %> onclick="nextStep('<%=e?.order?.products?.PID%>','<%=locals?.orders[0]?.order?.orderID%>', this)">
+                <% if(e?.order?.products?.statusUpdate['4'] && e?.order?.products?.status!='returned' ){  %>
+                <button class="btn btn-sm btn-info d-flex align-items-center" onclick="approve('<%=e?.order?.products?.PID%>','<%=locals?.orders[0]?.order?.orderID%>', this)">
+                  <span class="spinner-border spinner-border-sm mr-2" style="display: none;"></span>
+                  <span class="text">Approve return request</span>
+                </button>
+                <% }; %>
+                <button class="btn btn-sm btn-info d-flex align-items-center" <% if(e?.order?.products?.statusUpdate['5'] || e?.order?.products?.statusUpdate['3'] ){ %> disabled <% } %> onclick="nextStep('<%=e?.order?.products?.PID%>','<%=locals?.orders[0]?.order?.orderID%>', this)">
                   <span class="spinner-border spinner-border-sm mr-2" style="display: none;"></span>
                   <span class="text">Move to next step</span>
                 </button>
@@ -160,6 +169,12 @@
   </div>
 </div>
 <script>
+  const approve = async (PID, orderID, btn) => {
+    const result = await Swal.fire({
+      title: 'Approve return ?'
+    });
+    if (result.isConfirmed) updateStatus(PID, orderID, btn, 'approve');
+  }
   const cancel = async (PID, orderID, btn) => {
     const result = await Swal.fire({
       title: 'Cancel this order ?'

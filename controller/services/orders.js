@@ -300,10 +300,10 @@ export const cancelOrderProductWithUID = (UID, orderID, PID) => {
                             $set: {
                                 [`orders.${indexOrder}.products.${indexProduct}.status`]: 'cancelled',
                                 [`orders.${indexOrder}.products.${indexProduct}.update`]: new Date(),
-                                [`orders.${indexOrder}.products.${indexProduct}.statusUpdate.4`]: {
-                                    status:'cancelled',
-                                    date:new Date()
-                                } 
+                                [`orders.${indexOrder}.products.${indexProduct}.statusUpdate.5`]: {
+                                    status: 'cancelled',
+                                    date: new Date()
+                                }
                             }
                         });
 
@@ -361,14 +361,20 @@ export const returnOrderByUID = async (UID, orderID, PID) => {
 
                         const updated = await db.orders.updateOne({ UID: userOutput.UID }, {
                             $set: {
-                                [`orders.${indexOrder}.products.${indexProduct}.status`]: 'returned',
-                                [`orders.${indexOrder}.products.${indexProduct}.update`]: new Date()
+                                [`orders.${indexOrder}.products.${indexProduct}.status`]: 'return-requested',
+                                [`orders.${indexOrder}.products.${indexProduct}.update`]: new Date(),
+                                [`orders.${indexOrder}.products.${indexProduct}.statusUpdate.4`]: {
+                                    status: 'returnReq',
+                                    date: new Date()
+                                }
                             }
                         });
 
                         // refund
-                        const amountToAdd = existingData[0].orders[indexOrder].products[indexProduct].total;
-                        const addAmountToWallet = await wallets.addAmount(existingData[0].UID, amountToAdd, 'Refund due to order return');
+                        if (false) {
+                            const amountToAdd = existingData[0].orders[indexOrder].products[indexProduct].total;
+                            const addAmountToWallet = await wallets.addAmount(existingData[0].UID, amountToAdd, 'Refund due to order return');
+                        };
 
                         // re updating the stock
                         const stockToUpdate = existingData[0].orders[indexOrder].products[indexProduct].quantity;
@@ -572,24 +578,24 @@ export const getAllWithFromattedDate = () => {
     });
 };
 
-export const cancelOrder = (orderID) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const existingData = await db.orders.find({ "orders._id": orderID });
-            const index = existingData[0].orders.map(e => e._id == orderID).indexOf(true);
+// export const cancelOrder = (orderID) => {
+//     return new Promise(async (resolve, reject) => {
+//         try {
+//             const existingData = await db.orders.find({ "orders._id": orderID });
+//             const index = existingData[0].orders.map(e => e._id == orderID).indexOf(true);
 
-            const updated = await db.orders.updateOne({ "orders._id": orderID }, {
-                $set: {
-                    [`orders.${index}.status`]: 'cancelled',
-                    [`orders.${index}.update`]: new Date()
-                }
-            });
-            resolve("order successfully cancelled");
-        } catch (error) {
-            reject("Error cancelling order");
-        };
-    });
-};
+//             const updated = await db.orders.updateOne({ "orders._id": orderID }, {
+//                 $set: {
+//                     [`orders.${index}.status`]: 'cancelled',
+//                     [`orders.${index}.update`]: new Date()
+//                 }
+//             });
+//             resolve("order successfully cancelled");
+//         } catch (error) {
+//             reject("Error cancelling order");
+//         };
+//     });
+// };
 export const getByUID = (UID) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -735,18 +741,43 @@ export const updateOrderStatus = (PID, orderID, status) => {
                     else if (indexProduct == -1) reject("Order not found");
                     else {
 
-                        if (status != 'next' && status != 'cancel') reject('Invalid status');
+                        if (status != 'next' && status != 'cancel' && status != 'approve') reject('Invalid status');
                         else {
+
+                            if (status == 'approve') {
+                                statusIndex = 4;
+                            }
+
+                            // data to update
+                            let dataToSave = {
+                                [`orders.${indexOrder}.products.${indexProduct}.status`]: ALL_ORDER_STATUS[statusIndex]?.split('_')[0],
+                                [`orders.${indexOrder}.products.${indexProduct}.update`]: new Date()
+                            };
+
+                            if (status == 'approve') {
+                                dataToSave[`orders.${indexOrder}.products.${indexProduct}.statusUpdate.4`] = {
+                                    status: ALL_ORDER_STATUS[4]?.split('_')[0],
+                                    date: new Date()
+                                };
+
+                                console.log('reached here', dataToSave)
+
+                                // creating refund
+                                const amountToAdd = existingData[0].orders[indexOrder].products[indexProduct].total;
+                                const addAmountToWallet = await wallets.addAmount(existingData[0].UID, amountToAdd, 'Refund due to order return');
+
+                            } else {
+                                dataToSave[`orders.${indexOrder}.products.${indexProduct}.statusUpdate.${statusIndex + ""}`] = {
+                                    status: ALL_ORDER_STATUS[statusIndex]?.split('_')[0],
+                                    date: new Date(),
+                                };
+                            };
+
+                            // updating data from db
                             const updated = await db.orders.updateOne({ 'orders.orderID': orderID }, {
-                                $set: {
-                                    [`orders.${indexOrder}.products.${indexProduct}.statusUpdate.${statusIndex + ""}`]: {
-                                        status: ALL_ORDER_STATUS[statusIndex]?.split('_')[0],
-                                        date: new Date(),
-                                    },
-                                    [`orders.${indexOrder}.products.${indexProduct}.status`]: ALL_ORDER_STATUS[statusIndex]?.split('_')[0],
-                                    [`orders.${indexOrder}.products.${indexProduct}.update`]: new Date()
-                                }
+                                $set: dataToSave
                             });
+
                             if (ALL_ORDER_STATUS[statusIndex] == ALL_ORDER_STATUS[ALL_ORDER_STATUS.length - 1]) {
                                 if (existingData[0].orders[indexOrder].paymentStatus == 'paid') {
                                     const amountToAdd = existingData[0].orders[indexOrder].products[indexProduct].total;

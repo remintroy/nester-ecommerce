@@ -41,7 +41,7 @@
                let cancelAccumilator = [];
                let data = order?.orders?.products?.forEach(element => {
                 if(element.statusUpdate['3']) resultAccumilator.push(element);
-                if(element.statusUpdate['4']) cancelAccumilator.push(element);
+                if(element.statusUpdate['5']) cancelAccumilator.push(element);
                });
             %>
             <% let percent = Math.floor((resultAccumilator.length / order?.orders?.products?.length) * 100); %>
