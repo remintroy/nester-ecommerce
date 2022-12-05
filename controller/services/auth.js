@@ -854,6 +854,15 @@ export const signInPassword = async (data, type, password) => {
 
         if (!output.password) throw 'Incorrect password';
 
+        try {
+            const userDataUpdated = await db.users.updateOne({ UID: userData.UID }, {
+                $set: {
+                    lastLogin: new Date()
+                }
+            });
+        } catch (error) {
+            console.log('Error updating lastlogged in date USER LOGIN');
+        };
 
         return {
             message: 'Login success',
@@ -928,6 +937,17 @@ export const resetPasswordUser = async (data, password, resetID) => {
                     password: userOutput.password
                 }
             });
+
+            try {
+                const userDataUpdated = await db.users.updateOne({ UID: data.UID }, {
+                    $set: {
+                        lastLogin: new Date()
+                    }
+                });
+            } catch (error) {
+                console.log('Error updating lastlogged in date USER LOGIN');
+            };
+    
 
             return {
                 UID: data.UID,

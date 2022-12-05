@@ -80,8 +80,8 @@
                   <span class="badge bg-primary ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.order?.products?.update)%>"><%=e?.order?.products?.status%></span>
                   <!-- <div class="spinner-grow spinner-grow-sm text-primary"></div> -->
                   <% }else if(e?.order?.products?.status=='returned'){ %>
-                    <span class="badge bg-primary ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.order?.products?.update)%>"><%=e?.order?.products?.status%></span>
-                    <!-- <div class="spinner-grow spinner-grow-sm text-primary"></div> -->
+                  <span class="badge bg-primary ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.order?.products?.update)%>"><%=e?.order?.products?.status%></span>
+                  <!-- <div class="spinner-grow spinner-grow-sm text-primary"></div> -->
                   <% }else if(e?.order?.products?.status=='out for delivery'){ %>
                   <span class="badge bg-secondary ml-2 mr-2 badge-pill" data-toggle="tooltip" title="<%=locals?.util?.dataToReadable(e?.order?.products?.update)%>"><%=e?.order?.products?.status%></span>
                   <!-- <div class="spinner-grow spinner-grow-sm text-secondary"></div> -->
@@ -103,21 +103,21 @@
             <div class="row">
               <div class="col-12 hh-grayBox pt45 pb20">
                 <div class="row justify-content-between">
-                  <div class="order-tracking <%=  e?.order?.products?.statusUpdate['0']?.status?'completed':''%> ">
+                  <div class="order-tracking <%=   e?.order?.products?.statusUpdate['0']? 'completed' : e?.order?.products?.statusUpdate['5']?.status?'cancelled':''%> ">
                     <span class="is-complete"></span>
-                    <p>Ordered<br><span><%= e?.order?.products?.statusUpdate['0'] ? locals?.util?.dataToReadable(e?.order?.products?.statusUpdate['0']?.date):locals?.util?.dataToReadable('')%></span></p>
+                    <p><%= e?.order?.products?.statusUpdate['0']?'Ordered': 'Cancelled'%><br><span><%=  e?.order?.products?.statusUpdate['0']? locals?.util?.dataToReadable(e?.order?.products?.update) : locals?.util?.dataToReadable(e?.order?.products?.statusUpdate['5']?.date)%></span></p>
                   </div>
-                  <div class="order-tracking <%= e?.order?.products?.statusUpdate['1']?.status?'completed':''%> ">
+                  <div class="order-tracking <%= e?.order?.products?.statusUpdate['1']? 'completed' : e?.order?.products?.statusUpdate['5']?.status?'cancelled':''%> ">
                     <span class="is-complete "></span>
-                    <p>Shipped<br><span><%= locals?.util?.dataToReadable(e?.order?.products?.statusUpdate['1']?.date)%></span></p>
+                    <p><%= e?.order?.products?.statusUpdate['1']?'Shipped': 'Cancelled'%><br><span><%=  e?.order?.products?.statusUpdate['1']? locals?.util?.dataToReadable(e?.order?.products?.update) : locals?.util?.dataToReadable(e?.order?.products?.statusUpdate['5']?.date)%></span></p>
                   </div>
-                  <div class="order-tracking <%= e?.order?.products?.statusUpdate['2']?.status?'completed':''%> ">
+                  <div class="order-tracking <%= e?.order?.products?.statusUpdate['2']? 'completed' : e?.order?.products?.statusUpdate['5']?.status?'cancelled':''%> ">
                     <span class="is-complete"></span>
-                    <p>Out for delevery<br><span><%= locals?.util?.dataToReadable(e?.order?.products?.statusUpdate['2']?.date)%></span></p>
+                    <p><%= e?.order?.products?.statusUpdate['2']?'Out for delevery': 'Cancelled'%><br><span><%=  e?.order?.products?.statusUpdate['2']? locals?.util?.dataToReadable(e?.order?.products?.update) : locals?.util?.dataToReadable(e?.order?.products?.statusUpdate['5']?.date)%></span></p>
                   </div>
-                  <div class="order-tracking <%= e?.order?.products?.statusUpdate['3']?.status?'completed':''%> ">
+                  <div class="order-tracking <%=  e?.order?.products?.statusUpdate['3']? 'completed': e?.order?.products?.statusUpdate['5']?.status?'cancelled':''%> ">
                     <span class="is-complete"></span>
-                    <p>Delivered<br><span><%= locals?.util?.dataToReadable(e?.order?.products?.statusUpdate['3']?.date)%></span></p>
+                    <p><%= e?.order?.products?.statusUpdate['3']?'Delivered': 'Cancelled'%><br><span><%=  e?.order?.products?.statusUpdate['3']? locals?.util?.dataToReadable(e?.order?.products?.update) : locals?.util?.dataToReadable(e?.order?.products?.statusUpdate['5']?.date)%></span></p>
                   </div>
                 </div>
               </div>
@@ -131,11 +131,11 @@
 
             <div class="row">
               <div class="p-0 d-flex justify-content-between">
-                <button class="btn btn-sm btn-danger d-flex align-items-center" onclick="cancel('<%=e?.order?.products?.PID%>','<%=locals?.orders[0]?.order?.orderID%>', this)">
+                <button class="btn btn-sm btn-danger d-flex align-items-center" <% if(e?.order?.products?.status=='delivered' || e?.order?.products?.status=='cancelled'  ){ %> disabled <% } %> onclick="cancel('<%=e?.order?.products?.PID%>','<%=locals?.orders[0]?.order?.orderID%>', this)">
                   <span class="spinner-border spinner-border-sm mr-2" style="display: none;"></span>
                   <span class="text text-white">Cancel Order</span>
                 </button>
-                <button class="btn btn-sm btn-info d-flex align-items-center" onclick="nextStep('<%=e?.order?.products?.PID%>','<%=locals?.orders[0]?.order?.orderID%>', this)">
+                <button class="btn btn-sm btn-info d-flex align-items-center" <% if(e?.order?.products?.status=='cancelled' || e?.order?.products?.status=='delivered'){ %> disabled <% } %> onclick="nextStep('<%=e?.order?.products?.PID%>','<%=locals?.orders[0]?.order?.orderID%>', this)">
                   <span class="spinner-border spinner-border-sm mr-2" style="display: none;"></span>
                   <span class="text">Move to next step</span>
                 </button>
@@ -290,10 +290,39 @@
     opacity: 0;
   }
 
+  .order-tracking .is-complete:before {
+    display: block;
+    position: absolute;
+    content: 'X';
+    /* height: 14px;
+    width: 7px;
+    top: -2px;
+    bottom: 0;
+    left: 5px; */
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: transparent;
+    /* margin: auto 0;
+    border: 0px solid #AFAFAF;
+    border-width: 0px 2px 2px 0;
+    transform: rotate(45deg);
+    opacity: 0; */
+  }
+
+
   .order-tracking.completed .is-complete {
     border-color: #27aa80;
     border-width: 0px;
     background-color: #27aa80;
+  }
+
+  .order-tracking.cancelled .is-complete {
+    border-color: #aa2727;
+    border-width: 0px;
+    background-color: #aa2727;
   }
 
   .order-tracking.completed .is-complete:after {
@@ -302,6 +331,10 @@
     width: 7px;
     left: 11px;
     opacity: 1;
+  }
+
+  .order-tracking.cancelled .is-complete:before {
+    color: rgb(255, 255, 255);
   }
 
   .order-tracking p {
@@ -317,6 +350,10 @@
   }
 
   .order-tracking.completed p {
+    color: #000;
+  }
+
+  .order-tracking.cancelled p {
     color: #000;
   }
 
@@ -338,5 +375,9 @@
 
   .order-tracking.completed:before {
     background-color: #27aa80;
+  }
+
+  .order-tracking.cancelled::before {
+    background-color: #aa2727;
   }
 </style>

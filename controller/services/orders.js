@@ -11,7 +11,7 @@ import * as wallets from './wallet.js';
 import * as coupon from './coupens.js';
 
 const ORDERID_LENGTH = 20;
-const ALL_ORDER_STATUS = ['ordered_OR', 'shipped_SH', 'out for delivery_OT', 'delivered_DD','returned_RD', 'cancelled_CC'];
+const ALL_ORDER_STATUS = ['ordered_OR', 'shipped_SH', 'out for delivery_OT', 'delivered_DD', 'returned_RD', 'cancelled_CC'];
 
 const createOrderID = async () => {
     let orderID = '';
@@ -119,7 +119,7 @@ export const checkout = async (UID, body) => {
                 products: products,
                 address: addressResult,
                 paymentType: paymentMethod,
-                status: 'ordered',
+                status: 'pending',
                 paymentStatus: 'pending'
             };
 
@@ -171,6 +171,21 @@ export const checkout = async (UID, body) => {
 
         if (paymentMethod == 'COD') {
             try {
+
+                // fetching all orderes data form db to find index to update
+                const existingDataFrmDb = await db.orders.findOne({ UID: UID });
+
+                // index of order
+                const indexOfOrder = existingDataFrmDb.orders.map(e => e.orderID == orderID).indexOf(true);
+
+                // updateing order status 
+                const updatedDataToDb = await db.orders.updateOne({ UID: UID }, {
+                    $set: {
+                        [`orders.${indexOfOrder}.status`]: 'ordered'
+                    }
+                });
+
+                // updating product stocks
                 for (const product of products) {
                     await db.products.updateOne({ PID: product.PID }, {
                         $inc: {
@@ -178,11 +193,15 @@ export const checkout = async (UID, body) => {
                         }
                     });
                 };
+
+                // clearing cart
                 const cartDataRemoveStatus = await db.cart.updateOne({ UID: UID }, {
                     $set: {
                         products: []
                     }
                 });
+
+                // if coupen used update usage of coupen
                 if (body?.coupon) {
                     const updateCouponUsage = await db.coupens.updateOne({ code: body?.coupon }, {
                         $inc: {
@@ -190,8 +209,10 @@ export const checkout = async (UID, body) => {
                         }
                     });
                 };
+
+                //...
             } catch (error) {
-                collectedErrors = 'Error while removing product from cart';
+                throw 'Faild to create order please try after sometime';
             };
         };
 
@@ -278,13 +299,20 @@ export const cancelOrderProductWithUID = (UID, orderID, PID) => {
                         const updated = await db.orders.updateOne({ UID: userOutput.UID }, {
                             $set: {
                                 [`orders.${indexOrder}.products.${indexProduct}.status`]: 'cancelled',
-                                [`orders.${indexOrder}.products.${indexProduct}.update`]: new Date()
+                                [`orders.${indexOrder}.products.${indexProduct}.update`]: new Date(),
+                                [`orders.${indexOrder}.products.${indexProduct}.statusUpdate.4`]: {
+                                    status:'cancelled',
+                                    date:new Date()
+                                } 
                             }
                         });
 
-                        // refund
-                        const amountToAdd = existingData[0].orders[indexOrder].products[indexProduct].total;
-                        const addAmountToWallet = await wallets.addAmount(existingData[0].UID, amountToAdd, 'Refund due to order cancelation');
+                        if (existingData[0].orders[indexOrder].products[indexProduct].paymentStatus == 'paid') {
+
+                            // refund
+                            const amountToAdd = existingData[0].orders[indexOrder].products[indexProduct].total;
+                            const addAmountToWallet = await wallets.addAmount(existingData[0].UID, amountToAdd, 'Refund due to order cancelation');
+                        };
 
                         // re updating the stock
                         const stockToUpdate = existingData[0].orders[indexOrder].products[indexProduct].quantity;
