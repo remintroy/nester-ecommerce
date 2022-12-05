@@ -106,19 +106,19 @@
 
 
               <% if(Number(locals?.orders[0]?.currentPage)-2>=1){ %>
-              <li class="page-item " id="btnB"><a class="page-link" href="/orders?page=<%=Number(locals?.orders[0]?.currentPage)-2%>" data-current="1"><%=locals?.orders[0]?.currentPage-2%></a></li>
+              <li class="page-item " id="btnB"><a class="page-link" href="/orders?page=<%=Number(locals?.orders[0]?.currentPage)-2%>" data-current="1"><%=Number(locals?.orders[0]?.currentPage)-2%></a></li>
               <% } %>
               <% if(Number(locals?.orders[0]?.currentPage)-1>=1){ %>
-              <li class="page-item " id="btnB"><a class="page-link" href="/orders?page=<%=Number(locals?.orders[0]?.currentPage)-1%>" data-current="1"><%=locals?.orders[0]?.currentPage-1%></a></li>
+              <li class="page-item " id="btnB"><a class="page-link" href="/orders?page=<%=Number(locals?.orders[0]?.currentPage)-1%>" data-current="1"><%=Number(locals?.orders[0]?.currentPage)-1%></a></li>
               <% } %>
               <li class="page-item active" id="btnB"><a class="page-link" href="/orders?page=<%=Number(locals?.orders[0]?.currentPage)%>" data-current="1"><%=locals?.orders[0]?.currentPage%></a></li>
 
               <% }else { %>
 
-              <li class="page-item" id="btnB"><a class="page-link" href="/orders?page=<%=Number(locals?.orders[0]?.currentPage)-1%>" data-current="1"><%=locals?.orders[0]?.currentPage-1%></a></li>
+              <li class="page-item" id="btnB"><a class="page-link" href="/orders?page=<%=Number(locals?.orders[0]?.currentPage)-1%>" data-current="1"><%=Number(locals?.orders[0]?.currentPage)-1%></a></li>
               <li class="page-item active" id="btnB"><a class="page-link" href="/orders?page=<%=Number(locals?.orders[0]?.currentPage)%>" data-current="1"><%=locals?.orders[0]?.currentPage%></a></li>
               <% if(Number(locals?.orders[0]?.maxPage)>Number(locals?.orders[0]?.currentPage)){ %>
-              <li class="page-item" id="btnB"><a class="page-link" href="/orders?page=<%=Number(locals?.orders[0]?.currentPage)+1%>" data-current="1"><%=locals?.orders[0]?.currentPage+1%></a></li>
+              <li class="page-item" id="btnB"><a class="page-link" href="/orders?page=<%=Number(locals?.orders[0]?.currentPage)+1%>" data-current="1"><%=Number(locals?.orders[0]?.currentPage)+1%></a></li>
               <% } %>
 
               <% } %>
