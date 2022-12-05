@@ -76,7 +76,6 @@
         .then(res => {
           if (res.status == 'good') {
             document.getElementById("cart_total_count").innerText = res.message.totalCount;
-            document.getElementById("cart_total_sub_count").innerText = res.message.subTotal;
             notify('added to cart', true);
           } else {
             notify(res.message);

@@ -58,7 +58,7 @@ export const getWalletInfo = async (UID) => {
             throw 'Error fetching information';
         };
 
-        if (!walletData) throw 'Nothig to show';
+        // if (!walletData) throw 'Nothig to show';
 
         return walletData;
 

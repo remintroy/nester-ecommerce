@@ -89,7 +89,7 @@
                     <!-- <div class="spinner-grow spinner-grow-sm text-danger"></div> -->
                     <% } %>
                   </span>
-                  <span class="order_status_info" style="text-transform: capitalize;">Payment Status : <%= e?.orders?.products?.paymentStatus %></span> <br>
+                  <span class="order_status_info" style="text-transform: capitalize;">Payment Status : <%= e?.orders?.paymentStatus %></span> <br>
                   <span style="text-transform: capitalize ;">
                     <%=e?.orders?.address?.houseNumber?e?.orders?.address?.houseNumber:''%>
                     <%=e?.orders?.address?.town?', '+e?.orders?.address?.town:''%>
@@ -115,12 +115,19 @@
 
           <% }); %>
 
+
+          <% if(!locals?.orders?.length){ %>
+          <div class="h-100 w-100 text-center">
+            <h5>Your orders will be here once you orderd</h5>
+          </div>
+          <% }else{%>
           <!-- edit button -->
           <div class="row w-100">
             <div class="col-12 d-flex justify-content-center mt-3">
               <p><span class="text-info">NOTE : </span>A reload is required to reflect changes all across the page</p>
             </div>
           </div>
+          <%} %>
 
           <script>
             // orders scripts here

@@ -307,7 +307,7 @@ export const cancelOrderProductWithUID = (UID, orderID, PID) => {
                             }
                         });
 
-                        if (existingData[0].orders[indexOrder].products[indexProduct].paymentStatus == 'paid') {
+                        if (existingData[0].orders[indexOrder].paymentStatus == 'paid') {
 
                             // refund
                             const amountToAdd = existingData[0].orders[indexOrder].products[indexProduct].total;
