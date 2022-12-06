@@ -100,6 +100,7 @@ export const products = db.model("products", new mongoose.Schema({
 
 export const category = db.model("category", new mongoose.Schema({
     category: String,
+    subCategorys:Array,
     creationTime: {
         type: Date,
         default: new Date()

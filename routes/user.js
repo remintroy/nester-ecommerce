@@ -116,5 +116,7 @@ app.get('/dashboard/address', auth.mustLoginAsUser, users.addressPg);
 app.get('/dashboard/security', auth.mustLoginAsUser, users.securityPg);
 // checkout page
 app.get('/checkout', auth.mustLoginAsUser, users.checkout);
+// category
+app.get('/c/:id', users.category)
 
 export default app;

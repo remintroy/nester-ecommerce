@@ -613,6 +613,42 @@ export const securityPg = async (req, res) => {
     res.render("client/404");
   };
 };
+export const category = async (req, res) => {
+  try {
+
+    // get category from request
+    const categoryInput = req.params?.id;
+
+    let existingData;
+
+    try {
+      // getting products with same category
+      existingData = await db.products.find({ category: categoryInput });
+    } catch (error) {
+      // handling error
+      throw 'Failed to fetch product data from db';
+    };
+
+    let topProducts;
+
+    try {
+      // gettign top products data
+      topProducts = await productService.topSellingProducts(10)
+    } catch (error) {
+      // handling error
+      throw 'Error while fetchig product data';
+    }
+
+
+
+    throw 's'
+  } catch (error) {
+    res.locals.message = "Cant Find product here...";
+    res.locals.error = "Faild to fetch security related data form database";
+    res.locals.layout = 'blank_layout';
+    res.render('client/404');
+  }
+}
 
 // common - api's
 export const addTOCartAPI = async (req, res) => {
