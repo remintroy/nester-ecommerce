@@ -94,7 +94,7 @@
         toast: true,
         position: 'bottom-left',
         showConfirmButton: false,
-        timer: 3000,
+        timer: 5000,
         background:'#222',
         timerProgressBar: true,
         didOpen: (toast) => {
@@ -102,6 +102,10 @@
           toast.addEventListener('mouseleave', Swal.resumeTimer)
         }
       });
+    };
+    function copyToClipboard(value,message){
+      navigator.clipboard.writeText(value);
+      notify(message?message:'Copyed to clipboard','success');
     };
   </script>
 </body>

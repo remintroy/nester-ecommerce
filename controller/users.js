@@ -187,6 +187,9 @@ export const resetPassword = async (req, res) => {
 
 // new
 export const signup = async (req, res) => {
+  if(req.session.referalInfo){
+    res.locals.referalInfo = req.session.referalInfo;
+  };
   res.locals.title = 'Signup';
   res.locals.currentPage = "signup";
   res.locals.layout = "client/auth/layout";
@@ -843,4 +846,43 @@ export const failedOrders = async (req, res) => {
     console.log(error)
     res.send({ stauts: 'error', message: error });
   };
-}
+};
+export const referalInit = async (req, res) => {
+  try {
+
+    // referal code
+    const referalCode = req.query.usr;
+
+    // checking if referal code is valid
+    const dataFromReferal = await db.users.find({ referal: referalCode });
+
+    if (dataFromReferal.length == 0) throw 'Invalid referal code';
+
+    // checks if user is logged in or not
+    if (!req.user) {
+
+      // assigning value to make referal signup possible
+      req.session.referalInfo = {
+        referal: dataFromReferal[0].referal,
+        email: dataFromReferal[0].email,
+        name: dataFromReferal[0].name
+      };
+
+      // redirecting user to signup page
+      res.redirect('/user_signup');
+    } else {
+
+      // render user is already logged in 
+      if(req.user.referal==referalCode){
+        res.send('your code')
+      }else{
+        res.send("hmmm you are good but not here")
+      };
+
+    };
+
+  } catch (error) {
+    // error while hadling or adding referal code
+    res.send('Invalid code');
+  };
+};

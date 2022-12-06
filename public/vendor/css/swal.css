@@ -3,6 +3,9 @@
 * Released under the MIT License.
 */
 
+.swal2-title {
+  color: white !important;
+}
 .swal2-popup.swal2-toast {
     box-sizing: border-box;
     grid-column: 1/4 !important;

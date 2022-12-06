@@ -63,6 +63,9 @@ app.put('/user_data/update', auth.mustLoginAsUserAPI, users.updateUserDataAPI);
 // api for failed orders 
 app.delete('/orders/failed/:id', auth.mustLoginAsUserAPI, users.failedOrders);
 
+// api for create user using referal codes
+app.get('/referal_', users.referalInit);
+
 // sub - dev api's
 // api for get all products form cart
 app.post('/cart_all', auth.mustLoginAsUserAPI, users.getAllProductsFormCartAPI);
