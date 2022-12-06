@@ -379,6 +379,7 @@ export const signupSetpTwoAPI = async (req, res) => {
     // logs in user
     req.session.signup = {};
     req.session.user = result.UID;
+    req.session.referalInfo = {};
     req.session.userLogin = { ...device.parse(req.headers['user-agent']), date: new Date() };
 
     // response

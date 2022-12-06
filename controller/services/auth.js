@@ -1012,6 +1012,7 @@ export const signUpStepTwo = async ({ email, phone, password, name, referalInfo 
 
         try {
 
+            referalInfo = referalInfo ? referalInfo : {};
             const { referal, email: referalEmail, name: referalName } = referalInfo;
 
             const referalCode = randomId(7, 'A0');
