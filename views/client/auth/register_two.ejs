@@ -7,6 +7,11 @@
   <div class="title">
     <h1>Complete signup</h1>
   </div>
+  <% if(locals.referalInfo){%>
+  <div class="status_disp">
+    <i class="fa-solid fa-circle-check" style="color: green;"></i> Referal code applied
+  </div>
+  <% } %>
   <div class="status_disp" id="status_disp" style="display: none;"> </div>
   <div class="input-group">
     <input type="text" placeholder="Name" id="nameInput">

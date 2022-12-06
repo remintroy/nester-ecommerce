@@ -1000,7 +1000,7 @@ export const signUpInit = async ({ email, phone }) => {
         throw error;
     };
 };
-export const signUpStepTwo = async ({ email, phone, password, name, referal }) => {
+export const signUpStepTwo = async ({ email, phone, password, name, referalInfo }) => {
     try {
         const userOutput = await validatior({ email, phone, password, name }, {
             emailRequired: true,
@@ -1011,6 +1011,8 @@ export const signUpStepTwo = async ({ email, phone, password, name, referal }) =
         }, 'signup');
 
         try {
+
+            const { referal, email: referalEmail, name: referalName } = referalInfo;
 
             const referalCode = randomId(7, 'A0');
 
@@ -1060,6 +1062,7 @@ export const signUpStepTwo = async ({ email, phone, password, name, referal }) =
             };
 
         } catch (error) {
+            console.log(error);
             throw 'Error while creating user';
         };
 

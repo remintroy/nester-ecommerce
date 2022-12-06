@@ -187,7 +187,7 @@ export const resetPassword = async (req, res) => {
 
 // new
 export const signup = async (req, res) => {
-  if(req.session.referalInfo){
+  if (req.session.referalInfo) {
     res.locals.referalInfo = req.session.referalInfo;
   };
   res.locals.title = 'Signup';
@@ -205,6 +205,10 @@ export const signupStepTwo = async (req, res) => {
     if (req.session?.signup?.regID != id) throw {
       message: 'Invalid Authentication ID',
       code: 401
+    };
+
+    if (req.session.referalInfo) {
+      res.locals.referalInfo = req.session.referalInfo;
     };
 
     //..
@@ -362,9 +366,11 @@ export const signupSetpTwoAPI = async (req, res) => {
       code: 401
     };
 
+    let referalInfo = req.session.referalInfo ? req.session.referalInfo : null;
+
     // validating data
     const { password, name } = req.body;
-    const data = { ...req.session.signup, password, name };
+    const data = { ...req.session.signup, password, name, referalInfo };
 
     // verifying otp
     const result = await auth.signUpStepTwo(data);
@@ -869,13 +875,13 @@ export const referalInit = async (req, res) => {
       };
 
       // redirecting user to signup page
-      res.redirect('/user_signup');
+      res.redirect('/user_registration');
     } else {
 
       // render user is already logged in 
-      if(req.user.referal==referalCode){
+      if (req.user.referal == referalCode) {
         res.send('your code')
-      }else{
+      } else {
         res.send("hmmm you are good but not here")
       };
 

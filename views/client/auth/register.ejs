@@ -7,7 +7,12 @@
   <div class="title">
     <h1>Get your account</h1>
   </div>
-  <div class="status_disp" id="status_disp" style="display: none;"> </div>
+  <% if(locals.referalInfo){%>
+  <div class="status_disp">
+    <i class="fa-solid fa-circle-check" style="color: green;"></i> Referal code applied
+  </div>
+  <% } %>
+  <div class="status_disp" id="status_disp" style="display: none;"></div>
   <div class="input-group">
     <input type="text" placeholder="Email" id="emailInput">
     <input type="text" placeholder="Mobile number" id="phoneInput">
