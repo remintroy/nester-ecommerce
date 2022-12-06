@@ -112,15 +112,15 @@
                   </div>
                   <div class="order-tracking <%= e?.order?.products?.statusUpdate['1']? 'completed' : e?.order?.products?.statusUpdate['5']?.status?'cancelled':''%> ">
                     <span class="is-complete "></span>
-                    <p><%= e?.order?.products?.statusUpdate['1']?'Shipped': 'Cancelled'%><br><span><%=  e?.order?.products?.statusUpdate['1']? locals?.util?.dataToReadable(e?.order?.products?.update) : locals?.util?.dataToReadable(e?.order?.products?.statusUpdate['5']?.date)%></span></p>
+                    <p><%= e?.order?.products?.statusUpdate['5']?'Cancelled': 'Shipped'%><br><span><%=  e?.order?.products?.statusUpdate['1']? locals?.util?.dataToReadable(e?.order?.products?.update) : locals?.util?.dataToReadable(e?.order?.products?.statusUpdate['5']?.date)%></span></p>
                   </div>
                   <div class="order-tracking <%= e?.order?.products?.statusUpdate['2']? 'completed' : e?.order?.products?.statusUpdate['5']?.status?'cancelled':''%> ">
                     <span class="is-complete"></span>
-                    <p><%= e?.order?.products?.statusUpdate['2']?'Out for delevery': 'Cancelled'%><br><span><%=  e?.order?.products?.statusUpdate['2']? locals?.util?.dataToReadable(e?.order?.products?.update) : locals?.util?.dataToReadable(e?.order?.products?.statusUpdate['5']?.date)%></span></p>
+                    <p><%= e?.order?.products?.statusUpdate['5']?'Cancelled': 'Out for delevery'%><br><span><%=  e?.order?.products?.statusUpdate['2']? locals?.util?.dataToReadable(e?.order?.products?.update) : locals?.util?.dataToReadable(e?.order?.products?.statusUpdate['5']?.date)%></span></p>
                   </div>
                   <div class="order-tracking <%=  e?.order?.products?.statusUpdate['3']? 'completed': e?.order?.products?.statusUpdate['5']?.status?'cancelled':''%> ">
                     <span class="is-complete"></span>
-                    <p><%= e?.order?.products?.statusUpdate['3']?'Delivered': 'Cancelled'%><br><span><%=  e?.order?.products?.statusUpdate['3']? locals?.util?.dataToReadable(e?.order?.products?.update) : locals?.util?.dataToReadable(e?.order?.products?.statusUpdate['5']?.date)%></span></p>
+                    <p><%= e?.order?.products?.statusUpdate['5']?'Cancelled': 'Delivered'%><br><span><%=  e?.order?.products?.statusUpdate['3']? locals?.util?.dataToReadable(e?.order?.products?.update) : locals?.util?.dataToReadable(e?.order?.products?.statusUpdate['5']?.date)%></span></p>
                   </div>
                 </div>
               </div>

@@ -12,7 +12,7 @@ export const createPdf = () => {
         try {
             
         // data to use in pdf
-        const dataToDisplay = { yearReport: await reports.totalProductsSalesYearCount(2022) };
+        const dataToDisplay = { yearReport: await reports.totalProductsSalesYearCount(new Date().getFullYear()) };
 
         // path of ejs template
         const templateDirPath = path.join(process.cwd(), 'views', 'pdf-templates');
@@ -36,8 +36,7 @@ export const createPdf = () => {
                 },
             }
         })
-            .toFile(path.join(templateDirPath, 'report.pdf'), (err, data) => {
-                console.log(++count);
+            .toFile(path.join(process.cwd(),'reports' ,'report.pdf'), (err, data) => {
                 resolve(data);
             });
 
@@ -52,4 +51,4 @@ async function test() {
         console.log(await createPdf());
     };
 };
-test()
+// test()

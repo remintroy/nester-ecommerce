@@ -6,33 +6,71 @@
       <h1 class="h3 d-flex gap-2"><i class="mdi mdi-file-document"></i> Salers report</h1>
     </div>
     <div>
-      <a href="/coupon/add_coupon" class="btn btn-info">+ Add new coupen</a>
+      <a href="/report/year/pdf" download class="btn btn-info d-flex align-items-center"><i class="mdi mdi-arrow-down-bold-circle"></i>&nbsp; Download this year report</a>
     </div>
   </div>
 
   <div class="row">
     <div class="col-12 my-3">
-        <div class="card rounded p-4">
-            <h5 class="m-0 p-0">Sales report of last month</h5>
+      <div class="card rounded p-4">
+        <h5 class="m-0 p-0">Sales report of last month</h5>
 
-            <table class="mt-3 p-2">
-                <thead>
-                    <tr style="font-weight:bold;">
-                        <td>Date</td>
-                        <td>Placed</td>
-                        <td>Items</td>
-                        <td>Revenue</td>
-                        <td>Orders</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="py-3">1-10-2233</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <% const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+          let totalSalesValue = 0;
+          yearReport.OR.map(e=> totalSalesValue = totalSalesValue+e.total )
+          yearReport.SH.map(e=> totalSalesValue = totalSalesValue+e.total )
+          yearReport.OT.map(e=> totalSalesValue = totalSalesValue+e.total )
+          yearReport.DD.map(e=> totalSalesValue = totalSalesValue+e.total )
+          yearReport.CC.map(e=> totalSalesValue = totalSalesValue-e.total )
+          
+        %>
+
+        <p class="mt-5">This year we manage to make total of <%= yearReport?.DD[0]?.total? yearReport?.DD[0]?.total:0%>Rs /- <br>
+          <small> Each moths sales and order status listed below</small>
+        </p>
+
+        <table class="table table-borderless mt-4 rounded bg-light">
+          <thead>
+            <tr style="font-weight: bold;">
+              <td>Month</td>
+              <td>Placed</td>
+              <td>Revenue / month</td>
+            </tr>
+          </thead>
+          <tbody>
+            <% const OR = []; %>
+
+            <!-- get values for each month -->
+            <% for(let i=0; i<12; i++){  
+                let acc = {};
+
+              // loop for find values
+              for (let j = 0; j < 12; j++) {
+
+                if(yearReport.DD[j]?.month == (i+1)) {
+                  acc = yearReport.DD[j];
+                  break;
+                }else{
+                  acc = {};
+                };
+              };
+              // output
+              OR.push(acc);
+            } %>
+
+            <% for(let i=0; i<12; i++){ %>
+            <tr>
+              <td><%= months[i] %> </td>
+              <td><%= OR[i]?.length?OR[i].length:'-' %> </td>
+              <td><%= OR[i]?.total?' ₹ '+ OR[i].total:'-' %></td>
+            </tr>
+            <% }; %>
+
+          </tbody>
+        </table>
+
+      </div>
     </div>
-  </div>
 
-</div>
+  </div>

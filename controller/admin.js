@@ -513,7 +513,6 @@ export const createReportPDF = async (req, res) => {
 };
 export const banner = async (req, res) => {
     try {
-
         res.locals.currentPage = 'banner';
         res.locals.currentPageA = 'banner';
         res.render(pagesBase + '/banner');
@@ -525,11 +524,19 @@ export const banner = async (req, res) => {
     };
 };
 
+// add banner
+export const addBanner = async (req, res) => {
+    res.locals.currentPage = 'addBanner';
+    res.locals.currentPageA = 'banner';
+    res.render('admin/banner_add');
+}
+
 // sales report
-export const report = async (req,res)=>{
+export const report = async (req, res) => {
     try {
-        
-        res.render(pagesBase+'/reports');
+
+        res.locals.yearReport = await apiService.totalProductsSalesYearCount(new Date().getFullYear());
+        res.render(pagesBase + '/reports');
 
     } catch (error) {
         // handling errors
