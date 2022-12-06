@@ -374,21 +374,21 @@ export const returnOrderByUID = async (UID, orderID, PID) => {
                         if (false) {
                             const amountToAdd = existingData[0].orders[indexOrder].products[indexProduct].total;
                             const addAmountToWallet = await wallets.addAmount(existingData[0].UID, amountToAdd, 'Refund due to order return');
+
+                            // updating the stock
+                            const stockToUpdate = existingData[0].orders[indexOrder].products[indexProduct].quantity;
+                            const updateStock = await db.products.updateOne({ PID: productOutput.PID }, {
+                                $inc: {
+                                    stock: stockToUpdate
+                                }
+                            });
                         };
 
-                        // re updating the stock
-                        const stockToUpdate = existingData[0].orders[indexOrder].products[indexProduct].quantity;
-                        const updateStock = await db.products.updateOne({ PID: productOutput.PID }, {
-                            $inc: {
-                                stock: stockToUpdate
-                            }
-                        });
-
-                        resolve("Order successfully cancelled");
+                        resolve("Succssfully requestsed for return");
                     };
 
                 } else {
-                    reject('Nothing to cancel');
+                    reject('Nothing to return');
                 };
 
                 //...
@@ -535,12 +535,12 @@ export const getAll = async (page) => {
         let countFromDb;
 
         try {
-            countFromDb = await db.orders.aggregate([{$unwind:'$orders'},{ $group: { _id: 'totalLenght', sum: { $sum: 1 } } }]);
+            countFromDb = await db.orders.aggregate([{ $unwind: '$orders' }, { $group: { _id: 'totalLenght', sum: { $sum: 1 } } }]);
         } catch (error) {
             throw 'Error while fetching data from db';
         };
 
-        outputData.totalCount = countFromDb[0].sum; 
+        outputData.totalCount = countFromDb[0].sum;
 
         const maxPG = parseInt(outputData.totalCount / listLenght) + (outputData.totalCount % listLenght != 0 ? 1 : 0);
 
@@ -796,11 +796,20 @@ export const updateOrderStatus = (PID, orderID, status) => {
                                     date: new Date()
                                 };
 
-                                console.log('reached here', dataToSave)
-
                                 // creating refund
                                 const amountToAdd = existingData[0].orders[indexOrder].products[indexProduct].total;
                                 const addAmountToWallet = await wallets.addAmount(existingData[0].UID, amountToAdd, 'Refund due to order return');
+
+                                // TODO: dose the code in if below needed
+                                if (false) {
+                                    // updating the stock
+                                    const stockToUpdate = existingData[0].orders[indexOrder].products[indexProduct].quantity;
+                                    const updateStock = await db.products.updateOne({ PID: productOutput.PID }, {
+                                        $inc: {
+                                            stock: stockToUpdate
+                                        }
+                                    });
+                                };
 
                             } else {
                                 dataToSave[`orders.${indexOrder}.products.${indexProduct}.statusUpdate.${statusIndex + ""}`] = {

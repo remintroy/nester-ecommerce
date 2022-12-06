@@ -93,30 +93,30 @@ app.use(users.localsForUser);
 // to track request count to server
 app.use(users.analytics);
 
-/// home page
-app.get('/', users.home);
+// home page
+app.get('/',users.urlHistory, users.home);
 // shop page
-app.get('/shop', users.shop);
+app.get('/shop',users.urlHistory, users.shop);
 // products page
-app.get('/product/:id', users.product);
+app.get('/product/:id',users.urlHistory, users.product);
 
 // user auth must routes
-app.get('/cart', auth.mustLoginAsUser, users.cart);
+app.get('/cart',users.urlHistory, auth.mustLoginAsUser, users.cart);
 // wishlist page
-app.get('/wishlist', auth.mustLoginAsUser, users.wishlist);
+app.get('/wishlist',users.urlHistory, auth.mustLoginAsUser, users.wishlist);
 // dashboard page
-app.get(['/dashboard', '/dashboard/account'], auth.mustLoginAsUser, users.dashboard);
+app.get(['/dashboard', '/dashboard/account'],users.urlHistory, auth.mustLoginAsUser, users.dashboard);
 // ordres page
-app.get('/dashboard/orders', auth.mustLoginAsUser, users.ordersPg);
+app.get('/dashboard/orders',users.urlHistory, auth.mustLoginAsUser, users.ordersPg);
 // wallet page
-app.get('/dashboard/wallet', auth.mustLoginAsUser, users.walletPg);
+app.get('/dashboard/wallet',users.urlHistory, auth.mustLoginAsUser, users.walletPg);
 // address page
-app.get('/dashboard/address', auth.mustLoginAsUser, users.addressPg);
+app.get('/dashboard/address',users.urlHistory, auth.mustLoginAsUser, users.addressPg);
 // security page dash
-app.get('/dashboard/security', auth.mustLoginAsUser, users.securityPg);
+app.get('/dashboard/security',users.urlHistory, auth.mustLoginAsUser, users.securityPg);
 // checkout page
-app.get('/checkout', auth.mustLoginAsUser, users.checkout);
+app.get('/checkout',users.urlHistory, auth.mustLoginAsUser, users.checkout);
 // category
-app.get('/c/:id', users.category)
+app.get('/c/:id',users.urlHistory, users.category);
 
 export default app;

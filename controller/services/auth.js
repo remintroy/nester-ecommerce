@@ -4,6 +4,10 @@ import bCrypt from 'bcryptjs';
 import * as firebase from './firebase.js';
 import * as util from './util.js';
 import * as emailService from './email.js';
+import * as walletService from './wallet.js';
+
+const REFERAL_REWARD_FROM = 10;
+const REFERAL_REWARD_TO = 110;
 
 /**
  * this function runs as the first level middleware
@@ -996,7 +1000,7 @@ export const signUpInit = async ({ email, phone }) => {
         throw error;
     };
 };
-export const signUpStepTwo = async ({ email, phone, password, name }) => {
+export const signUpStepTwo = async ({ email, phone, password, name, referal }) => {
     try {
         const userOutput = await validatior({ email, phone, password, name }, {
             emailRequired: true,
@@ -1008,15 +1012,46 @@ export const signUpStepTwo = async ({ email, phone, password, name }) => {
 
         try {
 
+            const referalCode = randomId(7, 'A0');
+
+            // creating user
             const userData = await db.users({
                 UID: userOutput.UID,
                 email: userOutput.email,
                 phone: userOutput.phone,
                 password: userOutput.password,
-                name: userOutput.name
+                name: userOutput.name,
+                referal: referalCode,
+                referedBy: referal ? referal : null,
             });
 
             await userData.save();
+
+            if (referal) {
+
+                let existingUserWithReferal;
+
+                try {
+                    // finding user who is referd this newly cerated user
+                    existingUserWithReferal = await db.users.find({ referal: referal });
+                } catch (error) {
+                    // error fetching referal data from db
+                };
+
+                // check if users with code exist or not
+                if (existingUserWithReferal.length == 0) throw 'Invalid referal code';
+
+                // updaitng amoutn of referal to from user
+                try {
+                    const addingAmount = await walletService.addAmount(existingUserWithReferal[0].UID, REFERAL_REWARD_FROM, `Reward for refering ${userOutput.name} : ${userOutput.email}`);
+                } catch (error) {
+                    throw 'Error while referal adding amount to wallet';
+                };
+
+                // adding amounts it wallets for referal 
+                const newUserWallet = await walletService.addAmount(userOutput.UID, REFERAL_REWARD_TO, 'Referal reward');
+
+            };
 
             return {
                 message: 'Signup success',

@@ -19,6 +19,8 @@ export const users = db.model("user", new mongoose.Schema({
     email: String,
     displayName: String,
     phone: Number,
+    referal:String,
+    referedBy:String,
     phoneVerified: {
         type: Boolean,
         default: false

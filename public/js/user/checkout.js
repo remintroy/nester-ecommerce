@@ -235,6 +235,7 @@ const setAddress = async (addressID) => {
             inputActions('set', outputData);
         };
 
+        notify('Address autofilled', 'success');
 
     } catch (error) {
         notify('Error connecting to server');
@@ -388,7 +389,7 @@ const finalSubmitToServer = async (data) => {
                                 "color": "#3399cc"
                             },
                             "modal": {
-                                "ondismiss": function(){
+                                "ondismiss": function () {
                                     orderCancelled(res.message.orderID);
                                 }
                             }

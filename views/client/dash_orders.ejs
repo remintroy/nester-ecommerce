@@ -1,7 +1,7 @@
 <section class="container-fluid" style="background-image: url('/assets/images/page-header-bg.jpg')">
   <div class="container">
-   <h2 class="pt-4"><b>Dashboard</b></h2>
-   <p class="pb-4" style="text-transform: capitalize;">Dashboard <%= locals?.currentPage?' > '+locals.currentPage:'' %> </p>
+    <h2 class="pt-4"><b>Dashboard</b></h2>
+    <p class="pb-4" style="text-transform: capitalize;">Dashboard <%= locals?.currentPage?' > '+locals.currentPage:'' %> </p>
   </div>
 </section>
 
@@ -111,11 +111,10 @@
                 Product
               </button>
 
-              <% if(e?.orders?.products?.statusUpdate['5']?.date||e?.orders?.products?.statusUpdate['4']?.date){}else{ %>
-              <button class="btn rounded" onclick="cancelOrder('<%=e?.orders?._id%>','<%=e?.orders?.products?.PID%>',this)">Cancel
-                Order</button>
+              <% if(e?.orders?.products?.statusUpdate['5']?.date || e?.orders?.products?.statusUpdate['4']?.date || e?.orders?.products?.statusUpdate['3']?.date){}else{ %>
+              <button class="btn rounded" onclick="cancelOrder('<%=e?.orders?._id%>','<%=e?.orders?.products?.PID%>',this)">Cancel Order</button>
               <% };%>
-              <% if(e?.orders?.products?.statusUpdate['3']?.date&&!e?.orders?.products?.statusUpdate['4']?.status=='return-requested'){ %>
+              <% if(e?.orders?.products?.statusUpdate['3']?.date && !e?.orders?.products?.statusUpdate['5'] && !e?.orders?.products?.statusUpdate['4']?.status=='returned'){ %>
               <button class="btn rounded  btn-primary" onclick="returnOrder('<%=e?.orders?._id%>','<%=e?.orders?.products?.PID%>',this)">Return order</button>
               <% } %>
 

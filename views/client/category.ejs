@@ -1,1 +1,73 @@
-Loading...
+<!-- page title -->
+<section class="container-fluid" style="background-image: url('/assets/images/page-header-bg.jpg')">
+  <div class="container">
+    <h2 class="pt-4"><b>Shop form your favorate categorys</b></h2>
+    <p class="pb-4" style="text-transform: capitalize;">Nester <%= locals?.currentPage?' > '+locals.currentPage:''  %> <%= locals?.category?' > '+locals.category:''  %> </p>
+  </div>
+</section>
+
+<!-- results for category -->
+<section class="container mb-5">
+  <div class="row">
+    <% if(locals?.products?.length>0){ %>
+    <div class="col-12">
+      <div class="product__discount">
+        <div class="section-title product__discount__title">
+          <h3>Products From <%= locals?.category?''+locals.category:''  %></h3>
+        </div>
+        <div class="row">
+
+          <% locals?.products?.forEach((product,index)=>{ %>
+          <div class="col-lg-4 col-md-6 col-sm-6" style="overflow: hidden;">
+            <div class="product__item">
+              <div class="product__item__pic set-bg" data-setbg="/product_images/<%=product.PID %>1.jpg">
+                <ul class="product__item__pic__hover">
+                    <li><a href="#"  style="cursor: pointer;"><i class="fa fa-heart"></i></a></li>
+                    <li><a onclick="addToCart('<%=product.PID%>')" style="cursor: pointer;"><i class="fa fa-shopping-cart"></i></a></li>
+                </ul>
+              </div>
+              <div class="product__item__text">
+                <h6><a class="limit_lines_css l-3"  href="/product/<%=product.PID %>"><%=product.title %></a></h6>
+                <h5>₹ <%=product.price %> </h5>
+              </div>
+            </div>
+          </div>
+          <% }); %>
+
+        </div>
+      </div>
+    </div>
+    <% }else{ %>
+        <div class="col-12 card p-4 rounded bg-warning">
+            <h5>Oops the category you searched for doesn't contain any products !</h5>
+        </div>
+    <% }; %>
+  </div>
+</section>
+
+<!-- product suggestions -->
+<section class="container">
+    <div class="product__discount">
+        <div class="section-title product__discount__title">
+          <h3>Related products</h3>
+        </div>
+        <div class="row">
+          <% locals?.topProducts?.forEach((product,index)=>{ %>
+          <div class="col-lg-4 col-md-6 col-sm-6" style="overflow: hidden;">
+            <div class="product__item">
+              <div class="product__item__pic set-bg"  data-setbg="/product_images/<%=product.product[0].PID %>1.jpg">
+                <ul class="product__item__pic__hover">
+                  <li><a href="#"  style="cursor: pointer;"><i class="fa fa-heart"></i></a></li>
+                  <li><a onclick="addToCart('<%=product.product[0].PID%>')" style="cursor: pointer;"><i class="fa fa-shopping-cart"></i></a></li>
+                </ul>
+              </div>
+              <div class="product__item__text">
+                <h6><a class="limit_lines_css l-3" href="/product/<%=product.product[0].PID %>"><%=product.product[0].title %></a></h6>
+                <h5>₹ <%=product.product[0].price %> </h5>
+              </div>
+            </div>
+          </div>
+          <% }); %>
+        </div>
+      </div>
+</section>

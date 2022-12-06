@@ -20,12 +20,17 @@ export const localsForUser = async (req, res, next) => {
     res.locals.user = req.user;
     res.locals.appName = appConfig.name;
     res.locals.util = util;
+    res.locals.layout = 'client_layout';
     next();
   } catch (error) {
     console.log(error);
   }
 };
-
+// url history for login
+export const urlHistory = async (req, res, next) => {
+  if (!req.user) req.session.userUrlHistory = req.url;
+  next();
+};
 // analytics for users pages
 export const analytics = (req, res, next) => {
   try {
@@ -247,10 +252,11 @@ export const signInWithPasswordAPI = async (req, res) => {
     const type = req.session.login.type;
     const password = req.body.password;
     const result = await auth.signInPassword(data, type, password);
+    const action = req.session.userUrlHistory ? req.session.userUrlHistory : result.action;
     req.session.user = result.UID;
     req.session.userLogin = { ...device.parse(req.headers['user-agent']), date: new Date() };
     req.session.login = {};
-    res.send({ status: 'good', message: result.message, action: result.action });
+    res.send({ status: 'good', message: result.message, action: action });
   } catch (error) {
     res.send({ status: "error", message: error.message ? error.message : error, code: error.code ? error.code : 400 });
   }
@@ -319,6 +325,7 @@ export const resetPasswordAPI = async (req, res) => {
 
     // verifying otp
     const result = await auth.resetPasswordUser(data, password, id);
+    const action = req.session.userUrlHistory ? req.session.userUrlHistory : result.action;
 
     // logs in user
     req.session.login = {};
@@ -326,7 +333,7 @@ export const resetPasswordAPI = async (req, res) => {
     req.session.userLogin = { ...device.parse(req.headers['user-agent']), date: new Date() };
 
     // response
-    res.send({ status: 'good', message: result?.message ? result.message : result, action: result.action });
+    res.send({ status: 'good', message: result?.message ? result.message : result, action: action });
   } catch (error) {
     res.send({ status: "error", message: error.message ? error.message : error, code: error.code ? error.code : 400 });
   };
@@ -358,6 +365,7 @@ export const signupSetpTwoAPI = async (req, res) => {
 
     // verifying otp
     const result = await auth.signUpStepTwo(data);
+    const action = req.session.userUrlHistory ? req.session.userUrlHistory : result.action;
 
     // logs in user
     req.session.signup = {};
@@ -365,7 +373,7 @@ export const signupSetpTwoAPI = async (req, res) => {
     req.session.userLogin = { ...device.parse(req.headers['user-agent']), date: new Date() };
 
     // response
-    res.send({ status: 'good', message: result?.message ? result.message : result, action: result.action });
+    res.send({ status: 'good', message: result?.message ? result.message : result, action: action });
   } catch (error) {
     res.send({ status: "error", message: error.message ? error.message : error, code: error.code ? error.code : 400 });
   };
@@ -434,7 +442,6 @@ export const logoutSessionAPI = async (req, res) => {
 export const home = async (req, res) => {
   res.locals.topSellingProducts = await productService.topSellingProducts(10);
   res.locals.currentPage = "home";
-  res.locals.layout = 'client_layout';
   res.render("client/home");
   try {
     await analyticsService.addUserPageRequests('user_home_GET');
@@ -447,7 +454,6 @@ export const shop = async (req, res) => {
     const products = await db.products.find();
     res.locals.currentPage = "shop";
     res.locals.products = products;
-    res.locals.layout = 'client_layout';
     res.render("client/shop");
     try {
       await analyticsService.addUserPageRequests('user_shop_GET');
@@ -466,7 +472,6 @@ export const product = async (req, res) => {
     const productData = await db.products.findOne({ PID: PID });
     res.locals.currentPage = "product";
     res.locals.product = productData;
-    res.locals.layout = 'client_layout';
     res.render("client/product");
     try {
       await analyticsService.addUserPageRequests('user_product_GET');
@@ -483,7 +488,6 @@ export const product = async (req, res) => {
 };
 export const cart = async (req, res) => {
   res.locals.currentPage = "cart";
-  res.locals.layout = 'client_layout';
   try {
     res.render("client/cart");
     try {
@@ -499,7 +503,6 @@ export const cart = async (req, res) => {
 };
 export const wishlist = async (req, res) => {
   res.locals.currentPage = "wishlist";
-  res.locals.layout = 'client_layout';
   res.render("client/wishlist");
   try {
     await analyticsService.addUserPageRequests('user_wishlist_GET');
@@ -513,7 +516,6 @@ export const checkout = async (req, res) => {
     res.locals.country = await util.getAllCountries();
     res.locals.address = await userService?.getAllAddress(UID);
     res.locals.currentPage = "checkout";
-    res.locals.layout = 'client_layout';
     res.render("client/checkout");
     try {
       await analyticsService.addUserPageRequests('user_checkout_GET');
@@ -529,7 +531,6 @@ export const checkout = async (req, res) => {
 export const dashboard = async (req, res) => {
   try {
     res.locals.currentPage = "account";
-    res.locals.layout = 'client_layout';
     res.render("client/dashboard");
     try {
       await analyticsService.addUserPageRequests('user_dashboard_GET');
@@ -547,7 +548,6 @@ export const walletPg = async (req, res) => {
   try {
     res.locals.wallet = await walletService.getWalletInfo(req.user.UID);
     res.locals.currentPage = "wallet";
-    res.locals.layout = 'client_layout';
     res.render("client/dash_wallet");
   } catch (error) {
     res.locals.code = "500";
@@ -561,7 +561,6 @@ export const ordersPg = async (req, res) => {
     res.locals.orders = await orders.getByUIDEach(req?.user?.UID);
     res.locals.currentPageA = "dashboard";
     res.locals.currentPage = "orders";
-    res.locals.layout = 'client_layout';
     res.render("client/dash_orders");
     try {
       await analyticsService.addUserPageRequests('user_dash/orders_GET');
@@ -581,7 +580,6 @@ export const addressPg = async (req, res) => {
     res.locals.country = await util.getAllCountries();
     res.locals.currentPageA = "dashboard";
     res.locals.currentPage = "address";
-    res.locals.layout = 'client_layout';
     res.render("client/dash_addresss");
     try {
       await analyticsService.addUserPageRequests('user_dash/address_GET');
@@ -601,7 +599,6 @@ export const securityPg = async (req, res) => {
     res.locals.security = await db.DB.db.collection('session').find({ 'session.user': req?.user?.UID }).toArray();
     res.locals.currentPageA = "dashboard";
     res.locals.currentPage = "security";
-    res.locals.layout = 'client_layout';
     res.render("client/dash_security");
 
   } catch (error) {
@@ -637,14 +634,18 @@ export const category = async (req, res) => {
     } catch (error) {
       // handling error
       throw 'Error while fetchig product data';
-    }
+    };
 
+    res.locals.category = categoryInput;
+    res.locals.products = existingData;
+    res.locals.topProducts = topProducts;
+    res.locals.currentPageA = 'shop';
+    res.locals.currentPage = 'category';
+    res.render('client/category');
 
-
-    throw 's'
   } catch (error) {
     res.locals.message = "Cant Find product here...";
-    res.locals.error = "Faild to fetch security related data form database";
+    res.locals.error = "Faild to fetch category related data form database";
     res.locals.layout = 'blank_layout';
     res.render('client/404');
   }

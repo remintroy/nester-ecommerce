@@ -7,7 +7,6 @@ import fileUpload from "express-fileupload";
 import Logger from "morgan";
 
 import * as auth from "./controller/services/auth.js";
-import adminRoute from "./routes/admin.js";
 import usersRoute from "./routes/user.js";
 import DeviceDetetor from 'device-detector-js';
 

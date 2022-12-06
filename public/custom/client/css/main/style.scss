@@ -260,3 +260,20 @@ input[type="number"] {
     box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.066);
   }
 }
+
+.limit_lines_css{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* number of lines to show */
+          line-clamp: 2; 
+  -webkit-box-orient: vertical;
+}
+.limit_lines_css.l-3{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* number of lines to show */
+          line-clamp: 3; 
+  -webkit-box-orient: vertical;
+}
