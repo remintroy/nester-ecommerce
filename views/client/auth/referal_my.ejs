@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%=locals?.appName?locals?.appName:'Refer a firend'%></title>
+  <script src="https://kit.fontawesome.com/5e9558e6a6.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Roboto:wght@400;700&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+    }
+
+    img {
+      position: relative;
+      width: 100%;
+      object-fit: scale-down;
+    }
+
+    .content {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .inner-cont {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      position: relative;
+      backdrop-filter: blur(30px);
+      width: 100%;
+      min-width: 300px;
+      max-width: 500px;
+      background-color: rgba(255, 255, 255, 0.383);
+    }
+
+    button {
+      padding: 15px 30px;
+      box-sizing: border-box;
+      background-color: rgb(39, 77, 168);
+      border: none;
+      outline: none;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      font-size: medium;
+      color: white;
+    }
+  </style>
+  <div class="content">
+    <div class="inner-cont">
+      <img src="/icn/refer-bg.webp" alt="">
+      <div>
+        <h3>Refer your friends to earn reaward</h3>
+        <button onclick="copyLink(window.location.href,this)">Copy link</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    function copyLink(link, btn) {
+      navigator.clipboard.writeText(link);
+      btn.innerText = 'Copied !';
+      setTimeout(() => {
+        btn.innerText = 'Copy link';
+      }, 2000);
+    }
+  </script>
+</body>
+
+</html>

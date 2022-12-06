@@ -881,7 +881,7 @@ export const referalInit = async (req, res) => {
 
       // render user is already logged in 
       if (req.user.referal == referalCode) {
-        res.send('your code')
+        res.render('client/auth/referal_my');
       } else {
         res.send("hmmm you are good but not here")
       };

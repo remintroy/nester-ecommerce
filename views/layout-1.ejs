@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- molla/index-2.html  22 Nov 2019 09:55:32 GMT -->
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>
+    <%= locals?.appName %>
+    <%= locals?.currentPage?" - "+locals?.currentPage?.toUpperCase():'' %> </title>
+  <meta name=" keywords" content="HTML5 Template">
+  <meta name="description" content="Molla - Bootstrap eCommerce Template">
+  <meta name="author" content="p-themes">
+  <!-- Favicon -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/icons/favicon-16x16.png">
+  <link rel="manifest" href="/assets/images/icons/site.html">
+  <link rel="mask-icon" href="/assets/images/icons/safari-pinned-tab.svg" color="#666666">
+  <link rel="shortcut icon" href="/assets/images/icons/favicon.ico">
+  <meta name="apple-mobile-web-app-title" content="Molla">
+  <meta name="application-name" content="Molla">
+  <meta name="msapplication-TileColor" content="#cc9966">
+  <meta name="msapplication-config" content="/assets/images/icons/browserconfig.xml">
+  <meta name="theme-color" content="#ffffff">
+  <!-- Plugins CSS File -->
+  <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/css/plugins/owl-carousel/owl.carousel.css">
+  <link rel="stylesheet" href="/assets/css/plugins/magnific-popup/magnific-popup.css">
+  <!-- Main CSS File -->
+  <link rel="stylesheet" href="/assets/css/plugins/nouislider/nouislider.css">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <% if(locals.currentPageA=='dashboard' ){ %>
+  <link rel="stylesheet" href="/css/users/dashboard/style.css">
+  <% };%>
+  <link rel="stylesheet" href="/css/animate.css">
+
+  <link rel="stylesheet" href="/css/users/layout/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script> -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-borderless/borderless.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+</head>
+
+<body>
+
+  <div class="page-wrapper">
+
+    <%- include('./users/partials/header') %>
+
+    <%- body %>
+
+    <%- include('./users/partials/footer') %>
+
+  </div><!-- End .page-wrapper -->
+
+
+  <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
+
+  <div class="mobile-menu-container">
+    <div class="mobile-menu-wrapper">
+      <span class="mobile-menu-close"><i class="icon-close"></i></span>
+
+      <form action="#" method="get" class="mobile-search">
+        <label for="mobile-search" class="sr-only">Search</label>
+        <input type="search" class="form-control" name="mobile-search" id="mobile-search" placeholder="Search in..." required>
+        <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
+      </form>
+
+      <nav class="mobile-nav">
+        <ul class="mobile-menu">
+          <li class="<%=locals.currentPage=='home'?'active':'';%>">
+            <a href="/">Home</a>
+          </li>
+          <li class="<%=locals.currentPage=='shop'?'active':'';%>">
+            <a href="/shop">Shop</a>
+          </li>
+          <li class="<%=locals.currentPage=='product'?'active':'';%>">
+            <a href="/product">Product</a>
+          </li>
+          <li class="<%=locals.currentPage=='cart'?'active':'';%>">
+            <a href="/cart">Cart</a>
+          </li>
+          <li class="<%=locals.currentPage=='dashboard'?'active':'';%>">
+            <a href="/dashboard">My Account</a>
+          </li>
+        </ul>
+      </nav><!-- End .mobile-nav -->
+
+    </div><!-- End .mobile-menu-wrapper -->
+  </div><!-- End .mobile-menu-container -->
+
+  <!-- Plugins JS File -->
+  <script src="/assets/js/jquery.min.js"></script>
+  <script src="/assets/js/bootstrap.bundle.min.js"></script>
+  <script src="/assets/js/jquery.hoverIntent.min.js"></script>
+  <script src="/assets/js/jquery.waypoints.min.js"></script>
+  <script src="/assets/js/superfish.min.js"></script>
+  <script src="/assets/js/owl.carousel.min.js"></script>
+  <script src="/assets/js/jquery.magnific-popup.min.js"></script>
+
+  <script src="/assets/js/bootstrap-input-spinner.js"></script>
+  <script src="/assets/js/jquery.plugin.min.js"></script>
+  <script src="/assets/js/jquery.countdown.min.js"></script>
+  <script src="/assets/js/jquery.elevateZoom.min.js"></script>
+  <script src="/assets/js/jquery.sticky-kit.min.js"></script>
+  <!-- Main JS File -->
+  <script src="/assets/js/main.js"></script>
+  <script>
+    function addToCart(PID) {
+      fetch('/cart_action', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            PID: PID
+          })
+        })
+        .then(res => res.json())
+        .then(res => {
+          console.log(res);
+          if (res.status == 'good') {
+            document.getElementById("cart_total_count").innerText = res.message.totalCount;
+            notify('added to cart', true);
+          } else {
+            notify(res.message);
+          };
+        })
+        .catch(error => console.log(error));
+    };
+  </script>
+
+  <!-- <script src="/js/swal/swal.min.js"></script> -->
+  <script>
+    function notify(message, isGood) {
+      Swal.fire({
+        title: message,
+        icon: isGood ? 'success' : 'error',
+        toast: true,
+        position: 'top',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+      });
+    };
+  </script>
+  <script>
+    $(document).ready(function() {
+      $('[data-toggle="tooltip"]').tooltip();
+    });
+  </script>
+  <script>
+    $(document).ready(function() {
+      $("#myBtn").click(function() {
+        $('.toast').toast('show');
+      });
+    });
+  </script>
+</body>
+
+
+<!-- molla/index-2.html  22 Nov 2019 09:55:42 GMT -->
+
+</html>
