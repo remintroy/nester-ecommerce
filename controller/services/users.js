@@ -134,7 +134,7 @@ export const updateUserData = (UID, { fNameInput, lNameInput, displayNameInput, 
             if (fNameInput && lNameInput) {
                 name = fNameInput?.trim() + " " + lNameInput?.trim();
             } else if (fNameInput || lNameInput) {
-                throw 'First name and last name required';
+                name = fNameInput ?? lNameInput;
             };
             const userOutputA = await auth.validatior({
                 UID: UID,
@@ -148,8 +148,8 @@ export const updateUserData = (UID, { fNameInput, lNameInput, displayNameInput, 
 
                 if (userOutputB?.name) userOutputA.displayName = userOutputB.name;
 
-                try { // stage three of validation --password
-                    const userOutputC = await auth.validatior({ email: userOutputA.email, password: currentPasswordInput }, {}, 'login');
+                try { // stage three of validation --password                    
+                    const userOutputC = await auth.validatior({ UID:UID, password: currentPasswordInput }, {}, 'login');
 
                     if (userOutputC.password) {
                         try { // stage four of validation

@@ -43,13 +43,13 @@ export const validator = (UID, address) => {
 export const deleteAddress = (UID, bodyWithAddressID) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const addressOutput = await validator(UID, bodyWithAddressID);
+            const { addressID } = bodyWithAddressID;
 
             try {
 
-                const data = await db.address.updateOne({ UID: addressOutput.UID }, {
+                const data = await db.address.updateOne({ UID: UID }, {
                     $pull: {
-                        'address': { _id: addressOutput.addressID }
+                        'address': { _id: addressID }
                     }
                 });
 
@@ -75,7 +75,7 @@ export const getAll = (UID) => {
 
                 const data = await db.address.findOne({ UID: userOutput.UID });
                 const result = [];
-                
+
                 if (data?.address) {
                     const keys = Object.keys(data?.address[0]?._doc);
                     for (let i = 0; i < data?.address?.length; i++) {

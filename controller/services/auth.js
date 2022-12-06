@@ -244,9 +244,15 @@ export function validatior(data, requiredIn, typeOfValidation) {
                 if (typeOfValidation == 'login' || typeOfValidation == 'adminLogin') {
                     try {
 
+                        let wayToFind;
+
+                        // configure the way to find the users password form db
+                        if (email.length > 0) wayToFind = { email: email };
+                        else wayToFind = { UID: UID };
+
                         let passwordHashFromDb = typeOfValidation == 'adminLogin' ?
-                            await db.adminUser.findOne({ email: email }, { password: 1, _id: 0 }) :
-                            await db.users.findOne({ email: email }, { password: 1, _id: 0 });
+                            await db.adminUser.findOne(wayToFind, { password: 1, _id: 0 }) :
+                            await db.users.findOne(wayToFind, { password: 1, _id: 0 });
                         try {
                             if (passwordHashFromDb) {
                                 let matched = await bCrypt.compare(password, passwordHashFromDb?.password);
@@ -947,7 +953,7 @@ export const resetPasswordUser = async (data, password, resetID) => {
             } catch (error) {
                 console.log('Error updating lastlogged in date USER LOGIN');
             };
-    
+
 
             return {
                 UID: data.UID,

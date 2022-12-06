@@ -1,0 +1,233 @@
+<section class="container-fluid" style="background-image: url('/assets/images/page-header-bg.jpg')">
+   <div class="container">
+    <h2 class="pt-4"><b>Dashboard</b></h2>
+    <p class="pb-4" style="text-transform: capitalize;">Dashboard <%= locals?.currentPage?' > '+locals.currentPage:'' %> </p>
+   </div>
+</section>
+
+<section class="container mb-5">
+  <div class="row">
+    <div class="col-3">
+      <ul style="list-style: none;" class="list_features">
+        <li class="p-3 card d-flex <%= locals?.currentPage == 'account'?'bg-light':'' %>" onclick="window.location.href='/dashboard'">
+          <div>
+            <i class="fa-solid fa-user"></i>
+            <span class="ml-2">Account</span>
+          </div>
+        </li>
+        <li class="p-3 card mt-2 d-flex  <%= locals?.currentPage == 'orders'?'bg-light':'' %>" onclick="window.location.href='/dashboard/orders'">
+          <div>
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span class="ml-2">Orders</span>
+          </div>
+        </li>
+        <li class="p-3 card mt-2 d-flex " onclick="window.location.href='/dashboard/address'">
+          <div>
+            <i class="fa-solid fa-address-book"></i>
+            <span class="ml-2">Address</span>
+          </div>
+        </li>
+        <li class="p-3 card mt-2 d-flex " onclick="window.location.href='/dashboard/wallet'">
+          <div>
+            <i class="fa-solid fa-wallet"> </i>
+            <span class="ml-2">Wallets</span>
+          </div>
+        </li>
+        <li class="p-3 card mt-2 d-flex " onclick="window.location.href='/dashboard/security'">
+          <div>
+            <i class="fa-solid fa-lock"></i>
+            <span class="ml-2">Security</span>
+          </div>
+        </li>
+        <li class="p-3 card mt-2 d-flex " onclick="logout()">
+          <div>
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span class="ml-2">Logout</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="col-9">
+      <div class="card h-100 p-4">
+
+        <!-- Selection for account page -->
+
+        <section>
+
+          <div class="modal fade" id="myModal">
+            <div class="modal-dialog modal-dialog-scrollable modal-lg">
+              <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                  <h4 class="modal-title">Edit address</h4>
+                  <button type="button" class="close" data-dismiss="modal">×</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body inputContainerForUerDataUpdate">
+                  <div class="container-fluid mt-2">
+                    <p>
+                      <b>Note :</b> A reload is required to reflect the changes across the page
+                    </p> <br>
+
+                    <div class="form-group">
+                      <label for="nameInputAdd" class="d-flex justify-content-between">Name : <span class="text-danger"></span></label>
+                      <input type="text" class="form-control" id="nameInputAdd">
+                    </div>
+                    <div class="form-group">
+                      <label for="houseNumberAdd" class="d-flex justify-content-between">House number / House name : <span class="text-danger"></span></label>
+                      <input type="text" class="form-control" id="houseNumberAdd">
+                    </div>
+                    <div class="form-group">
+                      <label for="streetNumberAdd" class="d-flex justify-content-between">Street number / Street name : <span class="text-danger"></span></label>
+                      <input type="text" class="form-control" id="streetNumberAdd">
+                    </div>
+                    <div class="form-group">
+                      <label for="stateInputAdd" class="d-flex justify-content-between">State : <span class="text-danger"></span></label>
+                      <input type="text" class="form-control" id="stateInputAdd">
+                    </div>
+                    <div class="form-group">
+                      <label for="townInputAdd" class="d-flex justify-content-between">Town : <span class="text-danger"></span></label>
+                      <input type="text" class="form-control" id="townInputAdd">
+                    </div>
+                    <div class="form-group">
+                      <label class="labelInputForInput" class="d-flex justify-content-between" for="countryInputAdd">Country * <span class="text-danger"></span></label>
+                      <select class="form-control" name="country" id="countryInputAdd">
+                        <% locals?.country?.forEach(e=>{ %>
+                        <option value="<%= e.code %>">
+                          <%- e.name %>
+                        </option>
+                        <% }); %>
+                      </select>
+                      <style>
+                        .nice-select .list {
+                          max-height: 200px;
+                          overflow-y: scroll;
+                        }
+                      </style>
+                    </div>
+                    <div class="form-group">
+                      <label for="codeInputAdd" class="d-flex justify-content-between">Postal code : <span class="text-danger"></span></label>
+                      <input type="text" class="form-control" id="codeInputAdd">
+                    </div>
+                    <div class="form-group">
+                      <label for="phoneInputAdd" class="d-flex justify-content-between">Phone : <span class="text-danger"></span></label>
+                      <input type="text" class="form-control" id="phoneInputAdd">
+                    </div>
+                    <div class="form-group">
+                      <label for="emailInputAdd" class="d-flex justify-content-between">Email : <span class="text-danger"></span></label>
+                      <input type="email" class="form-control" id="emailInputAdd">
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" onclick="updateAddresData()">Update</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-pane  animate__animated animate__fadeIn fade <%=locals?.currentPage=='address'?'active show':''%>" id="tab-address" role="tabpanel" aria-labelledby="tab-address-link">
+            <div class="row">
+
+              <% locals?.address?.forEach((e,i)=>{ %>
+
+              <div class="col-lg-12 mt-2">
+                <div class="card card-dashboard">
+                  <div class="card-body">
+                    <h3 class="card-title" style="text-transform: capitalize;"><%=e.name%></h3>
+                    <!-- End .card-title -->
+
+                    <p><%= e?.name %> <br>
+                      <span style="text-transform: capitalize;"><%= e?.houseNumber %>, <%= e?.streetNumber %>, <%= e?.town %></span><br>
+                      <span style="text-transform: capitalize;"><%= e?.state %>, <%= e?.country%>, <%= e?.postalCode %></span>
+                      <%= e?.phone %><br>
+                      <%= e?.email %><br><br>
+                      <a onclick="getAddressForm('<%=e._id%>')" class="btn btn-dark text-white" style="cursor: pointer;">Edit <i class="fa-solid fa-pen-to-square"></i></a>
+                      <a onclick="deleteAddressForm('<%=e._id%>',this.parentElement.parentElement.parentElement.parentElement)" class="px-4 btn btn-danger text-white" style="cursor: pointer;">Delete <i class="fa-solid fa-trash"></i></a>
+                    </p>
+                  </div><!-- End .card-body -->
+                </div><!-- End .card-dashboard -->
+              </div><!-- End .col-lg-6 -->
+
+
+              <% }); %>
+
+            </div><!-- End .row -->
+          </div><!-- .End .tab-pane -->
+        </section>
+
+        <!-- account page selection end -->
+
+      </div>
+    </div>
+  </div>
+  <script src="/js/user/dashboard.js"></script>
+  <script>
+    async function deleteAddressForm(addressID, removable) {
+
+      const warnUser = await Swal.fire({
+        icon: 'warning',
+        title: 'Are you sure ?',
+      });
+
+      if (!warnUser.isConfirmed) return 0;
+
+      try {
+
+        const dataFromServer = await fetch(`/user_address`, {
+          method: 'DELETE',
+          body: JSON.stringify({
+            addressID: addressID
+          }),
+          headers: {
+            ['Content-Type']: 'application/json'
+          }
+        });
+
+        const res = await dataFromServer.json();
+
+        if (res.status == 'error') throw res.message;
+
+        removable.remove();
+        notify(res.message, 'success');
+
+      } catch (error) {
+        notify(error);
+      };
+    };
+
+    function logout() {
+
+      fetch('/user_logout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: "log me out"
+          })
+        })
+        .then(res => res.json())
+        .then(res => {
+          if (res.status == 'error') {
+            disp({
+              message: res.message,
+              isGood: false
+            })
+          } else {
+            window.location.href = res.action;
+          };
+        })
+        .catch(error => {
+          disp({
+            message: error,
+            isGood: false
+          });
+        });
+    };
+  </script>
+</section>

@@ -499,7 +499,8 @@ export const cart = async (req, res) => {
 };
 export const wishlist = async (req, res) => {
   res.locals.currentPage = "wishlist";
-  res.render("users/wishlist");
+  res.locals.layout = 'client_layout';
+  res.render("client/wishlist");
   try {
     await analyticsService.addUserPageRequests('user_wishlist_GET');
   } catch (error) {
@@ -580,7 +581,8 @@ export const addressPg = async (req, res) => {
     res.locals.country = await util.getAllCountries();
     res.locals.currentPageA = "dashboard";
     res.locals.currentPage = "address";
-    res.render("users/dashboard");
+    res.locals.layout = 'client_layout';
+    res.render("client/dash_addresss");
     try {
       await analyticsService.addUserPageRequests('user_dash/address_GET');
     } catch (error) {
@@ -774,3 +776,34 @@ export const updateUserDataAPI = async (req, res) => {
     res.send({ status: "error", message: error });
   }
 };
+export const failedOrders = async (req, res) => {
+  try {
+
+    const orderID = req.params.id;
+    const dataFromDb = await db.orders.find({ 'orders.orderID': orderID });
+
+    // getting index 
+    const index = dataFromDb[0].orders.map(e => e.orderID == orderID).indexOf(true);
+
+    if (dataFromDb[0].orders[index].paymentStatus != 'pending') throw 'Cant delete paid orders';
+
+    if (index != -1) {
+
+      // deleteing order
+      const dataAfterDelete = await db.orders.updateOne({ 'orders.orderID': orderID }, {
+        $unset: {
+          [`orders.orderID.${index}`]: 1
+        }
+      });
+
+      res.send({ stauts: 'good', message: 'Payment cancelled' });
+
+    } else {
+      // order not found !
+    };
+
+  } catch (error) {
+    console.log(error)
+    res.send({ stauts: 'error', message: error });
+  };
+}

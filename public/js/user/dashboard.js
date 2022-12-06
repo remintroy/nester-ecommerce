@@ -190,29 +190,36 @@ function getAllUserInputs(type) {
 const userInputs = getAllUserInputs();
 const userInputsErr = getAllUserInputs('err');
 
-function validateUserData() {
+function validateUserData(onlyPassword) {
   const output = {};
   let thereIsNoErr = true;
+
   const errFlagger = (key, message) => {
-    userInputsErr[key].innerText = message;
-    thereIsNoErr = false;
+    console.log(key, message);
+    // if (!onlyPassword) {
+      userInputsErr[key].innerText = message;
+      thereIsNoErr = false;
+    // }
   };
+
   Object.keys(userInputsErr).forEach(key => {
     if (userInputsErr[key]) userInputsErr[key].innerText = '';
   });
   Object.keys(userInputs).forEach((key, i) => {
     let value = userInputs[key]?.value;
     value = (value + "").trim();
-    if (key == 'fNameInput' && value?.match(/^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$/g) && value?.length > 0) output[key] = value;
-    else if (key == 'fNameInput' && value?.length > 0) errFlagger(key, 'Plz enter a valid name');
-    if (key == 'lNameInput' && value?.match(/^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$/g) && value?.length > 0) output[key] = value;
-    else if (key == 'lNameInput' && value?.length > 0) errFlagger(key, 'Plz enter a valid name');
-    if (key == 'displayNameInput' && value?.match(/^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$/g)) output[key] = value;
-    else if (key == 'displayNameInput' && value?.length > 0) errFlagger(key, 'Plz enter a valid display name');
-    if (key == 'emailInput' && value?.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) && value?.length > 0) output[key] = value;
-    else if (key == 'emailInput' && value?.length > 0) errFlagger(key, 'Plz enter a valid email id');
-    if (key == 'phoneInput' && value?.match(/^\+?[1-9][0-9]{7,14}$/g) && value?.length == 10) output[key] = value;
-    else if (key == 'phoneInput' && value?.length > 0) errFlagger(key, 'Plz enter a valid phone number');
+    if (!onlyPassword) {
+      if (key == 'fNameInput' && value?.match(/^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$/g) && value?.length > 0) output[key] = value;
+      else if (key == 'fNameInput' && value?.length > 0) errFlagger(key, 'Plz enter a valid name');
+      if (key == 'lNameInput' && value?.match(/^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$/g) && value?.length > 0) output[key] = value;
+      else if (key == 'lNameInput' && value?.length > 0) errFlagger(key, 'Plz enter a valid name');
+      if (key == 'displayNameInput' && value?.match(/^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$/g)) output[key] = value;
+      else if (key == 'displayNameInput' && value?.length > 0) errFlagger(key, 'Plz enter a valid display name');
+      if (key == 'emailInput' && value?.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) && value?.length > 0) output[key] = value;
+      else if (key == 'emailInput' && value?.length > 0) errFlagger(key, 'Plz enter a valid email id');
+      if (key == 'phoneInput' && value?.match(/^\+?[1-9][0-9]{7,14}$/g) && value?.length == 10) output[key] = value;
+      else if (key == 'phoneInput' && value?.length > 0) errFlagger(key, 'Plz enter a valid phone number');
+    };
     if (userInputs[key]) {
       if (key == 'currentPasswordInput' && value?.length >= 6) output[key] = value;
       else if (key == 'currentPasswordInput' && value?.length > 0) errFlagger(key, 'Plz enter a valid password');
@@ -226,8 +233,8 @@ function validateUserData() {
   return output;
 };
 
-function updaeUserData() {
-  const userData = validateUserData();
+function updaeUserData(onlyPassword) {
+  const userData = validateUserData(onlyPassword);
   if (userData.thereIsNoErr) {
     Swal.fire({
       title: 'Updating your data',

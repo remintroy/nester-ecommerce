@@ -386,6 +386,11 @@ const finalSubmitToServer = async (data) => {
                             },
                             "theme": {
                                 "color": "#3399cc"
+                            },
+                            "modal": {
+                                "ondismiss": function(){
+                                    orderCancelled(res.message.orderID);
+                                }
                             }
                         };
 
@@ -397,7 +402,9 @@ const finalSubmitToServer = async (data) => {
                                 title: "Error opening Razorpay",
                                 icon: "error",
                                 confirmButtonText: 'Ok'
-                            })
+                            });
+
+                            orderCancelled(res.message.orderID);
                         });
 
                         Swal.close();
@@ -435,4 +442,22 @@ const finalSubmitToServer = async (data) => {
         // console.log('result',result);
         // closed response of Swal progress popup
     });
+};
+
+const orderCancelled = async (orderID) => {
+    try {
+
+        const dataFromServer = await fetch(`/orders/failed/${orderID}`, {
+            method: 'DELETE'
+        });
+
+        const res = await dataFromServer.json();
+
+        if (res.status == 'error') throw error;
+
+        notify('Payment cancelled');
+
+    } catch (error) {
+        notify(error);
+    };
 };

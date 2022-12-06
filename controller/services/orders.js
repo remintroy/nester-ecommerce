@@ -222,7 +222,7 @@ export const checkout = async (UID, body) => {
             orderID: orderID,
             amount: orderTotalAmount,
             typeOfPayment: paymentMethod,
-            user: userData,
+            user: userData[0],
             status: 'created',
             message: 'Order successfully initiated',
             errors: collectedErrors

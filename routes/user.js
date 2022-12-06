@@ -45,6 +45,7 @@ app.post('/user_address', auth.mustLoginAsUserAPI, users.addUserAddressAPI);
 app.put('/user_address', auth.mustLoginAsUserAPI, users.updateUserAddressAPI);
 // api for delete user address
 app.delete('/user_address', auth.mustLoginAsUserAPI, users.deleteUserAddressAPI);
+
 // api place order
 app.post('/checkout', auth.mustLoginAsUserAPI, users.checkoutCartProductsAPI);
 // api veryfy payment
@@ -59,6 +60,8 @@ app.post('/orders/cancel/', auth.mustLoginAsUserAPI, users.cancelOrderAPI);
 app.post('/orders/return/', auth.mustLoginAsUserAPI, users.returnOrderAPI);
 // api for update user data
 app.put('/user_data/update', auth.mustLoginAsUserAPI, users.updateUserDataAPI);
+// api for failed orders 
+app.delete('/orders/failed/:id', auth.mustLoginAsUserAPI, users.failedOrders);
 
 // sub - dev api's
 // api for get all products form cart

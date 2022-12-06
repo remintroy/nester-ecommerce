@@ -1,6 +1,8 @@
-<section class="container">
-  <h2 class="py-4"><b>Dashboard</b></h2>
-  <p style="text-transform: capitalize;">Dashboard <%= locals?.currentPage?' > '+locals.currentPage:'' %> </p>
+<section class="container-fluid" style="background-image: url('/assets/images/page-header-bg.jpg')">
+  <div class="container">
+   <h2 class="pt-4"><b>Dashboard</b></h2>
+   <p class="pb-4" style="text-transform: capitalize;">Dashboard <%= locals?.currentPage?' > '+locals.currentPage:'' %> </p>
+  </div>
 </section>
 
 <section class="container mb-5">
@@ -61,18 +63,19 @@
               <p>Change password</p>
               <div class="psw_input_cont">
                 <div class="form-group">
-                  <label for="">Old password</label>
-                  <input type="text" class="form-control" placeholder="Your password">
+                  <label for="" class="d-flex justify-content-between">Old password <span class="text-danger"></span></label>
+                  <input type="password" class="form-control" placeholder="Your password" id="currentPassword">
                 </div>
                 <div class="form-group">
-                  <label for="">new password</label>
-                  <input type="text" class="form-control" placeholder="new password">
+                  <label for="" class="d-flex justify-content-between">new password <span class="text-danger"></span></label>
+                  <input type="password" class="form-control" placeholder="new password" id="newPassword">
                 </div>
                 <div class="form-group">
-                  <label for="">Confirm</label>
-                  <input type="text" class="form-control" placeholder="confirm">
+                  <label for="" class="d-flex justify-content-between">Confirm <span class="text-danger"></span></label>
+                  <input type="password" class="form-control" placeholder="confirm" id="confirmPassword">
                 </div>
-                <div class="btn btn-dark px-3">
+                <p style="cursor: pointer;">Forgot password ?</p>
+                <div class="btn btn-dark px-3" onclick="updaeUserData(true)">
                   Change
                 </div>
               </div>
@@ -130,7 +133,23 @@
       </div>
     </div>
   </div>
+  <script src="/js/user/dashboard.js"></script>
   <script>
+    // to change password to new one
+    async function changePassword() {
+      try {
+
+        const oldpsw = document.getElementById('pswInput');
+        const newpsw = document.getElementById('pswNew');
+        const cnfpsw = document.getElementById('pswConfirm');
+
+        
+
+      } catch (error) {
+        notify(error);
+      }
+    };
+
     async function logoutSessoin(sid) {
       const pop = await Swal.fire({
         title: 'Are you sure ?',
@@ -153,7 +172,8 @@
             if (res.status == 'error') throw res.message;
           } catch (error) {
             // showing popup;
-            notify(error); return 0;
+            notify(error);
+            return 0;
           };
 
           notify(res.message, 'success');
