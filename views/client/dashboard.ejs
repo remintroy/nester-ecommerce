@@ -1,7 +1,7 @@
 <section class="container-fluid" style="background-image: url('/assets/images/page-header-bg.jpg')">
   <div class="container">
-   <h2 class="pt-4"><b>Dashboard</b></h2>
-   <p class="pb-4" style="text-transform: capitalize;">Dashboard <%= locals?.currentPage?' > '+locals.currentPage:'' %> </p>
+    <h2 class="pt-4"><b>Dashboard</b></h2>
+    <p class="pb-4" style="text-transform: capitalize;">Dashboard <%= locals?.currentPage?' > '+locals.currentPage:'' %> </p>
   </div>
 </section>
 
@@ -107,6 +107,7 @@
                   </div>
                 </div>
                 <hr>
+                <% if(locals.user.referal){ %>
                 <div class="row">
                   <div class="col-sm-3">
                     <p class="mb-0">Referal code</p>
@@ -116,6 +117,7 @@
                   </div>
                 </div>
                 <hr>
+                <% }; %>
                 <div class="row">
                   <div class="col-sm-3">
                     <p class="mb-0">Login mode</p>
