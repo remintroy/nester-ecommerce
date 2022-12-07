@@ -114,7 +114,7 @@
               <% if(e?.orders?.products?.statusUpdate['5']?.date || e?.orders?.products?.statusUpdate['4']?.date || e?.orders?.products?.statusUpdate['3']?.date){}else{ %>
               <button class="btn rounded" onclick="cancelOrder('<%=e?.orders?._id%>','<%=e?.orders?.products?.PID%>',this)">Cancel Order</button>
               <% };%>
-              <% if(e?.orders?.products?.statusUpdate['3']?.date && !e?.orders?.products?.statusUpdate['5'] && !e?.orders?.products?.statusUpdate['4']?.status=='returned'){ %>
+              <% if(e?.orders?.products?.statusUpdate['3']?.date && !(e?.orders?.products?.statusUpdate['5']?.date) && !(e?.orders?.products?.statusUpdate['4']?.status=='returned') && !(e?.orders?.products?.statusUpdate['4']?.status=='returnReq')){ %>
               <button class="btn rounded  btn-primary" onclick="returnOrder('<%=e?.orders?._id%>','<%=e?.orders?.products?.PID%>',this)">Return order</button>
               <% } %>
 

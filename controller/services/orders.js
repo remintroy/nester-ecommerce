@@ -294,6 +294,11 @@ export const cancelOrderProductWithUID = (UID, orderID, PID) => {
                     const indexProduct = existingData[0].orders[indexOrder].products.map(e => e.PID == (productOutput.PID + "").trim()).indexOf(true);
 
                     if (indexProduct == -1) reject("Order not found");
+
+                    if (existingData[0].orders[indexOrder].products[indexProduct].statusUpdate['3'].date) {
+                        throw 'Cant cancel deleverd order';
+                    }
+
                     else {
 
                         const updated = await db.orders.updateOne({ UID: userOutput.UID }, {
