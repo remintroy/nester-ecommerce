@@ -587,8 +587,38 @@ export const userDataUpdate = ({ UID, email, password, name, phone, state }) => 
     });
 };
 
+export const signInWithGoogle = async ({ idToken }) => {
+    try {
 
-export const signInWithGoogle = ({ idToken }) => {
+        // getting user details form firebase with id Token
+        const userDataFromGoogle = await firebase.signInWithGoogleSDK({ idToken: idToken });
+
+        // valdiating and checking user details form google with db
+        const userOutput = await validatior({
+            UID: userDataFromGoogle.UID,
+            email: userDataFromGoogle.email,
+            name: userDataFromGoogle.displayName
+        }, {
+            UIDRequired: true,
+            emailRequired: true
+        }, 'google');
+
+        // fetching userdata from server
+        const userData = await db.users.find({ UID: userOutput.UID });
+
+        if(userData.length!=0){
+        
+        if (userData[0]?.loginProvider != 'google') throw `This user can't login with google`;
+
+        }; // TODO:
+
+    } catch (error) {
+        // handling error while sing in / up user;
+        throw error;
+    };
+};
+
+export const signInWithGoogle_OLD = ({ idToken }) => {
     return new Promise(async (resolve, reject) => {
         try {
             const userDataFromGoogle = await firebase.signInWithGoogleSDK({ idToken: idToken });
@@ -892,21 +922,31 @@ export const sendPasswordForgetEmail = async (data, type, authID) => {
 
     try {
         if (type == 'email') {
+            // getting userdata
             const userData = await db.users.findOne({ UID: data.UID });
+            // check if user is signuped a email 
+            if (userData.loginProvider != 'email') throw `Can't reset password for this user`;
+            // senging otp through mail
             const result = await emailService.sendFrogetPasswordOtp(userData.email, OTP);
+            // successfully send ?
             if (result.accepted[0]) {
+                //..
                 return {
                     message: 'OTP send',
                     action: `/forget_passowrd/email/${authID}`,
                     OTP: OTP
                 };
+
             } else {
+                // error occured while sending otp
                 throw 'Faild to send OTP';
             };
+
         } else { // TODO : add sms otp
             throw 'Faild to send please try after sometime';
         };
     } catch (error) {
+        // handling error
         throw error;
     };
 };
@@ -937,28 +977,23 @@ export const verfyEmailOTP = async (data, code, authID) => {
 };
 export const resetPasswordUser = async (data, password, resetID) => {
     try {
+        // checkin for the existance of UID
         if (!data.UID) throw 'Falid to change password please try after sometime';
+
+        // validating and creating hash for user password
         const userOutput = await validatior({ password: password });
 
         try {
 
+            // updating password
             const updatedData = await db.users.updateOne({ UID: data.UID }, {
                 $set: {
-                    password: userOutput.password
+                    password: userOutput.password,
+                    lastLogin: new Date()
                 }
             });
 
-            try {
-                const userDataUpdated = await db.users.updateOne({ UID: data.UID }, {
-                    $set: {
-                        lastLogin: new Date()
-                    }
-                });
-            } catch (error) {
-                console.log('Error updating lastlogged in date USER LOGIN');
-            };
-
-
+            // responding 
             return {
                 UID: data.UID,
                 action: '/',
@@ -1025,6 +1060,7 @@ export const signUpStepTwo = async ({ email, phone, password, name, referalInfo 
                 password: userOutput.password,
                 name: userOutput.name,
                 referal: referalCode,
+                loginProvider: 'email',
                 referedBy: referal ? referal : null,
             });
 

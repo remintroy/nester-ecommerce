@@ -404,13 +404,21 @@ export const logoutAPI = async (req, res) => {
 };
 export const loginWithGoogleAPI = async (req, res) => {
   try {
+    // getting user id tocken form reqeuest body
     const idToken = req.body.idToken;
-    const output = await auth.signInWithGoogle({ idToken: idToken });
-    req.session.user = output;
-    res.send({ status: "good", message: "Login success", action: "/" });
+    // validatinga and creating user
+    const result = await auth.signInWithGoogle({ idToken: idToken });
+    // action
+    const action = req.session.userUrlHistory ? req.session.userUrlHistory : result.action;
+    // addign user session
+    req.session.user = result.UID;
+
+    // login success
+    res.send({ status: "good", message: "Login success", action });
   } catch (error) {
+    // handling error by sending error response
     res.send({ status: "error", message: error });
-  }
+  };
 };
 export const loginWithOtpAPI = async (req, res) => {
   try {

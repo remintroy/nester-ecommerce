@@ -5,8 +5,6 @@ import {
     getAuth,
     signInWithPopup,
     GoogleAuthProvider,
-    RecaptchaVerifier,
-    signInWithPhoneNumber,
     setPersistence,
     browserSessionPersistence
 } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-auth.js";
@@ -30,116 +28,52 @@ const auth = getAuth();
 
 setPersistence(auth, browserSessionPersistence);
 
-// declaring and setting recaptcha to window object
-export const setReCaptcha = () => {
-    window.recaptchaVerifier = new RecaptchaVerifier('submit_for_send_otp', {
-        'size': 'invisible',
-        'callback': (response) => {
-            // reCAPTCHA solved, allow signInWithPhoneNumber.
-            // ...
-            onSignInSubmit();
-        }
-    }, auth);
-};
-
-// to disp error in page
-const disp = ({ message, isGood, returnVal }) => {
-    const disp_state = document.getElementById("disp_state");
-    disp_state.style.backgroundColor = isGood ? 'rgb(205 255 196 / 56%)' : 'rgb(255 203 203 / 56%)';
-    disp_state.style.display = message || returnVal == false ? 'flex' : 'none';
-    disp_state.innerText = message ? message : disp_state.innerText;
-    return isGood || message == '' ? true : returnVal;
-};
-
-// to send otp to mobile number
-export const sendOtpToUser = (phoneNumber) => {
-    return new Promise((resolve, reject) => {
-
-        const appVerifier = window.recaptchaVerifier;
-
-        const auth = getAuth();
-        signInWithPhoneNumber(auth, phoneNumber, appVerifier)
-            .then((confirmationResult) => {
-
-                window.confirmationResult = confirmationResult;
-                resolve('OTP SEND');
-
-            }).catch((error) => {
-                // Handle Errors here.
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                // ...
-                let finalErrorMessage = errorCode.split('/').pop().split('-').join(' ');
-
-                reject(finalErrorMessage);
-            });
-    });
-};
-
 // login with google main function
-const loginWithGoogle = () => {
+const loginWithGoogle = async () => {
+    try {
+        // opening popup
+        const result = await signInWithPopup(auth, provider);
 
-    signInWithPopup(auth, provider)
-        .then((result) => {
-            const credential = GoogleAuthProvider.credentialFromResult(result);
-            const idToken = result._tokenResponse.idToken;
+        // after successfully sign user with
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const idToken = result._tokenResponse.idToken;
 
-            credentialsToServer({
+        // submit user details to server to login
+        const responseFromServer = await fetch('/user_signin_google', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
                 idToken: idToken,
                 accessToken: credential.accessToken,
                 typeOfLogin: 'google'
-            });
-
-        }).catch((error) => {
-            // Handle Errors here.
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            // ...
-            let finalErrorMessage = errorCode.split('/').pop().split('-').join(' ');
-
-            disp({
-                message: finalErrorMessage
             })
         });
 
-};
+        // parsing response form server
+        const response = responseFromServer.json();
 
-// send idToken to server after successfully login with google
-const credentialsToServer = (data) => {
+        if (response.status == 'error') throw response.message;
 
-    fetch('/user_signin_google', {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-        .then(res => res.json())
-        .then(res => {
-            if (res.status == 'error') {
-                disp({
-                    message: res.message
-                });
-            } else {
-                disp({
-                    message: res.message,
-                    isGood: true
-                });
-                window.location.href = res.action;
-            };
-        })
-        .catch(error => {
-            console.error('Faild while connecting to server => ', error);
-        });
+        // redirecting user to desired location
+        window.location.href = response.action;
+
+    } catch (error) {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ...
+        let finalErrorMessage = errorCode ? errorCode.split('/').pop().split('-').join(' ') : error;
+
+        // displaying errror to user
+        notify(finalErrorMessage);
+    };
 };
 
 // event listener for login with google btn
-const googleLoginBtn = document.getElementById('googleLoginBtn');
-if (googleLoginBtn) {
-    googleLoginBtn.addEventListener('click', (e) => {
+window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('googleLoginBtn').addEventListener('click', (e) => {
         loginWithGoogle();
     });
-}else{
-    setReCaptcha();
-};
+});
+
 

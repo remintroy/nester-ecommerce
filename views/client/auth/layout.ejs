@@ -9,6 +9,8 @@
   <script src="https://kit.fontawesome.com/5e9558e6a6.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="/custom/client/css/login/main.css">
   <link rel="shortcut icon" href="/img/icon.png" type="image/x-icon">
+  <link rel="stylesheet" href="/vendor/css/swal.css">
+  <script src="/vendor/js/swal.js"></script>
 </head>
 
 <body>
@@ -16,6 +18,23 @@
   <%- body %>
 
   <script>
+    function notify(message, isGood) {
+      Swal.fire({
+        title: message,
+        icon: isGood ? 'success' : 'error',
+        toast: true,
+        position: 'bottom-left',
+        showConfirmButton: false,
+        timer: 5000,
+        background: '#222',
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+      });
+    };
+
     function viewPassword(showPassword) {
       let input = document.getElementById("passwordInput");
       let show = document.getElementById("show");
