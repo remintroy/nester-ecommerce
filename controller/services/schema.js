@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import mongoosePaginator from 'mongoose-paginate-v2';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -73,7 +74,8 @@ export const address = db.model("address", new mongoose.Schema({
     ]
 }));
 
-export const products = db.model("products", new mongoose.Schema({
+// products 
+const productsSchema = new mongoose.Schema({
     PID: String,
     title: String,
     description: String,
@@ -98,9 +100,14 @@ export const products = db.model("products", new mongoose.Schema({
         default: 0
     },
     stock: Number
-}));
+});
 
-export const category = db.model("category", new mongoose.Schema({
+productsSchema.plugin(mongoosePaginator);
+
+export const products = db.model("products", productsSchema);
+
+// category
+const categorySchema = new mongoose.Schema({
     category: String,
     subCategorys:Array,
     creationTime: {
@@ -112,7 +119,11 @@ export const category = db.model("category", new mongoose.Schema({
         default: false
     },
     offer:String,
-}));
+});
+
+categorySchema.plugin(mongoosePaginator);
+
+export const category = db.model("category", categorySchema);
 
 export const cart = db.model("cart", new mongoose.Schema({
     UID: String,
@@ -136,7 +147,8 @@ export const cart = db.model("cart", new mongoose.Schema({
     ]
 }));
 
-export const orders = db.model("orders", new mongoose.Schema({
+// orderes
+const ordersSchema = new mongoose.Schema({
     UID: String,
     orders: [
         {
@@ -177,7 +189,12 @@ export const orders = db.model("orders", new mongoose.Schema({
             }
         }
     ]
-}));
+});
+
+ordersSchema.plugin(mongoosePaginator);
+
+export const orders = db.model("orders", ordersSchema);
+
 
 export const analytics = db.model("analytics", new mongoose.Schema({
     title: String,

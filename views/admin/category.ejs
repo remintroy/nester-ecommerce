@@ -1,5 +1,5 @@
 <!-- Custom styles for this page -->
-<link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+<link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="tylesheet">
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -20,6 +20,14 @@
           <label for="category">New category <span></span></label>
           <input class="form-control" type="text" name="category" id="categoryInput" autocomplete="off" placeholder="Enter new catogery">
         </div>
+        <div class="form-group">
+          <label for="inputTag">Subcategory's</label>
+          <input type="text" class="" id="inputTag" value="" data-role="tagsinput" placeholder="Add subcategory">
+          <script>
+            $("#inputTag").tagsinput('items');
+          </script>
+        </div>
+
         <div id="disp_state" style="display: none;" class="my-2 rounded">
           error
         </div>
@@ -101,6 +109,7 @@
     const category = document.getElementById("categoryInput");
     const errDisp = category.parentElement.querySelector("span");
     errDisp.innerText = '';
+    const data = inputTag.value;
 
     if (category.value.length > 2) {
       fetch('/category/add_category', {
@@ -109,7 +118,8 @@
           },
           method: "POST",
           body: JSON.stringify({
-            category: category.value ? category.value : null
+            category: category.value ? category.value : null,
+            sub: data
           })
         })
         .then(res => res.json())
@@ -207,7 +217,7 @@
               input.style.borderColor = 'red';
               progress_bar.classList.remove('bg-primary');
               progress_bar.classList.add('bg-danger');
-              toast(res.message,'error');
+              toast(res.message, 'error');
             } else {
               input.style.borderColor = '';
               progress_bar.classList.remove('bg-danger');
@@ -245,7 +255,7 @@
         .then(res => {
           if (res.status == 'error') {
             console.log(res.message);
-            toast(res.message,'error');
+            toast(res.message, 'error');
           } else {
             window.location.reload();
           };

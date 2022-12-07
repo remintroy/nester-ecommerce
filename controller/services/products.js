@@ -190,7 +190,7 @@ export function validatior(data, requiredIn, typeOfValidation) {
         resolve(output);
     });
 };
-export const addCategory = ({ category }) => {
+export const addCategory = ({ category, sub }) => {
     return new Promise(async (resolve, reject) => {
         try {
 
@@ -206,7 +206,8 @@ export const addCategory = ({ category }) => {
 
             try {
                 let categoryCreated = await db.category({
-                    category: output.category
+                    category: output.category,
+                    subCategorys: sub ? sub.split(',') : null
                 });
                 categoryCreated.save();
                 resolve(categoryCreated);

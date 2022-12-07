@@ -121,6 +121,7 @@ adminApp.use(
   Express.static(`${__dirname}/public/product_images`)
 );
 adminApp.use(Express.static(`${__dirname}/public/admin`));
+adminApp.use(Express.static(`${__dirname}/public/`));
 adminApp.use(auth.initAuth);
 
 adminApp.use(function (req, res, next) {
