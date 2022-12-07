@@ -145,12 +145,6 @@ export function validatior(data, requiredIn, typeOfValidation) {
                     return 0;
                 } else {
 
-                    const lengthTOCheck = typeOfValidation == 'google' ?
-                        GOOGLE_UID_LENGTH :
-                        typeOfValidation == 'phone' ?
-                            PHONE_UID_LENGTH :
-                            UID_LENGTH;
-
                     if (
                         UID.length == GOOGLE_UID_LENGTH ||
                         UID.length == PHONE_UID_LENGTH ||
@@ -636,8 +630,6 @@ export const signInWithGoogle = async ({ idToken, referalInfo }) => {
         } else {
             // create new user
 
-            console.log(userOutput)
-
             // check user with same email exist 
             const checkEmail = await db.users.find({ email: userOutput.email });
             if (checkEmail.length > 0) throw "Account Email already exist can't signup";
@@ -684,13 +676,12 @@ export const signInWithGoogle = async ({ idToken, referalInfo }) => {
                     throw 'Error while referal adding amount to wallet';
                 };
 
+                // save newly created user data to db
+                creatingUser.save();
+
                 // adding amounts it wallets for referal 
                 const newUserWallet = await walletService.addAmount(userOutput.UID, REFERAL_REWARD_TO, 'Referal reward');
-
             };
-
-            // save newly created user data to db
-            creatingUser.save();
 
             // result after creating user
             outputUserData.UID = userOutput.UID;
