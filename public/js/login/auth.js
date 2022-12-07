@@ -30,7 +30,19 @@ setPersistence(auth, browserSessionPersistence);
 
 // login with google main function
 const loginWithGoogle = async () => {
+
+    // status display documents and elements
+    const disp_state = document.getElementById('status_disp');
+    const loader = document.getElementById('preloder');
+    disp_state.classList.remove('err');
+    disp_state.innerText = '';
+    disp_state.style.display = 'none';
+
     try {
+
+        // show loader
+        loader.style.display = 'flex';
+
         // opening popup
         const result = await signInWithPopup(auth, provider);
 
@@ -50,7 +62,7 @@ const loginWithGoogle = async () => {
         });
 
         // parsing response form server
-        const response = responseFromServer.json();
+        const response = await responseFromServer.json();
 
         if (response.status == 'error') throw response.message;
 
@@ -65,7 +77,12 @@ const loginWithGoogle = async () => {
         let finalErrorMessage = errorCode ? errorCode.split('/').pop().split('-').join(' ') : error;
 
         // displaying errror to user
+        loader.style.display = 'none';
+        disp_state.classList.add('err')
+        disp_state.innerText = error;
+        disp_state.style.display = 'block';
         notify(finalErrorMessage);
+        return 0;
     };
 };
 

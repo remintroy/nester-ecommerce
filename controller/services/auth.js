@@ -587,7 +587,7 @@ export const userDataUpdate = ({ UID, email, password, name, phone, state }) => 
     });
 };
 
-export const signInWithGoogle = async ({ idToken }) => {
+export const signInWithGoogle = async ({ idToken, referalInfo }) => {
     try {
 
         // getting user details form firebase with id Token
@@ -595,7 +595,7 @@ export const signInWithGoogle = async ({ idToken }) => {
 
         // valdiating and checking user details form google with db
         const userOutput = await validatior({
-            UID: userDataFromGoogle.UID,
+            UID: userDataFromGoogle.uid,
             email: userDataFromGoogle.email,
             name: userDataFromGoogle.displayName
         }, {
@@ -603,14 +603,98 @@ export const signInWithGoogle = async ({ idToken }) => {
             emailRequired: true
         }, 'google');
 
+        // check for referal code info
+        referalInfo = referalInfo ? referalInfo : {};
+        const { referal, email: referalEmail, name: referalName } = referalInfo;
+
         // fetching userdata from server
         const userData = await db.users.find({ UID: userOutput.UID });
 
-        if(userData.length!=0){
-        
-        if (userData[0]?.loginProvider != 'google') throw `This user can't login with google`;
+        // output data accumilator
+        const outputUserData = {
+            action: '/',
+            UID: '',
+            message: ''
+        };
 
-        }; // TODO:
+        if (userData.length != 0) {
+
+            // is this user a google login user;
+            if (userData[0]?.loginProvider != 'google') throw `This user can't login with google`;
+
+            // login user
+            const userDataLogin = await db.users.updateOne({ UID: userData[0].UID }, {
+                $set: {
+                    lastLogin: new Date()
+                }
+            });
+
+            // response message after successful login
+            outputUserData.UID = userData[0].UID;
+            outputUserData.message = 'Login success';
+
+        } else {
+            // create new user
+
+            // check user with same email exist 
+            const checkEmail = await db.users.find({ email: userOutput.email });
+            if (checkEmail.length > 0) throw "Account Email already exist can't signup";
+
+            const checkPhone = await db.users.find({ phone: userOutput.phone });
+            if (checkPhone.length > 0) throw "Account wiht Phone number already exist can't signup";
+
+            // referal code generation for new user
+            const newReferalCode = randomId(7, 'A0');
+
+            // new users creation
+            const creatingUser = await db.users({
+                UID: userOutput.UID,
+                email: userOutput.email,
+                phone: userOutput.phone,
+                name: userOutput.name,
+                referal: newReferalCode,
+                loginProvider: 'google',
+                referedBy: referal ? referal : null,
+            });
+
+            // adding referal reward to both users
+            if (referal) {
+
+                let existingUserWithReferal;
+
+                try {
+                    // finding user who is referd this newly cerated user
+                    existingUserWithReferal = await db.users.find({ referal: referal });
+                } catch (error) {
+                    // error fetching referal data from db
+                };
+
+                // check if users with code exist or not
+                if (existingUserWithReferal.length == 0) throw 'Invalid referal code';
+
+                // updaitng amoutn of referal to from user
+                try {
+                    const addingAmount = await walletService.addAmount(existingUserWithReferal[0].UID, REFERAL_REWARD_FROM, `Reward for refering ${userOutput.name} : ${userOutput.email}`);
+                } catch (error) {
+                    throw 'Error while referal adding amount to wallet';
+                };
+
+                // adding amounts it wallets for referal 
+                const newUserWallet = await walletService.addAmount(userOutput.UID, REFERAL_REWARD_TO, 'Referal reward');
+
+            };
+
+            // save newly created user data to db
+            creatingUser.save();
+
+            // result after creating user
+            outputUserData.UID = userOutput.UID;
+            outputUserData.action = '/';
+            outputUserData.message = 'Account successfully created';
+        };
+
+        // returning user Data;
+        return outputUserData;
 
     } catch (error) {
         // handling error while sing in / up user;

@@ -1,3 +1,6 @@
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.rawgit.com/igorlino/elevatezoom-plus/1.1.6/src/jquery.ez-plus.js"></script>
+
 <section class="container">
   <h2 class="pt-4"><b>Nester flash sales</b></h2>
   <p style="text-transform: capitalize;">Nester <%= locals?.product.category?' > '+locals?.product.category:'' %> </p>
@@ -10,7 +13,7 @@
       <div class="col-lg-6 col-md-6">
         <div class="product__details__pic">
           <div class="product__details__pic__item">
-            <img class="product__details__pic__item--large" src="/product_images/<%=locals?.product.PID%>1.jpg" alt="">
+            <img class="product__details__pic__item--large" id="zoom_04" data-zoom-image="/product_images/<%=locals?.product.PID%>1.jpg" src="/product_images/<%=locals?.product.PID%>1.jpg" alt="">
           </div>
           <div class="product__details__pic__slider owl-carousel">
             <img data-imgbigurl="/product_images/<%=locals?.product.PID%>1.jpg" src="/product_images/<%=locals?.product.PID%>1.jpg" alt="">
@@ -45,7 +48,7 @@
           <ul>
             <li><b>Availability</b> <span><%= locals.product.stock!=0?product.stock<10?`Only ${product.stock} stock is avaiable`:'In Stock':'Out of stock' %> </span></li>
             <li><b>Shipping</b> <span>01 day shipping. <samp>Free pickup today</samp></span></li>
-            <li><b>Weight</b> <span>0.5 kg</span></li>
+            <!-- <li><b>Weight</b> <span>0.5 kg</span></li>
             <li><b>Share on</b>
               <div class="share">
                 <a href="#"><i class="fa fa-facebook"></i></a>
@@ -53,7 +56,7 @@
                 <a href="#"><i class="fa fa-instagram"></i></a>
                 <a href="#"><i class="fa fa-pinterest"></i></a>
               </div>
-            </li>
+            </li> -->
           </ul>
         </div>
       </div>
@@ -64,9 +67,6 @@
               <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab" aria-selected="true">Description</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab" aria-selected="false">Information</a>
-            </li>
-            <li class="nav-item">
               <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab" aria-selected="false">Reviews <span>(1)</span></a>
             </li>
           </ul>
@@ -74,45 +74,7 @@
             <div class="tab-pane active" id="tabs-1" role="tabpanel">
               <div class="product__details__tab__desc">
                 <h6>Products Infomation</h6>
-                <p>Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.
-                  Pellentesque in ipsum id orci porta dapibus. Proin eget tortor risus. Vivamus
-                  suscipit tortor eget felis porttitor volutpat. Vestibulum ac diam sit amet quam
-                  vehicula elementum sed sit amet dui. Donec rutrum congue leo eget malesuada.
-                  Vivamus suscipit tortor eget felis porttitor volutpat. Curabitur arcu erat,
-                  accumsan id imperdiet et, porttitor at sem. Praesent sapien massa, convallis a
-                  pellentesque nec, egestas non nisi. Vestibulum ac diam sit amet quam vehicula
-                  elementum sed sit amet dui. Vestibulum ante ipsum primis in faucibus orci luctus
-                  et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam
-                  vel, ullamcorper sit amet ligula. Proin eget tortor risus.</p>
-                <p>Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Lorem
-                  ipsum dolor sit amet, consectetur adipiscing elit. Mauris blandit aliquet
-                  elit, eget tincidunt nibh pulvinar a. Cras ultricies ligula sed magna dictum
-                  porta. Cras ultricies ligula sed magna dictum porta. Sed porttitor lectus
-                  nibh. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a.
-                  Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Sed
-                  porttitor lectus nibh. Vestibulum ac diam sit amet quam vehicula elementum
-                  sed sit amet dui. Proin eget tortor risus.</p>
-              </div>
-            </div>
-            <div class="tab-pane" id="tabs-2" role="tabpanel">
-              <div class="product__details__tab__desc">
-                <h6>Products Infomation</h6>
-                <p>Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.
-                  Pellentesque in ipsum id orci porta dapibus. Proin eget tortor risus.
-                  Vivamus suscipit tortor eget felis porttitor volutpat. Vestibulum ac diam
-                  sit amet quam vehicula elementum sed sit amet dui. Donec rutrum congue leo
-                  eget malesuada. Vivamus suscipit tortor eget felis porttitor volutpat.
-                  Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem. Praesent
-                  sapien massa, convallis a pellentesque nec, egestas non nisi. Vestibulum ac
-                  diam sit amet quam vehicula elementum sed sit amet dui. Vestibulum ante
-                  ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;
-                  Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula.
-                  Proin eget tortor risus.</p>
-                <p>Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Lorem
-                  ipsum dolor sit amet, consectetur adipiscing elit. Mauris blandit aliquet
-                  elit, eget tincidunt nibh pulvinar a. Cras ultricies ligula sed magna dictum
-                  porta. Cras ultricies ligula sed magna dictum porta. Sed porttitor lectus
-                  nibh. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a.</p>
+                <p><%= product?.description %> </p>
               </div>
             </div>
             <div class="tab-pane" id="tabs-3" role="tabpanel">
@@ -150,67 +112,30 @@
       </div>
     </div>
     <div class="row">
+      <% locals?.topProducts?.forEach(e=>{ %>
       <div class="col-lg-3 col-md-4 col-sm-6">
         <div class="product__item">
-          <div class="product__item__pic set-bg" data-setbg="/img/product/product-1.jpg">
+          <div class="product__item__pic set-bg" data-setbg="/product_images/<%=e.product[0].PID %>1.jpg ">
             <ul class="product__item__pic__hover">
               <li><a href="#"><i class="fa fa-heart"></i></a></li>
-              <li><a href="#"><i class="fa fa-retweet"></i></a></li>
-              <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
+              <li><a onclick="addToCart('<%=e.product[0].PID%>')"><i class="fa fa-shopping-cart"></i></a></li>
             </ul>
           </div>
           <div class="product__item__text">
-            <h6><a href="#">Crab Pool Security</a></h6>
-            <h5>$30.00</h5>
+            <h6 class="limit_lines_css l-2"><a href="/product/<%= e.product[0].PID %> "><%= e.product[0].title %> </a></h6>
+            <h5><%=e.product[0].price%> Rs</h5>
           </div>
         </div>
       </div>
-      <div class="col-lg-3 col-md-4 col-sm-6">
-        <div class="product__item">
-          <div class="product__item__pic set-bg" data-setbg="/img/product/product-2.jpg">
-            <ul class="product__item__pic__hover">
-              <li><a href="#"><i class="fa fa-heart"></i></a></li>
-              <li><a href="#"><i class="fa fa-retweet"></i></a></li>
-              <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
-            </ul>
-          </div>
-          <div class="product__item__text">
-            <h6><a href="#">Crab Pool Security</a></h6>
-            <h5>$30.00</h5>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-md-4 col-sm-6">
-        <div class="product__item">
-          <div class="product__item__pic set-bg" data-setbg="/img/product/product-3.jpg">
-            <ul class="product__item__pic__hover">
-              <li><a href="#"><i class="fa fa-heart"></i></a></li>
-              <li><a href="#"><i class="fa fa-retweet"></i></a></li>
-              <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
-            </ul>
-          </div>
-          <div class="product__item__text">
-            <h6><a href="#">Crab Pool Security</a></h6>
-            <h5>$30.00</h5>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-md-4 col-sm-6">
-        <div class="product__item">
-          <div class="product__item__pic set-bg" data-setbg="/img/product/product-7.jpg">
-            <ul class="product__item__pic__hover">
-              <li><a href="#"><i class="fa fa-heart"></i></a></li>
-              <li><a href="#"><i class="fa fa-retweet"></i></a></li>
-              <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
-            </ul>
-          </div>
-          <div class="product__item__text">
-            <h6><a href="#">Crab Pool Security</a></h6>
-            <h5>$30.00</h5>
-          </div>
-        </div>
-      </div>
+      <% }); %>
     </div>
   </div>
 </section>
 <!-- Related Product Section End -->
+
+<script>
+  $('#zoom_04').ezPlus({
+    zoomType: 'inner',
+    cursor: 'crosshair'
+  });
+</script>

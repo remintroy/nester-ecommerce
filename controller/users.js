@@ -406,15 +406,21 @@ export const loginWithGoogleAPI = async (req, res) => {
   try {
     // getting user id tocken form reqeuest body
     const idToken = req.body.idToken;
+    // referal code details
+    const referalInfo = req.session.referalInfo ? req.session.referalInfo : null;
     // validatinga and creating user
-    const result = await auth.signInWithGoogle({ idToken: idToken });
+    const result = await auth.signInWithGoogle({ idToken: idToken, referalInfo });
     // action
     const action = req.session.userUrlHistory ? req.session.userUrlHistory : result.action;
     // addign user session
     req.session.user = result.UID;
 
+    // clearing data only nesseary for login from session
+    req.session.referalInfo = {};
+    req.session.userUrlHistory = {};
+    
     // login success
-    res.send({ status: "good", message: "Login success", action });
+    res.send({ status: "good", message: result.message, action });
   } catch (error) {
     // handling error by sending error response
     res.send({ status: "error", message: error });
@@ -471,6 +477,7 @@ export const shop = async (req, res) => {
   try {
     const products = await db.products.find();
     res.locals.currentPage = "shop";
+    res.locals.topProducts = await productService.topSellingProducts(10);
     res.locals.products = products;
     res.render("client/shop");
     try {
@@ -488,6 +495,7 @@ export const product = async (req, res) => {
   const PID = req.params.id;
   try {
     const productData = await db.products.findOne({ PID: PID });
+    res.locals.topProducts = await productService.topSellingProducts(4);
     res.locals.currentPage = "product";
     res.locals.product = productData;
     res.render("client/product");
