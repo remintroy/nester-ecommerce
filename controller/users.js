@@ -260,10 +260,14 @@ export const signInWithPasswordAPI = async (req, res) => {
     const password = req.body.password;
     const result = await auth.signInPassword(data, type, password);
     const action = req.session.userUrlHistory ? req.session.userUrlHistory : result.action;
+
     req.session.user = result.UID;
     req.session.userLogin = { ...device.parse(req.headers['user-agent']), date: new Date() };
-    req.session.login = {};
+    req.session.login = null;
+    req.session.userUrlHistory = null;
+    req.session.referalInfo = null;
     res.send({ status: 'good', message: result.message, action: action });
+
   } catch (error) {
     res.send({ status: "error", message: error.message ? error.message : error, code: error.code ? error.code : 400 });
   }
@@ -335,8 +339,10 @@ export const resetPasswordAPI = async (req, res) => {
     const action = req.session.userUrlHistory ? req.session.userUrlHistory : result.action;
 
     // logs in user
-    req.session.login = {};
+    req.session.login = null;
     req.session.user = result.UID;
+    req.session.userUrlHistory = null;
+    req.session.referalInfo = null;
     req.session.userLogin = { ...device.parse(req.headers['user-agent']), date: new Date() };
 
     // response
@@ -377,9 +383,10 @@ export const signupSetpTwoAPI = async (req, res) => {
     const action = req.session.userUrlHistory ? req.session.userUrlHistory : result.action;
 
     // logs in user
-    req.session.signup = {};
+    req.session.signup = null;
     req.session.user = result.UID;
-    req.session.referalInfo = {};
+    req.session.referalInfo = null;
+    req.session.userUrlHistory = null;
     req.session.userLogin = { ...device.parse(req.headers['user-agent']), date: new Date() };
 
     // response
@@ -412,13 +419,15 @@ export const loginWithGoogleAPI = async (req, res) => {
     const result = await auth.signInWithGoogle({ idToken: idToken, referalInfo });
     // action
     const action = req.session.userUrlHistory ? req.session.userUrlHistory : result.action;
+
     // addign user session
     req.session.user = result.UID;
 
     // clearing data only nesseary for login from session
-    req.session.referalInfo = {};
-    req.session.userUrlHistory = {};
-    
+    req.session.referalInfo = null;
+    req.session.login = null;
+    req.session.userUrlHistory = null;
+
     // login success
     res.send({ status: "good", message: result.message, action });
   } catch (error) {

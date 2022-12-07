@@ -126,76 +126,85 @@ export const returnOrder = async (UID, orderID, PID) => {
         throw error;
     }
 }
-export const updateUserData = (UID, { fNameInput, lNameInput, displayNameInput, emailInput, phoneInput, currentPasswordInput, newPasswordInput, confirmPasswordInput }) => {
-    return new Promise(async (resolve, reject) => {
+
+// update userdata ---
+export const updateUserData = async (UID, { fNameInput, lNameInput, displayNameInput, emailInput, phoneInput, currentPasswordInput, newPasswordInput, confirmPasswordInput }) => {
+    try {
+
+        // getting and formatting first name and last name to one field
+        let name = fNameInput && lNameInput
+            ? fNameInput?.trim() + " " + lNameInput?.trim()
+            : fNameInput ?? lNameInput;
+
+        // validating incoming userData 
+        let userOutput = await auth.validatior({
+            UID: UID,
+            name: name,
+            email: emailInput,
+            phone: phoneInput,
+        }, {}, 'updateUser');
+
+        // validating and assigning display name to main user output
+        const validataDisplayName = await auth.validatior({ name: displayNameInput });
+        userOutput = { ...userOutput, displayName: validataDisplayName.name };
+
+        // fetching user data from db
+        let userDataFromDb;
+
         try {
-            // stage one of validatior
-            let name = '';
-            if (fNameInput && lNameInput) {
-                name = fNameInput?.trim() + " " + lNameInput?.trim();
-            } else if (fNameInput || lNameInput) {
-                name = fNameInput ?? lNameInput;
-            };
-            const userOutputA = await auth.validatior({
-                UID: UID,
-                name: name,
-                email: emailInput,
-                phone: phoneInput,
-            }, {}, 'updateUser');
-            try {
-                // statge two of validation
-                const userOutputB = await auth.validatior({ name: displayNameInput });
-
-                if (userOutputB?.name) userOutputA.displayName = userOutputB.name;
-
-                try { // stage three of validation --password                    
-                    const userOutputC = await auth.validatior({ UID:UID, password: currentPasswordInput }, {}, 'login');
-
-                    if (userOutputC.password) {
-                        try { // stage four of validation
-                            if (newPasswordInput == confirmPasswordInput) {
-                                const newPassword = await auth.validatior({ password: confirmPasswordInput }, {}, 'updateLogin');
-                                userOutputA.password = newPassword?.password;
-                            } else {
-                                throw `password dosen't match`;
-                            };
-                        } catch (error) { // stage 4 err
-                            reject('Bad password');
-                        };
-                    } else if (currentPasswordInput) {
-                        reject('Incorrect password');
-                    };
-
-                } catch (error) { // stage 3 err
-                    // do nothing
-                };
-
-                try { // final stage
-
-                    const dataToSave = {};
-
-                    Object.keys(userOutputA).forEach(key => {
-                        if (userOutputA[key]) dataToSave[key] = userOutputA[key];
-                    });
-
-                    const updated = await db.users.updateOne({ UID: userOutputA.UID }, {
-                        $set: dataToSave
-                    });
-
-                    resolve('Updated succesfully');
-
-                } catch (error) { // final stage err
-                    reject('Error updating data');
-                };
-
-            } catch (error) { // statge 2 err
-                reject('Enter a valid display name');
-            };
-        } catch (error) { // stage 1 err
-            reject(error);
+            userDataFromDb = await db.users.find({ UID: userOutput.UID });
+        } catch (error) {
+            // handling error
+            throw 'Error fetching user data';
         };
-        resolve('men at work')
-    });
+
+        // checks if there is something on current password
+        if (currentPasswordInput) {
+            // checks and only continue if user is a login with email user
+            if (userDataFromDb[0].loginProvider != 'email') throw "Your are not logged in with email so you can't edit password";
+            // validating password
+            const passwordChecker = await auth.validatior({ UID: UID, password: currentPasswordInput }, {}, 'login');
+            // finding wrong password
+            if (!passwordChecker.password) throw 'Incorrect password';
+            // cheks if confirm password matchers with new password
+            if (newPasswordInput != confirmPasswordInput) throw "Confirm password doesn't match"
+            // creating hash for new password
+            const newPassword = await auth.validatior({ password: confirmPasswordInput }, {}, 'updateLogin');
+            // adding new password to main user object
+            userOutput = { ...userOutput, password: newPassword.password };
+        };
+
+
+        const dataToSave = {};
+        const keys = Object.keys(userOutput);
+
+        if (userOutput['email'] && userDataFromDb[0].loginProvider != 'email') {
+            throw 'Editing email is not availabe for your account';
+        };
+
+        // filtering empty keys from userOutput object 
+        for (const key of keys) {
+            if (userOutput[key]) dataToSave[key] = userOutput[key];
+        };
+
+        try {
+            // updaitng userData;
+            const updated = await db.users.updateOne({ UID: userOutput.UID }, {
+                $set: dataToSave
+            });
+
+            // response with message
+            return 'Updated succesfully';
+
+        } catch (error) {
+            // handling error while user data updation
+            throw 'Failed to update user data';
+        };
+
+    } catch (error) {
+        // handling error
+        throw error;
+    };
 };
 
 async function test() {

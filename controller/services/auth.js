@@ -6,8 +6,8 @@ import * as util from './util.js';
 import * as emailService from './email.js';
 import * as walletService from './wallet.js';
 
-const REFERAL_REWARD_FROM = 10;
-const REFERAL_REWARD_TO = 110;
+const REFERAL_REWARD_FROM = 108;
+const REFERAL_REWARD_TO = 25;
 
 /**
  * this function runs as the first level middleware
@@ -403,7 +403,6 @@ export function validatior(data, requiredIn, typeOfValidation) {
     });
 };
 
-
 export const mustLoginAsAdmin = (req, res, next) => {
     if (req.admin) {
         next();
@@ -470,7 +469,6 @@ export const mustLogoutAsUserAPI = (req, res, next) => {
     };
 };
 
-
 export const adminLogin = ({ email, password }) => {
     return new Promise(async (resolve, reject) => {
 
@@ -506,7 +504,7 @@ export const adminLogout = (req, res) => {
     res.send({ status: 'good', message: "Logout success" });
 };
 
-
+// this function is used to update user data form admin side
 export const userDataUpdate = ({ UID, email, password, name, phone, state }) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -581,226 +579,7 @@ export const userDataUpdate = ({ UID, email, password, name, phone, state }) => 
     });
 };
 
-export const signInWithGoogle = async ({ idToken, referalInfo }) => {
-    try {
-
-        // getting user details form firebase with id Token
-        const userDataFromGoogle = await firebase.signInWithGoogleSDK({ idToken: idToken });
-
-        // valdiating and checking user details form google with db
-        const userOutput = await validatior({
-            UID: userDataFromGoogle.uid,
-            email: userDataFromGoogle.email,
-            name: userDataFromGoogle.displayName
-        }, {
-            UIDRequired: true,
-            emailRequired: true
-        }, 'google');
-
-        // check for referal code info
-        referalInfo = referalInfo ? referalInfo : {};
-        const { referal, email: referalEmail, name: referalName } = referalInfo;
-
-        // fetching userdata from server
-        const userData = await db.users.find({ UID: userOutput.UID });
-
-        // output data accumilator
-        const outputUserData = {
-            action: '/',
-            UID: '',
-            message: ''
-        };
-
-        if (userData.length != 0) {
-
-            // is this user a google login user;
-            if (userData[0]?.loginProvider != 'google') throw `This user can't login with google`;
-
-            // login user
-            const userDataLogin = await db.users.updateOne({ UID: userData[0].UID }, {
-                $set: {
-                    lastLogin: new Date()
-                }
-            });
-
-            // response message after successful login
-            outputUserData.UID = userData[0].UID;
-            outputUserData.message = 'Login success';
-
-        } else {
-            // create new user
-
-            // check user with same email exist 
-            const checkEmail = await db.users.find({ email: userOutput.email });
-            if (checkEmail.length > 0) throw "Account Email already exist can't signup";
-
-            // chek for user with same phone number
-            if (userOutput.phone) {
-                const checkPhone = await db.users.find({ phone: userOutput.phone });
-                if (checkPhone.length > 0) throw "Account with Phone number already exist can't signup";
-            };
-
-            // referal code generation for new user
-            const newReferalCode = randomId(7, 'A0');
-
-            // new users creation
-            const creatingUser = await db.users({
-                UID: userOutput.UID,
-                email: userOutput.email,
-                phone: userOutput.phone,
-                name: userOutput.name,
-                referal: newReferalCode,
-                loginProvider: 'google',
-                referedBy: referal ? referal : null,
-            });
-
-            // adding referal reward to both users
-            if (referal) {
-
-                let existingUserWithReferal;
-
-                try {
-                    // finding user who is referd this newly cerated user
-                    existingUserWithReferal = await db.users.find({ referal: referal });
-                } catch (error) {
-                    // error fetching referal data from db
-                };
-
-                // check if users with code exist or not
-                if (existingUserWithReferal.length == 0) throw 'Invalid referal code';
-
-                // updaitng amoutn of referal to from user
-                try {
-                    const addingAmount = await walletService.addAmount(existingUserWithReferal[0].UID, REFERAL_REWARD_FROM, `Reward for refering ${userOutput.name} : ${userOutput.email}`);
-                } catch (error) {
-                    throw 'Error while referal adding amount to wallet';
-                };
-
-                // save newly created user data to db
-                creatingUser.save();
-
-                // adding amounts it wallets for referal 
-                const newUserWallet = await walletService.addAmount(userOutput.UID, REFERAL_REWARD_TO, 'Referal reward');
-            };
-
-            // result after creating user
-            outputUserData.UID = userOutput.UID;
-            outputUserData.action = '/';
-            outputUserData.message = 'Account successfully created';
-        };
-
-        // returning user Data;
-        return outputUserData;
-
-    } catch (error) {
-        // handling error while sing in / up user;
-        throw error;
-    };
-};
-
-export const signInWithGoogle_OLD = ({ idToken }) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const userDataFromGoogle = await firebase.signInWithGoogleSDK({ idToken: idToken });
-
-            const output = await validatior(
-                {
-                    UID: userDataFromGoogle.uid,
-                    email: userDataFromGoogle.email,
-                    name: userDataFromGoogle.displayName,
-                },
-                {
-                    UIDRequired: true,
-                    emailRequired: true,
-                },
-                'google'
-            );
-
-            try {
-
-                let userDataFromDB = await db.users.find({ email: output.email });
-
-                // email exists
-                if (userDataFromDB.length > 0) {
-
-                    // confirms that the user is a google user
-                    if (userDataFromDB[0].loginProvider == 'google') {
-
-                        try {
-
-                            const userdata = await db.users.findOne({ UID: output.UID });
-
-                            if (userdata.blocked) {
-
-                                reject("You account is disabled"); return 0;
-
-                            } else {
-
-                                try {
-                                    let userDataForLogin = db.users.updateOne(
-                                        {
-                                            UID: output.UID
-                                        },
-                                        {
-                                            $set: {
-                                                lastLogin: new Date()
-                                            }
-                                        }
-                                    );
-                                    resolve(userDataFromDB[0].UID);
-                                } catch (error) {
-                                    console.log('LoginWithGoogle_AuthPG_userUpdate => ', error);
-                                    reject('Error Login with google'); return 0;
-                                };
-
-                            };
-
-                        } catch (error) {
-                            console.log("Blocked_Check_GOOGLE_DB => ", error);
-                            reject("Error fetching user data"); return 0;
-                        };
-
-                    } else {
-                        reject('Email already exist'); return 0;
-                    };
-                } else {
-                    try {
-
-                        let phoneNumberAfterValidaton;
-
-                        try {
-                            phoneNumberAfterValidaton = await validatior({ phone: userDataFromGoogle.phoneNumber });
-                            phoneNumberAfterValidaton = phoneNumberAfterValidaton.phone;
-                        } catch (error) {
-                            reject(error); return 0;
-                        };
-
-                        let userDataForLogin = db.users({
-                            name: output.name,
-                            email: output.email,
-                            loginProvider: 'google',
-                            UID: output.UID,
-                            phone: phoneNumberAfterValidaton,
-                            emailVerified: userDataFromGoogle.emailVerified,
-                        });
-                        userDataForLogin.save();
-                        resolve(userDataForLogin.UID);
-                    } catch (error) {
-                        console.log('LoginWithGoogle_AuthPG_userUpdate => ', error);
-                        reject('Error creating account with google'); return 0;
-                    };
-                };
-
-            } catch (error) {
-                console.error("LoginWithGoogle_AuthPG_userCheck => ", error);
-                reject('Error Login with google'); return 0;
-            };
-        } catch (error) {
-            reject(error); return 0;
-        };
-    });
-};
-
+// this fucntion is currently not fuctional
 export const signInWithOTP = ({ idToken }) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -1184,6 +963,125 @@ export const signUpStepTwo = async ({ email, phone, password, name, referalInfo 
         };
 
     } catch (error) {
+        throw error;
+    };
+};
+
+// login add signup ----
+export const signInWithGoogle = async ({ idToken, referalInfo }) => {
+    try {
+
+        // getting user details form firebase with id Token
+        const userDataFromGoogle = await firebase.signInWithGoogleSDK({ idToken: idToken });
+
+        // valdiating and checking user details form google with db
+        const userOutput = await validatior({
+            UID: userDataFromGoogle.uid,
+            email: userDataFromGoogle.email,
+            name: userDataFromGoogle.displayName
+        }, {
+            UIDRequired: true,
+            emailRequired: true
+        }, 'google');
+
+        // check for referal code info
+        referalInfo = referalInfo ? referalInfo : {};
+        const { referal, email: referalEmail, name: referalName } = referalInfo;
+
+        // fetching userdata from server
+        const userData = await db.users.find({ UID: userOutput.UID });
+
+        // output data accumilator
+        const outputUserData = {
+            action: '/',
+            UID: '',
+            message: ''
+        };
+
+        if (userData.length != 0) {
+
+            // is this user a google login user;
+            if (userData[0]?.loginProvider != 'google') throw `This user can't login with google`;
+
+            // login user
+            const userDataLogin = await db.users.updateOne({ UID: userData[0].UID }, {
+                $set: {
+                    lastLogin: new Date()
+                }
+            });
+
+            // response message after successful login
+            outputUserData.UID = userData[0].UID;
+            outputUserData.message = 'Login success';
+            outputUserData.action = '/';
+
+        } else {
+            // create new user
+
+            // check user with same email exist 
+            const checkEmail = await db.users.find({ email: userOutput.email });
+            if (checkEmail.length > 0) throw "Account Email already exist can't signup";
+
+            // chek for user with same phone number
+            if (userOutput.phone) {
+                const checkPhone = await db.users.find({ phone: userOutput.phone });
+                if (checkPhone.length > 0) throw "Account with Phone number already exist can't signup";
+            };
+
+            // referal code generation for new user
+            const newReferalCode = randomId(7, 'A0');
+
+            // new users creation
+            const creatingUser = await db.users({
+                UID: userOutput.UID,
+                email: userOutput.email,
+                phone: userOutput.phone,
+                name: userOutput.name,
+                referal: newReferalCode,
+                loginProvider: 'google',
+                referedBy: referal ? referal : null,
+            });
+
+            // save newly created user data to db
+            creatingUser.save();
+
+            // adding referal reward to both users
+            if (referal) {
+
+                let existingUserWithReferal;
+
+                try {
+                    // finding user who is referd this newly cerated user
+                    existingUserWithReferal = await db.users.find({ referal: referal });
+                } catch (error) {
+                    // error fetching referal data from db
+                };
+
+                // check if users with code exist or not
+                if (existingUserWithReferal.length == 0) throw 'Invalid referal code';
+
+                // updaitng amoutn of referal to from user
+                try {
+                    const addingAmount = await walletService.addAmount(existingUserWithReferal[0].UID, REFERAL_REWARD_FROM, `Reward for refering ${userOutput.name} : ${userOutput.email}`);
+                } catch (error) {
+                    throw 'Error while referal adding amount to wallet';
+                };
+
+                // adding amounts it wallets for referal 
+                const newUserWallet = await walletService.addAmount(userOutput.UID, REFERAL_REWARD_TO, 'Referal reward');
+            };
+
+            // result after creating user
+            outputUserData.UID = userOutput.UID;
+            outputUserData.action = '/';
+            outputUserData.message = 'Account successfully created';
+        };
+
+        // returning user Data;
+        return outputUserData;
+
+    } catch (error) {
+        // handling error while sing in / up user;
         throw error;
     };
 };

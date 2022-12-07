@@ -197,8 +197,8 @@ function validateUserData(onlyPassword) {
   const errFlagger = (key, message) => {
     console.log(key, message);
     // if (!onlyPassword) {
-      userInputsErr[key].innerText = message;
-      thereIsNoErr = false;
+    userInputsErr[key].innerText = message;
+    thereIsNoErr = false;
     // }
   };
 
@@ -233,49 +233,59 @@ function validateUserData(onlyPassword) {
   return output;
 };
 
-function updaeUserData(onlyPassword) {
-  const userData = validateUserData(onlyPassword);
-  if (userData.thereIsNoErr) {
-    Swal.fire({
+async function updaeUserData(onlyPassword) {
+
+  // valdiating user data
+  const userDataFrom = validateUserData(onlyPassword);
+
+  // check if any error is collected while validation
+  if (userDataFrom.thereIsNoErr) {
+
+    // removing empty keys
+    const keys = Object.keys(userDataFrom);
+    const userData = {};
+
+    for (const key of keys) {
+      if (userDataFrom[key]) userData[key] = userDataFrom[key];
+    };
+
+    // check if all fields are empty or not
+    if (Object.keys(userData).length <= 1) {
+      notify('Nothing to update');
+      return 0;
+    };
+
+    console.log(userData)
+
+    // show loading ...
+    const mainSwal = await Swal.fire({
       title: 'Updating your data',
       html: 'Plz wait while processing...',
-      didOpen: () => {
+      didOpen: async () => {
         Swal.showLoading();
 
-        fetch('/user_data/update', {
-          method: "PUT",
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(userData)
-        })
-          .then(res => res.json())
-          .then(res => {
-            if (res.status == 'error') {
-              Swal.close();
-              Swal.fire({
-                title: res.message,
-                icon: 'error',
-                confirmButtonText: 'Close'
-              });
-            } else {
-              Swal.close();
-              Swal.fire({
-                title: res.message,
-                icon: 'success',
-                confirmButtonText: 'Ok'
-              });
-            }
-          })
-          .catch(error => {
-            Swal.close();
-            Swal.fire({
-              title: 'Oops thats an error',
-              html: 'Error connecting to server',
-              icon: 'error',
-              confirmButtonText: 'Contnue shopping'
-            });
+        try {
+          // conecting to server
+          const responseFromServer = await fetch('/user_data/update', {
+            method: "PUT",
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
           });
+
+          // parsig response form server
+          const res = await responseFromServer.json();
+
+          // check's for error response
+          if (res.status == 'error') notify(res.message);
+          else notify(res.message, 'success');
+
+        } catch (error) {
+          // handling fetch errors
+          Swal.close();
+          notify('Error connecting to server');
+        };
       }
     });
   };
