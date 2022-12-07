@@ -79,7 +79,7 @@ const loginWithGoogle = async () => {
         // displaying errror to user
         loader.style.display = 'none';
         disp_state.classList.add('err')
-        disp_state.innerText = error;
+        disp_state.innerText = finalErrorMessage;
         disp_state.style.display = 'block';
         notify(finalErrorMessage);
         return 0;
