@@ -636,12 +636,17 @@ export const signInWithGoogle = async ({ idToken, referalInfo }) => {
         } else {
             // create new user
 
+            console.log(userOutput)
+
             // check user with same email exist 
             const checkEmail = await db.users.find({ email: userOutput.email });
             if (checkEmail.length > 0) throw "Account Email already exist can't signup";
 
-            const checkPhone = await db.users.find({ phone: userOutput.phone });
-            if (checkPhone.length > 0) throw "Account wiht Phone number already exist can't signup";
+            // chek for user with same phone number
+            if (userOutput.phone) {
+                const checkPhone = await db.users.find({ phone: userOutput.phone });
+                if (checkPhone.length > 0) throw "Account with Phone number already exist can't signup";
+            };
 
             // referal code generation for new user
             const newReferalCode = randomId(7, 'A0');
