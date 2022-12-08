@@ -56,3 +56,18 @@
   </div>
 </footer>
 <!-- Footer Section End -->
+
+<nav class="mobile_navbar d-md-none">
+  <a href="/" class="<%= locals.currentPage=='home'?'on':'' %> ">
+    <i class="fa-solid fa-house"></i>
+  </a>
+  <a href="/shop" class="<%= locals.currentPage=='shop'?'on':'' %>">
+    <i class="fa-solid fa-shop"></i>
+  </a>
+  <a href="/cart" class="<%= locals.currentPage=='cart'?'on':'' %>">
+    <i class="fa-solid fa-cart-shopping"></i>
+  </a>
+  <a href="/mb/dashboard">
+    <i class="fa-solid fa-user"></i>
+  </a>
+</nav>

@@ -684,6 +684,21 @@ export const category = async (req, res) => {
     res.locals.layout = 'blank_layout';
     res.render('client/404');
   }
+};
+export const explore_mb = async (req, res) => {
+  try {
+
+    res.locals.currentPage = 'explore';
+    res.render('client/mb_search');
+    
+  } catch (error) {
+    console.log(error);
+    res.locals.code = 500;
+    res.locals.message = "Cant display this page now...";
+    res.locals.error = "Faild to fetch data form database";
+    res.locals.layout = 'blank_layout';
+    res.render("client/404");
+  }
 }
 
 // common - api's

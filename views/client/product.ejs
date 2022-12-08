@@ -7,7 +7,7 @@
 </section>
 
 <!-- Product Details Section Begin -->
-<section class="product-details spad">
+<section >
   <div class="container">
     <div class="row">
       <div class="col-lg-6 col-md-6">
@@ -113,17 +113,33 @@
     </div>
     <div class="row">
       <% locals?.topProducts?.forEach(e=>{ %>
-      <div class="col-lg-3 col-md-4 col-sm-6">
-        <div class="product__item">
-          <div class="product__item__pic set-bg" data-setbg="/product_images/<%=e.product[0].PID %>1.jpg ">
-            <ul class="product__item__pic__hover">
-              <li><a href="#"><i class="fa fa-heart"></i></a></li>
-              <li><a onclick="addToCart('<%=e.product[0].PID%>')"><i class="fa fa-shopping-cart"></i></a></li>
-            </ul>
-          </div>
-          <div class="product__item__text">
-            <h6 class="limit_lines_css l-2"><a href="/product/<%= e.product[0].PID %> "><%= e.product[0].title %> </a></h6>
-            <h5><%=e.product[0].price%> Rs</h5>
+      <div class="col-12 col-md-6 px-md-0">
+        <div class="card p-3 m-1" onclick="window.location.href='/product/<%=e.product[0].PID%>'" style='cursor: pointer;'>
+          <div class="row">
+            <div class="col-5">
+              <img src="/product_images/<%= e.product[0].PID %>1.jpg " class="img-fluid" alt="">
+            </div>
+            <div class="col-7">
+              <h6 class="limit_lines_css l-3" style="cursor: pointer;"><%= e.product[0].title %> </h6>
+
+              <span class="text-dark mt-1 mb-0">
+                <b><%= e.product[0].price - e.product[0].offer%> Rs</b>
+              </span>
+              <% if(e.product[0].offer){ %>
+              <b class="text-danger"><%= e.product[0].offer%>Rs Off </b>
+              <s>
+                <b>
+                  <p class="m-0">MRP : <%= e.product[0].price %> Rs </p>
+                </b>
+              </s>
+              <br>
+              <span class="bg-danger text-white px-3"><%= e.product[0].stock!=0?e.product[0].stock<10?`Only ${e.product[0].stock} stock is avaiable`:'In Stock':'Out of stock' %> </span>
+              <% }else{ %>
+              <br><br>
+              <span class="bg-danger text-white px-3"><%= e.product[0].stock!=0?e.product[0].stock<10?`Only ${e.product[0].stock} stock is avaiable`:'In Stock':'Out of stock' %> </span>
+              <% }; %>
+
+            </div>
           </div>
         </div>
       </div>

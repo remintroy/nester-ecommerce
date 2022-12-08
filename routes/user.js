@@ -121,5 +121,7 @@ app.get('/dashboard/security',users.urlHistory, auth.mustLoginAsUser, users.secu
 app.get('/checkout',users.urlHistory, auth.mustLoginAsUser, users.checkout);
 // category
 app.get('/c/:id',users.urlHistory, users.category);
+//  mobile explore page
+app.get('/mb/explore',users.urlHistory, users.explore_mb);
 
 export default app;
