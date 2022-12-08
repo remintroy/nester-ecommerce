@@ -47,10 +47,10 @@
   <script src="/js/bootstrap.min.js"></script>
 
   <% if(locals?.currentPage!='checkout' && locals?.currentPageA != 'dashboard'){ %>
-  
+
   <script src="/js/jquery.nice-select.min.js"></script>
 
-  <% } %> 
+  <% } %>
 
   <script src="/js/jquery-ui.min.js"></script>
   <script src="/js/jquery.slicknav.js"></script>
@@ -62,14 +62,15 @@
   <script src="/js/client/main.js"></script>
 
   <script>
-    function addToCart(PID) {
+    function addToCart(PID, quantity) {
       fetch('/cart_action', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            PID: PID
+            PID: PID,
+            quantity: quantity ? quantity : null
           })
         })
         .then(res => res.json())
@@ -95,7 +96,7 @@
         position: 'bottom-left',
         showConfirmButton: false,
         timer: 5000,
-        background:'#222',
+        background: '#222',
         timerProgressBar: true,
         didOpen: (toast) => {
           toast.addEventListener('mouseenter', Swal.stopTimer)
@@ -103,9 +104,10 @@
         }
       });
     };
-    function copyToClipboard(value,message){
+
+    function copyToClipboard(value, message) {
       navigator.clipboard.writeText(value);
-      notify(message?message:'Copyed to clipboard','success');
+      notify(message ? message : 'Copyed to clipboard', 'success');
     };
   </script>
 </body>

@@ -39,8 +39,9 @@
   <!-- DataTales Example -->
   <div class="card mb-4">
     <div class="mb-1 small" id="progressDisp"></div>
-    <div class="card-header p-3 bg-white">
-      <h6 class="m-0 font-weight-bold text-primary">All Categorys</h6>
+    <div class="card-header p-3 bg-white d-flex justify-content-between">
+      <h6 class="m-0 font-weight-bold text-primary ">All Categorys </h6>
+      <span>Showing :  <%= categorys.page %> / <%= categorys.totalPages %>  </span>
     </div>
     <div class="card-body">
       <div class="table-responsive">
@@ -57,10 +58,10 @@
             </tr>
           </thead>
           <tbody>
-            <% categorys.forEach((category,index,array)=>{ %>
+            <% categorys.docs.forEach((category,index,array)=>{ %>
             <tr>
               <td>
-                <%=index+1%>
+                <%=categorys.pagingCounter + index%>
               </td>
               <td class="tabe_editable_TD" title="Click To edit" onclick="categoryName('<%=category._id%>',this)">
                 <input class="input_editable" type="text" data-id="<%=category._id%>" disabled value="<%=category.category%>">
@@ -69,7 +70,7 @@
                 <%=category._id%>
               </td>
               <td>
-                <%=category.creationTime%>
+                <%=locals?.util?.dateToReadable(category.creationTime)%>
               </td>
               <td style="text-transform:capitalize;">
                 <%if(category.status){%>
@@ -86,6 +87,36 @@
             <% }); %>
           </tbody>
         </table>
+        <div class="d-flex justify-content-end mt-3">
+          <nav aria-label="Page navigation example">
+            <ul class="pagination">
+
+              <li class="page-item  <%= categorys?.hasPrevPage?'':'disabled' %>" id="btnE">
+                <a class="page-link" href="/category?page=<%= categorys.prevPage %> " disabled data-current="1">Previous</a>
+              </li>
+
+              <!-- if on first page -->
+              <% if(categorys?.hasPrevPage){%>
+              <!-- previous page -->
+              <li class="page-item" id="btnB"><a class="page-link" href="/category?page=" data-current="1"><%= categorys.page -1 %> </a></li>
+              <% }; %>
+
+              <!-- current page -->
+              <li class="page-item active" id="btnB"><a class="page-link" href="/category?page=" data-current="1"><%= categorys.page %> </a></li>
+
+              <!-- if on last page -->
+              <% if(categorys?.hasNextPage){%>
+              <!-- previous page -->
+              <li class="page-item" id="btnB"><a class="page-link" href="/category?page=" data-current="1"><%= categorys.page + 1 %> </a></li>
+              <% }; %>
+
+              <li class="page-item <%= categorys?.hasNextPage?'':'disabled' %> " id="btnE">
+                <a class="page-link" href="/category?page=<%= categorys.nextPage %> " disabled data-current="1">Next</a>
+              </li>
+
+            </ul>
+          </nav>
+        </div>
       </div>
     </div>
   </div>

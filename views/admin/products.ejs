@@ -12,8 +12,9 @@
 
   <!-- DataTales Example -->
   <div class="card">
-    <div class="card-header bg-white p-3">
+    <div class="card-header bg-white p-3 d-flex justify-content-between">
       <h5 class="m-0">All Products</h5>
+      <span>Showing :  <%= Number(locals?.products?.data[0]?.currentPage)%> / <%= Number(locals?.products?.data[0]?.maxPage) %>  </span>
     </div>
     <div class="card-body p-2">
       <div class="table-responsive bg-white p-2 rounded">

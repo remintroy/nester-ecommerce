@@ -14,7 +14,7 @@
       <p>Choose form Exisiting address <small> ( click to propagate address to fields below )</small></p>
       <div class="row mb-5 address-selector">
         <% locals?.address?.forEach((e,i)=>{ %>
-        <div class="col-4" onclick="setAddress('<%=e._id%>')">
+        <div class="col-12 col-md-4" onclick="setAddress('<%=e._id%>')">
           <div class="card p-3 mt-3">
             <h5> <%=e.name%></h5><br>
             <p>

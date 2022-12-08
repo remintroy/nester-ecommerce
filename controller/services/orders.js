@@ -861,7 +861,7 @@ export const updateOrderStatus = (PID, orderID, status) => {
 
 const test = async () => {
     try {
-        const data = await getByOrderID('WJWVC3QKbiKDdS3WeyYH');
+        const data = await getAll(2);
 
         // data.map(e=>e['status']='pending');
 

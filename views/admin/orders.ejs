@@ -16,8 +16,9 @@
 
   <!-- DataTales Example -->
   <div class="card mb-4">
-    <div class="card-header bg-white py-3">
-      <h6 class="m-0 font-weight-bold ">New Orders</h6>
+    <div class="card-header bg-white py-3 d-flex justify-content-between">
+      <h6 class="m-0 font-weight-bold ">New Orders</h6>   
+      <span>Showing :  <%= Number(locals?.orders[0]?.currentPage)%> / <%= Number(locals?.orders[0]?.maxPage) %>  </span>
     </div>
     <div class="card-body">
       <div class="table-responsive">
@@ -47,7 +48,7 @@
             <% let percent = Math.floor((resultAccumilator.length / order?.orders?.products?.length) * 100); %>
             <tr>
               <td>
-                <%=index+1%>
+                <%=((Number(locals?.orders[0]?.currentPage)-1)*10)+(index+1)%>
               </td>
               <td>
                 <%=order?.user[0]?.email?order?.user[0].email:order?.user[0]?.phone%>

@@ -510,9 +510,33 @@ export const topSellingProducts = async (productCount) => {
     };
 };
 
+export const getCategory = (page) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            page = page ? page : 1;
+            if (isNaN(Number(page))) throw 'Enter a valid product count number';
+
+            const data = await db.category.paginate({}, {
+                page: page,
+                limit: 10,
+                collation: {
+                    locale: 'en',
+                },
+            }, (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            })
+
+        } catch (error) {
+            reject(error);
+        };
+    })
+}
+
 const test = async () => {
     try {
-        const data = await topSellingProducts(10);
+        const data = await getCategory(1);
         console.log('TEST_RESULT => ', data);
     } catch (error) {
         console.log('TEST_ERR => ', error);

@@ -339,21 +339,9 @@ export const updateStatusOrderAPI = async (req, res) => {
 // all category
 export const category = async (req, res) => {
     try {
-        const allCategory = await db.category.find({});
-        const output = [];
+        const allCategory = await products.getCategory(req.query?.page);
 
-        allCategory.forEach(element => {
-            const keys = Object.keys(element._doc);
-            const result = {};
-
-            for (let i = 0; i < keys.length; i++) {
-                result[keys[i]] = keys[i] == 'creationTime' ? dataToReadable(element.creationTime) : element[keys[i]];
-            };
-
-            output.push(result);
-        });
-
-        res.locals.categorys = output;
+        res.locals.categorys = allCategory;
         res.locals.currentPage = 'category';
         res.locals.currentPageA = 'category';
         res.render(pagesBase + '/category');

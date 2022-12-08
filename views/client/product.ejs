@@ -1,9 +1,11 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdn.rawgit.com/igorlino/elevatezoom-plus/1.1.6/src/jquery.ez-plus.js"></script>
 
-<section class="container">
-  <h2 class="pt-4"><b>Nester flash sales</b></h2>
-  <p style="text-transform: capitalize;">Nester <%= locals?.product.category?' > '+locals?.product.category:'' %> </p>
+<section class="container-fluid" style="background-image: url('/assets/images/page-header-bg.jpg')">
+  <div class="container">
+    <h2 class="pt-4"><b>Nester flash sales</b></h2>
+    <p class="pb-4" style="text-transform: capitalize;">Nester <%= locals?.currentPage?' > '+locals.currentPage:'' %> </p>
+  </div>
 </section>
 
 <!-- Product Details Section Begin -->
@@ -36,13 +38,13 @@
           </div>
           <div class="product__details__price"> ₹ <%=product.price%></div>
           <p><%=product.description%></p>
-          <div class="product__details__quantity">
+          <!-- <div class="product__details__quantity">
             <div class="quantity">
               <div class="pro-qty">
                 <input type="text" value="1">
               </div>
             </div>
-          </div>
+          </div> -->
           <a onclick="addToCart('<%=product.PID%>')" style="cursor: pointer;" class="primary-btn">ADD TO CARD</a>
           <a href="#" class="heart-icon"><span class="icon_heart_alt"></span></a>
           <ul>
