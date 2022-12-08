@@ -1,0 +1,82 @@
+<section class="container-fluid" style="background-image: url('/assets/images/page-header-bg.jpg')">
+  <div class="container">
+    <h2 class="pt-4"><b>Dashboard</b></h2>
+    <p class="pb-4" style="text-transform: capitalize;">Dashboard <%= locals?.currentPage?' > '+locals.currentPage:'' %> </p>
+  </div>
+</section>
+
+<section>
+  <div class="row m-0">
+    <div class="col-12 px-4 mb-5">
+      <ul style="list-style: none;" class="list_features">
+        <li class="p-3 card d-flex <%= locals?.currentPage == 'account'?'bg-light':'' %>" onclick="window.location.href='/dashboard'">
+          <div>
+            <i class="fa-solid fa-user"></i>
+            <span class="ml-2">Account</span>
+          </div>
+        </li>
+        <li class="p-3 card mt-2 d-flex  <%= locals?.currentPage == 'orders'?'bg-light':'' %>" onclick="window.location.href='/dashboard/orders'">
+          <div>
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span class="ml-2">Orders</span>
+          </div>
+        </li>
+        <li class="p-3 card mt-2 d-flex " onclick="window.location.href='/dashboard/address'">
+          <div>
+            <i class="fa-solid fa-address-book"></i>
+            <span class="ml-2">Address</span>
+          </div>
+        </li>
+        <li class="p-3 card mt-2 d-flex " onclick="window.location.href='/dashboard/wallet'">
+          <div>
+            <i class="fa-solid fa-wallet"> </i>
+            <span class="ml-2">Wallets</span>
+          </div>
+        </li>
+        <li class="p-3 card mt-2 d-flex " onclick="window.location.href='/dashboard/security'">
+          <div>
+            <i class="fa-solid fa-lock"></i>
+            <span class="ml-2">Security</span>
+          </div>
+        </li>
+        <li class="p-3 card mt-2 d-flex " onclick="logout()">
+          <div>
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span class="ml-2">Logout</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+<script>
+  function logout() {
+
+    fetch('/user_logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: "log me out"
+        })
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.status == 'error') {
+          disp({
+            message: res.message,
+            isGood: false
+          })
+        } else {
+          window.location.href = res.action;
+        };
+      })
+      .catch(error => {
+        disp({
+          message: error,
+          isGood: false
+        });
+      });
+  };
+</script>

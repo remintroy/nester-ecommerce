@@ -7,7 +7,7 @@
 
 <section class="container mb-5">
   <div class="row">
-    <div class="col-3">
+    <div class="col-3 d-none d-md-block">
       <ul style="list-style: none;" class="list_features">
         <li class="p-3 card d-flex <%= locals?.currentPage == 'account'?'bg-light':'' %>" onclick="window.location.href='/dashboard'">
           <div>
@@ -47,7 +47,7 @@
         </li>
       </ul>
     </div>
-    <div class="col-9">
+    <div class="col-md-9 col-12">
       <div class="card h-100 p-4">
 
         <!-- Selection for account page -->
@@ -58,7 +58,7 @@
 
           <div class="row w-100">
             <!-- user profile preview -->
-            <div class="col-4">
+            <div class="col-md-4 col-12">
               <div class="card-body  preview_card text-center">
                 <!-- <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar" class="rounded-circle img-fluid" style="width: 150px;"> -->
                 <div class="profile_img_preview mb-4"><%= locals?.user?.name[0] %> </div>
@@ -69,7 +69,7 @@
             </div>
 
             <!-- user info -->
-            <div class="col-8">
+            <div class="col-md-8 col-12">
               <div class="card-body user_details_card">
                 <div class="row">
                   <div class="col-sm-3">

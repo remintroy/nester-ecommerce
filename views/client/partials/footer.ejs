@@ -1,55 +1,17 @@
 <!-- Footer Section Begin -->
-<footer class="footer m-0 p-0 spad">
+<footer class="footer m-0 pb-4 p-0 pn-md-0">
   <div class="container">
-    <!-- <div class="row w-100 "> -->
-      <!-- <div class="col-lg-3 col-md-6 col-sm-6">
-        <div class="footer__about">
-          <div class="footer__about__logo">
-            <a href="/"><img src="/img/logo.png" alt=""></a>
-          </div>
-           <ul>
-            <li>Address: 60-49 Road 11378 New York</li>
-            <li>Phone: +65 11.188.888</li>
-            <li>Email: hello@colorlib.com</li>
-          </ul>
+    <div class="row py-5">
+      <div class="col-md-6 col-12">
+        <div class="d-flex justify-content-between w-100 text-center text-md-start">
+          <p class="w-100">Copyright &copy;<script>
+            document.write(new Date().getFullYear());
+          </script> All rights reserved </p>
         </div>
-      </div> 
-       <div class="col-lg-4 col-md-6 col-sm-6 offset-lg-1">
-        <div class="footer__widget">
-          <h6>Useful Links</h6>
-          <ul>
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="#">About Our Shop</a></li>
-            <li><a href="#">Secure Shopping</a></li>
-            <li><a href="#">Delivery infomation</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Our Sitemap</a></li>
-          </ul>
-          <ul>
-            <li><a href="#">Who We Are</a></li>
-            <li><a href="#">Our Services</a></li>
-            <li><a href="#">Projects</a></li>
-            <li><a href="#">Contact</a></li>
-            <li><a href="#">Innovation</a></li>
-            <li><a href="#">Testimonials</a></li>
-          </ul>
-        </div>
-      </div> -->
-    
-    <div class="row">
-      <div class="col-12">
-        <div class="footer__copyright w-100">
-          <div class="footer__copyright__text w-100">
-            <p class="d-flex justify-content-between w-100">
-              <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-              <span>Copyright &copy;<script>
-                  document.write(new Date().getFullYear());
-                </script> All rights reserved </span>
-              <span>Created with <i class="fa fa-heart" aria-hidden="true"></i> by <a class="text-primary" href="https://www.github.com/remindev" target="_blank">Remin T Roy</a></span>
-              <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-            </p>
-          </div>
-          <div class="footer__copyright__payment"><img src="img/payment-item.png" alt=""></div>
+      </div>
+      <div class="col-md-6 col-12">
+        <div class="d-flex justify-content-between w-100 text-center text-md-start">
+          <p class="w-100">Created with <i class="fa fa-heart" aria-hidden="true"></i> by <a class="text-primary" href="https://www.github.com/remindev" target="_blank">Remin T Roy</a></p>
         </div>
       </div>
     </div>
@@ -67,7 +29,7 @@
   <a href="/cart" class="<%= locals.currentPage=='cart'?'on':'' %>">
     <i class="fa-solid fa-cart-shopping"></i>
   </a>
-  <a href="/mb/dashboard">
+  <a href="/mb/dashboard" class="<%= locals.currentPageA=='dashboard'?'on':'' %>">
     <i class="fa-solid fa-user"></i>
   </a>
 </nav>

@@ -7,7 +7,7 @@
 
 <section class="container mb-5">
   <div class="row">
-    <div class="col-3">
+    <div class="col-3 d-none d-md-block">
       <ul style="list-style: none;" class="list_features">
         <li class="p-3 card d-flex <%= locals?.currentPage == 'account'?'bg-light':'' %>" onclick="window.location.href='/dashboard'">
           <div>
@@ -47,7 +47,7 @@
         </li>
       </ul>
     </div>
-    <div class="col-9">
+    <div class="col-md-9 col-12">
       <div class="card h-100 p-4">
 
         <!-- Selection for account page -->

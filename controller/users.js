@@ -566,6 +566,7 @@ export const checkout = async (req, res) => {
 export const dashboard = async (req, res) => {
   try {
     res.locals.currentPage = "account";
+    res.locals.currentPageA = "dashboard";
     res.render("client/dashboard");
     try {
       await analyticsService.addUserPageRequests('user_dashboard_GET');
@@ -579,10 +580,28 @@ export const dashboard = async (req, res) => {
     res.render("client/404");
   }
 };
+export const dashboard_mb = async (req, res) => {
+  try {
+    res.locals.currentPage = "dashboardMB";
+    res.locals.currentPageA = "dashboard";
+    res.render("client/dash_mb");
+    try {
+      await analyticsService.addUserPageRequests('user_dashboard_mb_GET');
+    } catch (error) {
+      //...
+    };
+  } catch (error) {
+    res.locals.code = "500";
+    res.locals.message = error;
+    res.locals.layout = 'blank_layout';
+    res.render("client/404");
+  };
+};
 export const walletPg = async (req, res) => {
   try {
     res.locals.wallet = await walletService.getWalletInfo(req.user.UID);
     res.locals.currentPage = "wallet";
+    res.locals.currentPageA = "dashboard";
     res.render("client/dash_wallet");
   } catch (error) {
     res.locals.code = "500";
@@ -685,21 +704,7 @@ export const category = async (req, res) => {
     res.render('client/404');
   }
 };
-export const explore_mb = async (req, res) => {
-  try {
 
-    res.locals.currentPage = 'explore';
-    res.render('client/mb_search');
-    
-  } catch (error) {
-    console.log(error);
-    res.locals.code = 500;
-    res.locals.message = "Cant display this page now...";
-    res.locals.error = "Faild to fetch data form database";
-    res.locals.layout = 'blank_layout';
-    res.render("client/404");
-  }
-}
 
 // common - api's
 export const addTOCartAPI = async (req, res) => {
