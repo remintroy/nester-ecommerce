@@ -135,10 +135,10 @@
                 </b>
               </s>
               <br>
-              <span class="bg-danger text-white px-3"><%= e.product[0].stock!=0?e.product[0].stock<10?`Only ${e.product[0].stock} stock is avaiable`:'In Stock':'Out of stock' %> </span>
+              <span class="bg-danger text-white px-3"><%= e.product[0].stock!=0?e.product[0].stock<10?`Only ${e.product[0].stock} left`:'In Stock':'Out of stock' %> </span>
               <% }else{ %>
               <br><br>
-              <span class="bg-danger text-white px-3"><%= e.product[0].stock!=0?e.product[0].stock<10?`Only ${e.product[0].stock} stock is avaiable`:'In Stock':'Out of stock' %> </span>
+              <span class="bg-danger text-white px-3"><%= e.product[0].stock!=0?e.product[0].stock<10?`Only ${e.product[0].stock} left`:'In Stock':'Out of stock' %> </span>
               <% }; %>
 
             </div>

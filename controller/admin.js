@@ -496,7 +496,7 @@ export const DeletecoupenAPI = async (req, res) => {
     };
 };
 export const createReportPDF = async (req, res) => {
-    await pdfService.createPdf();
+    await pdfService.reportYearly();
     res.sendFile(path.join(process.cwd(), '/reports/report.pdf'));
 };
 export const banner = async (req, res) => {

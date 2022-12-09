@@ -597,6 +597,23 @@ export const dashboard_mb = async (req, res) => {
     res.render("client/404");
   };
 };
+export const invoiceData = async (req, res) => {
+  try {
+    try {
+      // order id
+      const orderID = req.params.id;
+
+      // fetching data from db
+      const data = await orders.getByOrderID(orderID);
+      // sending response
+      res.send({ status: 'good', message: data });
+    } catch (error) {
+      throw `Oops we can't seem to find invoice data`;
+    };
+  } catch (error) {
+    res.send({ status: 'error', message: error });
+  };
+};
 export const walletPg = async (req, res) => {
   try {
     res.locals.wallet = await walletService.getWalletInfo(req.user.UID);
@@ -928,13 +945,22 @@ export const referalInit = async (req, res) => {
       if (req.user.referal == referalCode) {
         res.render('client/auth/referal_my');
       } else {
-        res.send("hmmm you are good but not here")
+        // res.send("hmmm you are good but not here !");
+        res.locals.layout = 'blank_layout';
+        res.locals.code = 400;
+        res.locals.message = 'Looks like you are already logged in';
+        res.locals.error = 'Referal links are only available for new users';
+        res.render('client/404');
       };
 
     };
 
   } catch (error) {
-    // error while hadling or adding referal code
-    res.send('Invalid code');
+    // error while hadling or adding referal codeL
+    res.locals.layout = 'blank_layout';
+    res.locals.code = 400;
+    res.locals.message = 'Invalid referal code';
+    res.locals.error = 'Check referal code or copy referal link from dashboard';
+    res.render('client/404');
   };
 };

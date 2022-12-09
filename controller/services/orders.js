@@ -736,6 +736,15 @@ export const getByOrderID = (orderID) => {
                             $arrayElemAt: ['$user', 0]
                         }
                     }
+                },
+                {
+                    $project:{
+                        'order.products.impressions': 0,
+                        'order.products.views': 0,
+                        'order.products.reachedCheckout': 0,
+                        'order.products.interactions': 0,
+                        'order.products.productsListingViews:': 0,
+                    }
                 }
             ]);
             resolve(orderData);
@@ -861,11 +870,11 @@ export const updateOrderStatus = (PID, orderID, status) => {
 
 const test = async () => {
     try {
-        const data = await getAll(2);
+        const data = await getByOrderID('KKVgdVASsZ5p7_jpCYqQ');
 
         // data.map(e=>e['status']='pending');
 
-        console.log('Result => ', data);
+        console.log('Result => ', data[0].order);
     } catch (error) {
         console.log('TEST Err => ', error);
     };

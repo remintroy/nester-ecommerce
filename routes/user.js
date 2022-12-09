@@ -122,6 +122,8 @@ app.get('/checkout',users.urlHistory, auth.mustLoginAsUser, users.checkout);
 // category
 app.get('/c/:id',users.urlHistory, users.category);
 // dashboard navigator mb
-app.get('/mb/dashboard',users.urlHistory, auth.mustLoginAsUser, users.dashboard_mb)
+app.get('/mb/dashboard',users.urlHistory, auth.mustLoginAsUser, users.dashboard_mb);
+// invoice 
+app.get('/order/invoice/:id',auth.mustLoginAsUser,users.invoiceData);
 
 export default app;
