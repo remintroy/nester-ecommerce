@@ -44,7 +44,7 @@ export const checkout = async (UID, body) => {
         if (addressFrom == null || paymentMethod == null) throw `Requset doesn't contain all needed data`;
 
         // guard for paymet methord
-        if (['COD', 'razorpay', 'paypal'].indexOf(paymentMethod) == -1) throw 'Invalid payment methord';
+        if (['COD', 'razorpay', 'paypal', 'wallet'].indexOf(paymentMethod?.toLowerCase()) == -1) throw 'Invalid payment methord';
 
         // TODO : check for availabe cart products
 
@@ -144,7 +144,7 @@ export const checkout = async (UID, body) => {
             throw 'Error while creating order';
         };
 
-        // --------- creating order in specified paymetn method --------
+        // --------- creating order in specified payment method --------
 
         let paymentDetails = {};
         let collectedErrors;
@@ -166,6 +166,72 @@ export const checkout = async (UID, body) => {
         } else {
             paymentDetails = {
                 orderID: orderID
+            };
+        };
+
+        // paying using wallet money
+        if (paymentMethod == 'Wallet') {
+            try {
+
+                // fetching informatin from wallet
+                const walletInfo = await wallets.getWalletInfo(UID);
+
+                // check if wallet contans nessory amount
+                if (walletInfo.amount < orderTotalAmount) throw `Wallet dosen't have enough money`;
+
+                // ------------------------- wallet -----------------------
+                try {
+
+                    // fetching all orderes data form db to find index to update
+                    const existingDataFrmDb = await db.orders.findOne({ UID: UID });
+
+                    // index of order
+                    const indexOfOrder = existingDataFrmDb.orders.map(e => e.orderID == orderID).indexOf(true);
+
+                    // updateing order status 
+                    const updatedDataToDb = await db.orders.updateOne({ UID: UID }, {
+                        $set: {
+                            [`orders.${indexOfOrder}.status`]: 'ordered',
+                            [`orders.${indexOfOrder}.paymentStatus`]: 'paid'
+                        }
+                    });
+
+                    // decreasing amount from wallet
+                    const removedAmountData = await wallets.removeAmount(UID, orderTotalAmount, 'Product purchase');
+
+                    // updating product stocks
+                    for (const product of products) {
+                        await db.products.updateOne({ PID: product.PID }, {
+                            $inc: {
+                                stock: 0 - Number(product.quantity)
+                            }
+                        });
+                    };
+
+                    // clearing cart
+                    const cartDataRemoveStatus = await db.cart.updateOne({ UID: UID }, {
+                        $set: {
+                            products: []
+                        }
+                    });
+
+                    // if coupen used update usage of coupen
+                    if (body?.coupon) {
+                        const updateCouponUsage = await db.coupens.updateOne({ code: body?.coupon }, {
+                            $inc: {
+                                used: 1
+                            }
+                        });
+                    };
+
+                } catch (error) {
+                    // handling error
+                    throw 'Failed to create order please try after sometime';
+                };
+
+            } catch (error) {
+                // handling error 
+                throw error;
             };
         };
 
@@ -738,7 +804,7 @@ export const getByOrderID = (orderID) => {
                     }
                 },
                 {
-                    $project:{
+                    $project: {
                         'order.products.impressions': 0,
                         'order.products.views': 0,
                         'order.products.reachedCheckout': 0,

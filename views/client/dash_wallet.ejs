@@ -1,7 +1,7 @@
 <section class="container-fluid" style="background-image: url('/assets/images/page-header-bg.jpg')">
   <div class="container">
-   <h2 class="pt-4"><b>Dashboard</b></h2>
-   <p class="pb-4" style="text-transform: capitalize;">Dashboard <%= locals?.currentPage?' > '+locals.currentPage:'' %> </p>
+    <h2 class="pt-4"><b>Dashboard</b></h2>
+    <p class="pb-4" style="text-transform: capitalize;">Dashboard <%= locals?.currentPage?' > '+locals.currentPage:'' %> </p>
   </div>
 </section>
 
@@ -70,7 +70,7 @@
 
               <% locals?.wallet?.transactions?.reverse()?.forEach(tr=>{ %>
 
-              <li class="my-2 p-2 cr rounded px-3  ">
+              <li class="my-2 p-2 <%= tr.flow == 'TO'? 'cr':'dr'%> rounded px-3  ">
                 <div class="d-flex justify-content-between">
                   <span><%= tr.message  %> </span>
                   <span><%= tr.flow == 'TO'? '+'+ tr.amount:'-'+tr.amount %> </span>

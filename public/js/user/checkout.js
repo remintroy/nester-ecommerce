@@ -348,15 +348,8 @@ const finalSubmitToServer = async (data) => {
 
                 if (res.status == 'error') {
                     Swal.close();
-                    Swal.fire({
-                        title: 'Oops something went wrong !',
-                        html: res.message,
-                        icon: 'error',
-                        confirmButtonText: 'Ok',
-                    });
+                    notify(res.message);
                 } else {
-
-                    console.log(res);
 
                     window.checkOutData = data;
 
@@ -399,12 +392,7 @@ const finalSubmitToServer = async (data) => {
 
                         rzp1.on('payment.failed', function (response) {
                             Swal.close();
-                            Swal.fire({
-                                title: "Error opening Razorpay",
-                                icon: "error",
-                                confirmButtonText: 'Ok'
-                            });
-
+                            notify('Error opening Razorpay"');
                             orderCancelled(res.message.orderID);
                         });
 
@@ -427,11 +415,7 @@ const finalSubmitToServer = async (data) => {
             } catch (err) {
                 console.log("Error =>", err);
                 Swal.close();
-                Swal.fire({
-                    title: 'Oops something went wrong !',
-                    icon: 'error',
-                    confirmButtonText: 'Ok',
-                });
+                notify('Oops something went wrong !');
             };
 
         },

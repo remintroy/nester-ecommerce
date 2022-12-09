@@ -978,11 +978,24 @@ export const signInWithGoogle = async ({ idToken, referalInfo }) => {
         const userOutput = await validatior({
             UID: userDataFromGoogle.uid,
             email: userDataFromGoogle.email,
-            name: userDataFromGoogle.displayName
         }, {
             UIDRequired: true,
             emailRequired: true
         }, 'google');
+
+        try {
+            // validates name
+            const nameValidator = await validatior({ name: userDataFromGoogle.displayName });
+
+            // assigning valid name to userData object
+            userOutput.name = nameValidator.name;
+
+        } catch (error) {
+            // .. invalid name
+
+            // createing a sample default name
+            userOutput.name = 'Google User';
+        };
 
         // check for referal code info
         referalInfo = referalInfo ? referalInfo : {};

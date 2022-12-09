@@ -548,6 +548,7 @@ export const wishlist = async (req, res) => {
 export const checkout = async (req, res) => {
   try {
     const UID = req.user.UID;
+    res.locals.wallet = await walletService.getWalletInfo(UID);
     res.locals.country = await util.getAllCountries();
     res.locals.address = await userService?.getAllAddress(UID);
     res.locals.currentPage = "checkout";
