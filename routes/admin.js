@@ -42,6 +42,8 @@ adminApp.put('/orders/update_status', auth.mustLoginAsAdminAPI, admin.updateStat
 adminApp.post('/coupen/add_coupen', auth.mustLoginAsAdminAPI, admin.AddcoupenAPI);
 // api for delete coupon
 adminApp.delete('/coupen/delete_coupen', auth.mustLoginAsAdminAPI, admin.DeletecoupenAPI);
+// api for add banner 
+adminApp.post('/banner/add',auth.mustLoginAsAdminAPI, admin.bannerAddAPI)
 
 
 // auth checker 

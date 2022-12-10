@@ -146,22 +146,22 @@
       </div>
 
       <div class="row">
-        <div class="form-group col-6">
+        <div class="form-group col-12 col-md-6">
           <label for="price">Price * <span></span></label>
           <input type="text" name="price" class="form-control" id="priceInput" placeholder="Price" value="<%=product?.price?product.price:''%>" autocomplete="off">
         </div>
-        <div class="form-group col-6">
+        <div class="form-group col-12 col-md-6">
           <label for="quantity">Quantity * <span></span></label>
           <input type="text" name="quantity" class="form-control" id="quantityInput" autocomplete="off" placeholder="Quantity" value="<%=product?.stock?product.stock:0%>">
         </div>
       </div>
 
       <div class="row">
-        <div class="form-group col-6">
+        <div class="form-group col-12 col-md-6">
           <label for="discount">Discount (optional) <span></span></label>
           <input type="text" name="offer" class="form-control" id="offerInput" autocomplete="off" placeholder="Discount amount" value="<%=product?.offer?product.offer:''%>">
         </div>
-        <div class="form-group col-6">
+        <div class="form-group col-12 col-md-6">
           <label for="category">Catogery * <span></span></label>
           <select name="category" class="form-control" id="categoryInput">
             <option value="<%=product?.category?product.category:''%>">
@@ -381,20 +381,15 @@
             if (res.status == 'good') {
               progress_bar.classList.remove('bg-danger');
               progress_bar.classList.add('bg-info');
+              toast(res.message, 'success');
             } else {
               progress_bar.classList.remove('bg-primary');
               progress_bar.classList.add('bg-danger');
-              Swal.fire({
-                title: res.message,
-                icon: 'error'
-              });
+              toast(res.message, 'error');
             };
 
           } else {
-            Swal.fire({
-              title: "Error connecting to server",
-              icon: 'error'
-            });
+            toast("Error connecting to server", 'error');
           };
         };
       };
@@ -431,6 +426,11 @@
     if (imgFiles?.img3) formData.append('img3', imgFiles.img3);
     if (imgFiles?.img4) formData.append('img4', imgFiles.img4);
 
+    if (Object.keys(imgFiles).length == 0) {
+      toast('No changes have been made to update !','error');
+      return 0;
+    };
+
     formData.append('data', JSON.stringify({
       PID: PID
     }));
@@ -462,20 +462,15 @@
           if (res.status == 'good') {
             progress_bar.classList.remove('bg-danger');
             progress_bar.classList.add('bg-info');
+            toast(res.message, 'success');
           } else {
             progress_bar.classList.remove('bg-primary');
             progress_bar.classList.add('bg-danger');
-            Swal.fire({
-              title: res.message,
-              icon: 'error'
-            });
+            toast(res.message, 'error');
           };
 
         } else {
-          Swal.fire({
-            title: "Error connecting to server",
-            icon: 'error'
-          });
+          toast("Error connecting to server", 'error');
         };
       };
     };
@@ -523,7 +518,7 @@
   }());
   // TODO: cropper UI has some display bugs
 
-  async function editExisting(id,imgeToEdit) {
+  async function editExisting(id, imgeToEdit) {
     const editorPopUp = document.getElementById('imageEditor');
     const card_actions = document.getElementById('card_actions');
     editorPopUp.style.display = 'flex';

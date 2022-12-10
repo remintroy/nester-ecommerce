@@ -114,7 +114,7 @@ adminApp.use(fileUpload({
   useTempFiles: true,
   tempFileDir: '/tmp/'
 }));
-adminApp.use(Express.json());
+app.use(Express.json({ limit: '10mb' }));
 adminApp.use(ExpressLayouts);
 adminApp.use(
   "/product_images",

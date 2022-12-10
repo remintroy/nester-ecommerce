@@ -8,6 +8,7 @@ import * as coupenService from './services/coupens.js';
 import * as pdfService from './services/pdf.js';
 import * as path from 'path';
 import * as apiService from './api/admin_api.js';
+import * as bannerService from './services/banners.js';
 
 const layout = `admin_layout`;
 const pagesBase = `admin`;
@@ -495,12 +496,29 @@ export const DeletecoupenAPI = async (req, res) => {
         res.send({ status: 'error', message: error });
     };
 };
+export const bannerAddAPI = async (req, res) => {
+    try {
+        const data = req.body?.data ? JSON.parse(req?.body?.data) : null;
+
+        if (!data) throw 'Got no data on request';
+
+        // adding banner
+        const result = await bannerService.add(data, req.files);
+
+        // sending response
+        res.send({ status: 'good', message: result });
+    } catch (error) {
+        // handilng error
+        res.send({ status: 'error', message: error });
+    };
+};
 export const createReportPDF = async (req, res) => {
     await pdfService.reportYearly();
     res.sendFile(path.join(process.cwd(), '/reports/report.pdf'));
 };
 export const banner = async (req, res) => {
     try {
+        res.locals.banner = await bannerService.getByPage(1);
         res.locals.currentPage = 'banner';
         res.locals.currentPageA = 'banner';
         res.render(pagesBase + '/banner');

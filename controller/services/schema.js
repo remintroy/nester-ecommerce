@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import mongoosePaginator from 'mongoose-paginate-v2';
+import mongoosePaginator, { paginate } from 'mongoose-paginate-v2';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -20,8 +20,8 @@ export const users = db.model("user", new mongoose.Schema({
     email: String,
     displayName: String,
     phone: Number,
-    referal:String,
-    referedBy:String,
+    referal: String,
+    referedBy: String,
     phoneVerified: {
         type: Boolean,
         default: false
@@ -109,7 +109,7 @@ export const products = db.model("products", productsSchema);
 // category
 const categorySchema = new mongoose.Schema({
     category: String,
-    subCategorys:Array,
+    subCategorys: Array,
     creationTime: {
         type: Date,
         default: new Date()
@@ -118,7 +118,7 @@ const categorySchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    offer:String,
+    offer: String,
 });
 
 categorySchema.plugin(mongoosePaginator);
@@ -156,7 +156,7 @@ const ordersSchema = new mongoose.Schema({
             products: Array,
             address: Object,
             trackingID: String,
-            couponCode:String,
+            couponCode: String,
             status: {
                 type: String,
                 default: 'pending'
@@ -194,6 +194,29 @@ const ordersSchema = new mongoose.Schema({
 ordersSchema.plugin(mongoosePaginator);
 
 export const orders = db.model("orders", ordersSchema);
+
+
+// banner 
+const bannerSchema = new mongoose.Schema({
+    disabled: {
+        type: Boolean,
+        default: false
+    },
+    title: String,
+    description: String,
+    titleTop: String,
+    titleBottom: String,
+    btnName: String,
+    btnAction: String,
+    img: String,
+    bannerID: String,
+    bg: String,
+    color: String
+});
+// banner plugin's
+bannerSchema.plugin(mongoosePaginator);
+// creating model
+export const banners = db.model('banners', bannerSchema);
 
 
 export const analytics = db.model("analytics", new mongoose.Schema({
@@ -255,7 +278,7 @@ export const coupens = db.model('coupens', new mongoose.Schema({
     code: String,
     title: String,
     value: Number,
-    valueType:String,
+    valueType: String,
     expiry: Date,
     minSpend: Number,
     maxSpend: Number,
