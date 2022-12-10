@@ -9,6 +9,7 @@ import * as analyticsService from './services/analytics.js';
 import * as productService from './services/products.js';
 import * as walletService from "./services/wallet.js";
 import DeviceDectector from 'device-detector-js';
+import * as bannerService from "./services/banners.js";
 
 const device = new DeviceDectector();
 
@@ -473,6 +474,7 @@ export const logoutSessionAPI = async (req, res) => {
 
 // common - pages
 export const home = async (req, res) => {
+  res.locals.banner = await bannerService.getByPage(1); 
   res.locals.topSellingProducts = await productService.topSellingProducts(10);
   res.locals.currentPage = "home";
   res.render("client/home");

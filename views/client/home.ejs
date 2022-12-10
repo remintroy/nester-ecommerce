@@ -6,21 +6,54 @@
 </section>
 
 <!-- Hero Section Begin -->
-<section class="hero">
-  <div class="container">
-    <div class="row">
-      <div class="col-12">
-        <div class="hero__item set-bg" style="background-size: cover;" data-setbg="/img/hero/banner.jpg">
-          <div class="hero__text">
-            <span>COLLECTION 2022</span>
-            <h2>Premium <br />Men's & Women's</h2>
-            <p>Free Pickup and Delivery Available</p>
-            <a href="/shop" class="primary-btn">SHOP NOW</a>
+<section class="">
+  <% let bannerUse = locals?.banner?.docs[locals?.banner?.docs?.length-1]; %>
+
+    <style>
+      .banner-cont {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        padding: 50px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        flex-direction: column;
+      }
+
+      .bannerID {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background-color: rgb(255, 255, 255);
+        padding: 5px 10px;
+        border-radius: 5px;
+        z-index: 10;
+      }
+    </style>
+
+    <!-- banner cards -->
+    <div class="col-12 border grid-margin stretch-card container mt-5" id="formCustomForm">
+      <div class="rounded mt-5" style="background-color: <%-bannerUse?.bg%>; min-height:300px;">
+        <div class="card-body position-relative">
+          <div class="d-flex justify-content-end">
+            <img src="/banner_images/<%= bannerUse?.bannerID %>.jpg" style="max-height: 300px;" class="img-fluid" alt="">
+          </div>
+          <div class="banner-cont" style="color: <%-bannerUse?.color%>;">
+            <p class="sub-top"><%=bannerUse?.titleTop %> </p>
+            <h1 class="title"><%= bannerUse?.title %> </h1>
+            <h4><%= bannerUse?.description %> </h4>
+            <p class="sub-bottom"><b><%= bannerUse?.titleBottom %></b> </p>
+            <a class="btn btn-dark" href="<%= bannerUse?.btnAction %>">
+              <%=bannerUse?.btnName%>
+            </a>
           </div>
         </div>
       </div>
     </div>
-  </div>
+
 </section>
 
 
@@ -90,9 +123,9 @@
         <div class="latest-product__text">
           <h4>Top Rated Products</h4>
           <div class="latest-product__slider owl-carousel">
-            
+
             <div class="latest-prdouct__slider__item">
-              <% locals?.topSellingProducts?.reverse().forEach(e=>{ %> 
+              <% locals?.topSellingProducts?.reverse().forEach(e=>{ %>
               <a href="/product/<%= e.product[0].PID %> " class="latest-product__item">
                 <div class="latest-product__item__pic">
                   <img src="/product_images/<%= e.product[0].PID %>1.jpg " alt="">
@@ -105,7 +138,7 @@
               </a>
               <% }); %>
             </div>
-            
+
           </div>
         </div>
       </div>

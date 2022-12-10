@@ -34,12 +34,13 @@
         background-color: rgb(255, 255, 255);
         padding: 5px 10px;
         border-radius: 5px;
+        z-index: 10;
       }
     </style>
 
     <!-- banner cards -->
     <% locals?.banner?.docs?.forEach(e=>{ %>
-    <div class="col-6 grid-margin stretch-card"  id="formCustomForm">
+    <div class="col-12 col-md-6 grid-margin stretch-card"  id="formCustomForm">
       <div class="card  border rounded shadow" style="background-color: <%-e.bg%>; min-height:300px;">
         <div class="bannerID"><%= e.bannerID %> </div>
         <div class="card-body position-relative">
