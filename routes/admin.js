@@ -43,7 +43,9 @@ adminApp.post('/coupen/add_coupen', auth.mustLoginAsAdminAPI, admin.AddcoupenAPI
 // api for delete coupon
 adminApp.delete('/coupen/delete_coupen', auth.mustLoginAsAdminAPI, admin.DeletecoupenAPI);
 // api for add banner 
-adminApp.post('/banner/add',auth.mustLoginAsAdminAPI, admin.bannerAddAPI)
+adminApp.post('/banner/add', auth.mustLoginAsAdminAPI, admin.bannerAddAPI);
+// api for remove banner
+adminApp.delete('/banner/:id', auth.mustLoginAsAdmin, admin.removeBannerApi);
 
 
 // auth checker 
@@ -82,11 +84,11 @@ adminApp.get('/coupon', admin.coupen)
 // add coupon 
 adminApp.get('/coupon/add_coupon', admin.Addcoupen);
 // banners 
-adminApp.get('/banner',admin.banner);
+adminApp.get('/banner', admin.banner);
 // banner management add banner
-adminApp.get('/banner/add',admin.addBanner)
+adminApp.get('/banner/add', admin.addBanner)
 // reports
-adminApp.get('/report',admin.report);
+adminApp.get('/report', admin.report);
 
 // test page 
 adminApp.get('/test', admin.test);

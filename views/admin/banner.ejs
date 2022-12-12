@@ -16,19 +16,30 @@
     .bannerID {
       position: absolute;
       top: 20px;
-      right: 20px;
+      right: 60px;
       background-color: rgb(255, 255, 255);
       padding: 5px 10px;
       border-radius: 5px;
       z-index: 10;
     }
+
+    .bannerID.delete {
+      right: 20px;
+      cursor: pointer;
+    }
   </style>
 
   <!-- banner cards -->
   <% locals?.banner?.docs?.forEach(e=>{ %>
-  <div class="row mt-3 container">
+  <div class="row mt-3 container" style="min-height: 300px;">
     <% let bannerUse = e; %>
     <section class="col-12 col-md-8 position-relative p-0 rounded shadow" style="overflow: hidden; background-color: <%-bannerUse?.bg%>;">
+      <div class="bannerID">
+        <%=bannerUse.bannerID%>
+      </div>
+      <div class="bannerID delete" onclick="removeBanner('<%=bannerUse.bannerID%>')">
+        <i class="fa-solid fa-trash"></i>
+      </div>
       <div class="row">
         <div class="col-12 col-md-12">
           <img src="/banner_images/<%= bannerUse?.bannerID %>.jpg" class="img-fluid rounded" alt="">
@@ -61,3 +72,28 @@
   <% }); %>
 
 </div>
+
+<script>
+  async function removeBanner(bannerID) {
+    try {
+
+      if (prompt('Are you sure ? type yes to confirm', 'yes') == 'yes') {
+
+
+        const resFromServer = await fetch(`/banner/${(bannerID+"").trim()}`, {
+          method: 'DELETE'
+        });
+
+        const res = await resFromServer.json();
+
+        if (res.status == 'error') throw res.message;
+
+        window.location.reload();
+
+      };
+
+    } catch (error) {
+      toast(error)
+    }
+  }
+</script>

@@ -551,6 +551,19 @@ export const report = async (req, res) => {
         res.render(pagesBase + '/404');
     };
 };
+export const removeBannerApi = async (req, res) => {
+    try {
+
+        const bannerID = req.params.id;
+
+        const result = await bannerService.remove(bannerID);
+
+        res.send({ status: 'good', message: result });
+
+    } catch (error) {
+        res.send({ status: 'error', message: error });
+    };
+};
 
 // test -- fucntion
 export const test = async (req, res) => {

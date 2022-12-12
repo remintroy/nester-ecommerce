@@ -113,6 +113,19 @@ export const getByPage = async (page) => {
     };
 };
 
+// delete banner 
+export const remove = async (bannerID) => {
+    try {
+
+        const removedData = await db.banners.deleteOne({ bannerID: bannerID });
+
+        return 'Banner successfully removed';
+
+    } catch (error) {
+        throw error;
+    };
+};
+
 
 // test 
 const test = async () => {
