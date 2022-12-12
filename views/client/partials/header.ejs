@@ -185,7 +185,7 @@
         result_cont.innerHTML = '';
 
         searchResult.forEach(e => {
-          result_cont.innerHTML += `<li>   <img src="/product_images/${e.PID}1.jpg" alt=""> <a class="text-primary" href="/product/${e.PID}">${e.title}</a> <p class='p-0 m-0'>${e.category}</p> </li>`
+          result_cont.innerHTML += `<li>   <img src="/product_images/${e.PID}1.jpg" alt=""> <a class="text-primary limit_lines_css" href="/product/${e.PID}">${e.title}</a> <p class='p-0 m-0'>${e.category}</p> </li>`
         });
 
         if (!searchResult?.length || searchResult?.length == 0) {

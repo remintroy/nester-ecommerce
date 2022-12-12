@@ -62,8 +62,11 @@
   <script src="/js/client/main.js"></script>
 
   <script>
-    function addToCart(PID, quantity) {
-      fetch('/cart_action', {
+    async function addToCart(PID, quantity) {
+      try {
+
+        // sending request to server
+        const resFromServer = await fetch('/cart_action', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -72,26 +75,62 @@
             PID: PID,
             quantity: quantity ? quantity : null
           })
-        })
-        .then(res => res.json())
-        .then(res => {
-          if (res.status == 'good') {
-            document.getElementById("cart_total_count").innerText = res.message.totalCount;
-            notify('added to cart', true);
-          } else {
-            notify(res.message);
-          };
-        })
-        .catch(error => console.log(error));
+        });
+
+        if (resFromServer.status == 401) throw 'Login to use cart';
+
+        // parsing data from response
+        const res = await resFromServer.json();
+
+        // checks for response status
+        if (res.status == 'good') {
+          // good...
+          document.getElementById("cart_total_count").innerText = res.message.totalCount;
+          notify('added to cart', true);
+
+          // error...
+        } else notify(res.message);
+
+      } catch (error) {
+        // handling fetch error
+        notify(error);
+      };
+    };
+  </script>
+
+  <script>
+    async function addToWL(PID) {
+      try {
+
+        // sending request
+        const resFromServer = await fetch(`/wishlist/${(PID+"").trim()}`, {
+          method: 'POST',
+        });
+
+        // checks unautherized state
+        if (resFromServer.status == 401) throw 'Login to use wishlist';
+
+        // parsing response
+        const res = await resFromServer.json();
+
+        if (res.status == 'error') throw res.message;
+
+        // notifiyning status to user;
+        notify(res.message, 'success');
+
+      } catch (error) {
+        // handling error
+        notify(error);
+      };
     };
   </script>
 
   <!-- <script src="/js/swal/swal.min.js"></script> -->
   <script>
-    function notify(message, isGood) {
+    function notify(message, status) {
       Swal.fire({
         title: message,
-        icon: isGood ? 'success' : 'error',
+        icon: status ? status : 'error',
         toast: true,
         position: 'bottom-left',
         showConfirmButton: false,

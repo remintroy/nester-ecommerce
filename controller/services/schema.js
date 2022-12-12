@@ -229,12 +229,11 @@ export const analytics = db.model("analytics", new mongoose.Schema({
 }));
 
 export const wishList = db.model("wishList", new mongoose.Schema({
-    wishListID: String,
     UID: String,
     products: [
         {
             PID: String,
-            addedAt: Date
+            date: Date
         }
     ]
 }));

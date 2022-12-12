@@ -28,7 +28,7 @@ app.post('/user_signin_google', auth.mustLogoutAsUserAPI, users.loginWithGoogleA
 app.post('/user_signin_phone', auth.mustLogoutAsUserAPI, users.loginWithOtpAPI);
 // api for user logout
 app.post('/user_logout', auth.mustLoginAsUserAPI, users.logoutAPI)
-    .post('/user_logout/from/:id',auth.mustLoginAsUserAPI,users.logoutSessionAPI);
+    .post('/user_logout/from/:id', auth.mustLoginAsUserAPI, users.logoutSessionAPI);
 // api for user registration
 app.post('/user_registration', auth.mustLogoutAsUserAPI, users.signupAPI);
 // api for enter passewordd and name 
@@ -62,6 +62,8 @@ app.post('/orders/return/', auth.mustLoginAsUserAPI, users.returnOrderAPI);
 app.put('/user_data/update', auth.mustLoginAsUserAPI, users.updateUserDataAPI);
 // api for failed orders 
 app.delete('/orders/failed/:id', auth.mustLoginAsUserAPI, users.failedOrders);
+// api for adding product to wishlist
+app.post('/wishlist/:id', auth.mustLoginAsUserAPI, users.addToWishListAPI);
 
 // api for create user using referal codes
 app.get('/referal_', users.referalInit);
@@ -97,33 +99,33 @@ app.use(users.localsForUser);
 app.use(users.analytics);
 
 // home page
-app.get('/',users.urlHistory, users.home);
+app.get('/', users.urlHistory, users.home);
 // shop page
-app.get('/shop',users.urlHistory, users.shop);
+app.get('/shop', users.urlHistory, users.shop);
 // products page
-app.get('/product/:id',users.urlHistory, users.product);
+app.get('/product/:id', users.urlHistory, users.product);
 
 // user auth must routes
-app.get('/cart',users.urlHistory, auth.mustLoginAsUser, users.cart);
+app.get('/cart', users.urlHistory, auth.mustLoginAsUser, users.cart);
 // wishlist page
-app.get('/wishlist',users.urlHistory, auth.mustLoginAsUser, users.wishlist);
+app.get('/wishlist', users.urlHistory, auth.mustLoginAsUser, users.wishlist);
 // dashboard page
-app.get(['/dashboard', '/dashboard/account'],users.urlHistory, auth.mustLoginAsUser, users.dashboard);
+app.get(['/dashboard', '/dashboard/account'], users.urlHistory, auth.mustLoginAsUser, users.dashboard);
 // ordres page
-app.get('/dashboard/orders',users.urlHistory, auth.mustLoginAsUser, users.ordersPg);
+app.get('/dashboard/orders', users.urlHistory, auth.mustLoginAsUser, users.ordersPg);
 // wallet page
-app.get('/dashboard/wallet',users.urlHistory, auth.mustLoginAsUser, users.walletPg);
+app.get('/dashboard/wallet', users.urlHistory, auth.mustLoginAsUser, users.walletPg);
 // address page
-app.get('/dashboard/address',users.urlHistory, auth.mustLoginAsUser, users.addressPg);
+app.get('/dashboard/address', users.urlHistory, auth.mustLoginAsUser, users.addressPg);
 // security page dash
-app.get('/dashboard/security',users.urlHistory, auth.mustLoginAsUser, users.securityPg);
+app.get('/dashboard/security', users.urlHistory, auth.mustLoginAsUser, users.securityPg);
 // checkout page
-app.get('/checkout',users.urlHistory, auth.mustLoginAsUser, users.checkout);
+app.get('/checkout', users.urlHistory, auth.mustLoginAsUser, users.checkout);
 // category
-app.get('/c/:id',users.urlHistory, users.category);
+app.get('/c/:id', users.urlHistory, users.category);
 // dashboard navigator mb
-app.get('/mb/dashboard',users.urlHistory, auth.mustLoginAsUser, users.dashboard_mb);
+app.get('/mb/dashboard', users.urlHistory, auth.mustLoginAsUser, users.dashboard_mb);
 // invoice 
-app.get('/order/invoice/:id',auth.mustLoginAsUser,users.invoiceData);
+app.get('/order/invoice/:id', auth.mustLoginAsUser, users.invoiceData);
 
 export default app;

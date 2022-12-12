@@ -9,7 +9,7 @@
 </section>
 
 <!-- Product Details Section Begin -->
-<section >
+<section>
   <div class="container">
     <div class="row">
       <div class="col-lg-6 col-md-6">
@@ -45,8 +45,8 @@
               </div>
             </div>
           </div> -->
-          <a onclick="addToCart('<%=product.PID%>')" style="cursor: pointer;" class="primary-btn">ADD TO CARD</a>
-          <a href="#" class="heart-icon"><span class="icon_heart_alt"></span></a>
+          <a onclick="addToCart('<%=product.PID%>')" style="cursor: pointer;" class="primary-btn text-white">ADD TO CARD</a>
+          <a onclick="addToWL('<%=product.PID%>')" class="heart-icon"><span class="icon_heart_alt"></span></a>
           <ul>
             <li><b>Availability</b> <span><%= locals.product.stock!=0?product.stock<10?`Only ${product.stock} stock is avaiable`:'In Stock':'Out of stock' %> </span></li>
             <li><b>Shipping</b> <span>01 day shipping. <samp>Free pickup today</samp></span></li>
