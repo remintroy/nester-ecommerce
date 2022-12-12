@@ -26,8 +26,8 @@
 
   <!-- banner cards -->
   <% locals?.banner?.docs?.forEach(e=>{ %>
-  <div class="row">
-    <% let bannerUse = locals?.banner?.docs[locals?.banner?.docs?.length-1]; %>
+  <div class="row mt-3">
+    <% let bannerUse = e; %>
     <section class="col-12 col-md-6 position-relative p-0 rounded shadow" style="overflow: hidden; background-color: <%-bannerUse?.bg%>;">
       <div class="row">
         <div class="col-12 col-md-12">
