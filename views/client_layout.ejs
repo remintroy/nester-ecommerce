@@ -86,10 +86,10 @@
         if (res.status == 'good') {
           // good...
           document.getElementById("cart_total_count").innerText = res.message.totalCount;
-          notify('added to cart', true);
+          notify('added to cart', 'success');
 
           // error...
-        } else notify(res.message, 'success');
+        } else notify(res.message);
 
       } catch (error) {
         // handling fetch error
