@@ -6,56 +6,37 @@
 </section>
 
 <!-- Hero Section Begin -->
-<section class="">
-  <% let bannerUse = locals?.banner?.docs[locals?.banner?.docs?.length-1]; %>
+<% let bannerUse = locals?.banner?.docs[locals?.banner?.docs?.length-1]; %>
 
-    <style>
-      .banner-cont {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        padding: 50px;
-        display: flex;
-        align-items: flex-start;
-        justify-content: center;
-        flex-direction: column;
-      }
-
-      .bannerID {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background-color: rgb(255, 255, 255);
-        padding: 5px 10px;
-        border-radius: 5px;
-        z-index: 10;
-      }
-    </style>
-
-    <!-- banner cards -->
-    <div class="col-12 border grid-margin stretch-card container mt-5" id="formCustomForm">
-      <div class="rounded mt-5" style="background-color: <%-bannerUse?.bg%>; min-height:300px;">
-        <div class="card-body position-relative">
-          <div class="d-flex justify-content-end">
-            <img src="/banner_images/<%= bannerUse?.bannerID %>.jpg" style="max-height: 300px;" class="img-fluid" alt="">
-          </div>
-          <div class="banner-cont" style="color: <%-bannerUse?.color%>;">
-            <p class="sub-top"><%=bannerUse?.titleTop %> </p>
-            <h2 class="title"><%= bannerUse?.title %> </h2>
-            <h4><%= bannerUse?.description %> </h4>
-            <p class="sub-bottom"><b><%= bannerUse?.titleBottom %></b> </p>
-            <a class="btn btn-dark" href="<%= bannerUse?.btnAction %>">
-              <%=bannerUse?.btnName%>
-            </a>
-          </div>
-        </div>
+<section class="container position-relative p-0" style="background-color: <%-bannerUse?.bg%>;">
+  <div class="row">
+    <div class="col-12 col-md-12">
+      <img src="/banner_images/<%= bannerUse?.bannerID %>.jpg" class="img-fluid" alt="">
+    </div>
+    <div class="col-12 d-none col-md-12 d-md-flex justify-content-end p-5 h-100 align-items-center position-absolute">
+      <div>
+        <p style="color: <%-bannerUse?.color%>;" class="sub-top"><%=bannerUse?.titleTop %> </p>
+        <h2 style="color: <%-bannerUse?.color%>;" class="title"><%= bannerUse?.title %> </h2>
+        <h4 style="color: <%-bannerUse?.color%>;"><%= bannerUse?.description %> </h4>
+        <p style="color: <%-bannerUse?.color%>;" class="sub-bottom"><b><%= bannerUse?.titleBottom %></b> </p>
+        <a style="color: <%-bannerUse?.color%>;" class="btn btn-dark" href="<%= bannerUse?.btnAction %>">
+          <%=bannerUse?.btnName%>
+        </a>
       </div>
     </div>
-
+    <div class="col-12 d-md-none col-md-12 d-flex justify-content-end p-5 h-100 align-items-center">
+      <div>
+        <p style="color: <%-bannerUse?.color%>;" class="sub-top"><%=bannerUse?.titleTop %> </p>
+        <h2 style="color: <%-bannerUse?.color%>;" class="title"><%= bannerUse?.title %> </h2>
+        <h4 style="color: <%-bannerUse?.color%>;"><%= bannerUse?.description %> </h4>
+        <p style="color: <%-bannerUse?.color%>;" class="sub-bottom"><b><%= bannerUse?.titleBottom %></b> </p>
+        <a style="color: <%-bannerUse?.color%>;" class="btn btn-dark" href="<%= bannerUse?.btnAction %>">
+          <%=bannerUse?.btnName%>
+        </a>
+      </div>
+    </div>
+  </div>
 </section>
-
 
 <div class="container mb-3 my-md-5 ">
   <h4 class="my-3 text-center">Top Products</h4>
@@ -96,7 +77,7 @@
 </div>
 
 <!-- Banner Begin -->
-<div class="banner">
+<!-- <div class="banner">
   <div class="container">
     <div class="row">
       <div class="col-lg-6 col-md-6 col-sm-6">
@@ -111,7 +92,7 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 <!-- Banner End -->
 
 <!-- Latest Product Section Begin -->
@@ -147,64 +128,3 @@
   </div>
 </section>
 <!-- Latest Product Section End -->
-
-<!-- Blog Section Begin -->
-<!-- <section class="from-blog spad">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="section-title from-blog__title">
-          <h2>From The Blog</h2>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-lg-4 col-md-4 col-sm-6">
-        <div class="blog__item">
-          <div class="blog__item__pic">
-            <img src="img/blog/blog-1.jpg" alt="">
-          </div>
-          <div class="blog__item__text">
-            <ul>
-              <li><i class="fa fa-calendar-o"></i> May 4,2019</li>
-              <li><i class="fa fa-comment-o"></i> 5</li>
-            </ul>
-            <h5><a href="#">Cooking tips make cooking simple</a></h5>
-            <p>Sed quia non numquam modi tempora indunt ut labore et dolore magnam aliquam quaerat </p>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 col-md-4 col-sm-6">
-        <div class="blog__item">
-          <div class="blog__item__pic">
-            <img src="img/blog/blog-2.jpg" alt="">
-          </div>
-          <div class="blog__item__text">
-            <ul>
-              <li><i class="fa fa-calendar-o"></i> May 4,2019</li>
-              <li><i class="fa fa-comment-o"></i> 5</li>
-            </ul>
-            <h5><a href="#">6 ways to prepare breakfast for 30</a></h5>
-            <p>Sed quia non numquam modi tempora indunt ut labore et dolore magnam aliquam quaerat </p>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 col-md-4 col-sm-6">
-        <div class="blog__item">
-          <div class="blog__item__pic">
-            <img src="img/blog/blog-3.jpg" alt="">
-          </div>
-          <div class="blog__item__text">
-            <ul>
-              <li><i class="fa fa-calendar-o"></i> May 4,2019</li>
-              <li><i class="fa fa-comment-o"></i> 5</li>
-            </ul>
-            <h5><a href="#">Visit the clean farm in the US</a></h5>
-            <p>Sed quia non numquam modi tempora indunt ut labore et dolore magnam aliquam quaerat </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section> -->
-<!-- Blog Section End -->

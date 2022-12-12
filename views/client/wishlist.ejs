@@ -1,118 +1,87 @@
+<section class="container-fluid" style="background-image: url('/assets/images/page-header-bg.jpg')">
+  <div class="container">
+    <h2 class="pt-4"><b>Wishlist</b></h2>
+    <p class="pb-4" style="text-transform: capitalize;">Nester <%= locals?.currentPage?' > '+locals.currentPage:'' %> </p>
+  </div>
+</section>
+
 <main class="main">
-    <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
-      <div class="container">
-        <h1 class="page-title">Wishlist<span>Shop</span></h1>
-      </div><!-- End .container -->
-    </div><!-- End .page-header -->
-    <nav aria-label="breadcrumb" class="breadcrumb-nav">
-      <div class="container">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="/">Home</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Wishlist</li>
-        </ol>
-      </div><!-- End .container -->
-    </nav><!-- End .breadcrumb-nav -->
-  
-    <div class="page-content">
-      <div class="container">
-        <table class="table table-wishlist table-mobile">
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th>Price</th>
-              <th>Stock Status</th>
-              <th></th>
-              <th></th>
-            </tr>
-          </thead>
-  
-          <tbody>
-            <tr>
-              <td class="product-col">
-                <div class="product bg-none">
-                  <figure class="product-media">
-                    <a href="#">
-                      <img src="assets/images/products/table/product-1.jpg" alt="Product image">
-                    </a>
-                  </figure>
-  
-                  <h3 class="product-title">
-                    <a href="#">Beige knitted elastic runner shoes</a>
-                  </h3><!-- End .product-title -->
-                </div><!-- End .product -->
-              </td>
-              <td class="price-col">$84.00</td>
-              <td class="stock-col"><span class="in-stock">In stock</span></td>
-              <td class="action-col">
-                <div class="dropdown">
-                  <button class="btn btn-block btn-outline-primary-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="icon-list-alt"></i>Select Options
-                  </button>
-  
-                  <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#">First option</a>
-                    <a class="dropdown-item" href="#">Another option</a>
-                    <a class="dropdown-item" href="#">The best option</a>
-                  </div>
-                </div>
-              </td>
-              <td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
-            </tr>
-            <tr>
-              <td class="product-col">
-                <div class="product bg-none">
-                  <figure class="product-media">
-                    <a href="#">
-                      <img src="assets/images/products/table/product-2.jpg" alt="Product image">
-                    </a>
-                  </figure>
-  
-                  <h3 class="product-title">
-                    <a href="#">Blue utility pinafore denim dress</a>
-                  </h3><!-- End .product-title -->
-                </div><!-- End .product -->
-              </td>
-              <td class="price-col">$76.00</td>
-              <td class="stock-col"><span class="in-stock">In stock</span></td>
-              <td class="action-col">
-                <button class="btn btn-block btn-outline-primary-2"><i class="icon-cart-plus"></i>Add to
-                  Cart</button>
-              </td>
-              <td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
-            </tr>
-            <tr>
-              <td class="product-col">
-                <div class="product bg-none">
-                  <figure class="product-media">
-                    <a href="#">
-                      <img src="assets/images/products/table/product-3.jpg" alt="Product image">
-                    </a>
-                  </figure>
-  
-                  <h3 class="product-title">
-                    <a href="#">Orange saddle lock front chain cross body bag</a>
-                  </h3><!-- End .product-title -->
-                </div><!-- End .product -->
-              </td>
-              <td class="price-col">$52.00</td>
-              <td class="stock-col"><span class="out-of-stock">Out of stock</span></td>
-              <td class="action-col">
-                <button class="btn btn-block btn-outline-primary-2 disabled">Out of Stock</button>
-              </td>
-              <td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
-            </tr>
-          </tbody>
-        </table><!-- End .table table-wishlist -->
-        <div class="wishlist-share">
-          <div class="social-icons social-icons-sm mb-2">
-            <label class="social-label">Share on:</label>
-            <a href="#" class="social-icon" title="Facebook" target="_blank"><i class="icon-facebook-f"></i></a>
-            <a href="#" class="social-icon" title="Twitter" target="_blank"><i class="icon-twitter"></i></a>
-            <a href="#" class="social-icon" title="Instagram" target="_blank"><i class="icon-instagram"></i></a>
-            <a href="#" class="social-icon" title="Youtube" target="_blank"><i class="icon-youtube"></i></a>
-            <a href="#" class="social-icon" title="Pinterest" target="_blank"><i class="icon-pinterest"></i></a>
-          </div><!-- End .soial-icons -->
-        </div><!-- End .wishlist-share -->
-      </div><!-- End .container -->
-    </div><!-- End .page-content -->
-  </main><!-- End .main -->
+
+  <div class="page-content">
+    <div class="container my-4">
+
+      <% if(locals.wishlist?.length!=0) locals?.wishlist?.forEach(e=>{ %>
+
+      <div class="card p-4 mt-3">
+        <div class="row">
+          <div class="col-12 col-md-2">
+            <img src="/product_images/<%= e.products.PID %>1.jpg" class="img-fluid" alt="">
+          </div>
+          <div class="col-12 col-md-10 mt-3 mt-md-0">
+            <span class="bg-danger text-white px-3"><%= e.doc[0].stock!=0?e.stock<10?`Only ${e.stock} left`:'In Stock':'Out of stock' %> </span><br><br>
+            <h6 class="limit_lines_css l-3" style="cursor: pointer;"><%= e.doc[0].title %> </h6>
+
+            <span class="text-dark mt-1 mb-0">
+              <b><%= e.doc[0].price - e.doc[0].offer%> Rs</b>
+            </span>
+            <% if(e.doc[0].offer){ %>
+            <b class="text-danger"><%= e.doc[0].offer%>Rs Off </b>
+            <s>
+              <b>
+                <p class="m-0">MRP : <%= e.doc[0].price %> Rs </p>
+              </b>
+            </s>
+            <% } %>
+            <div class="mt-4">
+              <div class="btn btn-dark rounded d-none d-md-inline m-0 align-items-center" onclick="addToCart('<%=e.products.PID%>')"> Add to cart </div>
+              <div class="btn btn-dark rounded w-100 d-md-none py-3" onclick="addToCart('<%=e.products.PID%>')">Add to cart</div>
+              <div class="btn btn-dark rounded d-none d-md-inline m-0 align-items-center ml-2" onclick="removeFromWishlist('<%=e.products.PID%>',this.parentElement.parentElement.parentElement.parentElement)"> Remove </div>
+              <div class="btn btn-dark rounded w-100 d-md-none py-3 mt-2" onclick="removeFromWishlist('<%=e.products.PID%>',this.parentElement.parentElement.parentElement.parentElement)">Remove</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <% }); else { %>
+
+      <div class="page-content mb-5" id="cartlock">
+        <div class="container">
+          <div class="card bg-none p-5 text-center border-none">
+            <h4 class="mt-5">Your wish list is empty !</h4>
+            <div class="mt-4 mb-5">
+              <button class="btn btn-dark rounded" onclick="window.location.href='/shop'">Continue shopping</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <% }; %>
+
+    </div><!-- End .container -->
+  </div><!-- End .page-content -->
+</main><!-- End .main -->
+<script>
+  async function removeFromWishlist(PID, removable) {
+    try {
+
+      // sending request to server
+      const resFromServer = await fetch(`/wishlist/${(PID+"").trim()}`, {
+        method: "DELETE"
+      });
+
+      // parsing response
+      const res = await resFromServer.json();
+
+      console.log(res);
+
+      if (res.status == 'error') throw res.messsage;
+      
+      window.location.reload();
+
+    } catch (error) {
+      // handling error
+      notify(error);
+    };
+  };
+</script>

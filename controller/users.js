@@ -18,6 +18,7 @@ const device = new DeviceDectector();
 export const localsForUser = async (req, res, next) => {
   try {
     if (req.user) res.locals.cartProducts = await userService.getAllCartProducts(req.user?.UID);
+    if (req.user) res.locals.wishlist = await wishlistService.getAll(req?.user?.UID);
     res.locals.categorys = await db.category.find();
     res.locals.user = req.user;
     res.locals.appName = appConfig.name;
@@ -978,5 +979,17 @@ export const addToWishListAPI = async (req, res) => {
   } catch (error) {
     // error handling
     res.send({ status: 'error', message: error });
-  }
-}
+  };
+};
+export const deleteFromWishListAPI = async (req, res) => {
+  try {
+    const UID = req?.user?.UID;
+    const PID = req?.params?.id;
+    const result = await wishlistService.remove(UID, PID);
+
+    res.send({ status: 'good', message: result });
+  } catch (error) {
+    // error handling
+    res.send({ status: 'error', message: error });
+  };
+};

@@ -8,9 +8,6 @@ import Logger from "morgan";
 
 import * as auth from "./controller/services/auth.js";
 import usersRoute from "./routes/user.js";
-import DeviceDetetor from 'device-detector-js';
-
-const deviceDetetor = new DeviceDetetor();
 
 dotenv.config();
 
@@ -56,16 +53,6 @@ app.use(function (req, res, next) {
   next();
 });
 
-// app.use((req, res, next) => {
-//   const userAgent = deviceDetetor.parse(req.headers['user-agent']);
-
-//   if(userAgent?.device?.type == 'smartphone'){
-//     res.send(`This site is currently not available on smartphone's`);
-//   }else next();
-
-// });
-
-// for admin
 app.use("/", usersRoute);
 
 app.use((req, res) => {
@@ -114,7 +101,7 @@ adminApp.use(fileUpload({
   useTempFiles: true,
   tempFileDir: '/tmp/'
 }));
-app.use(Express.json({ limit: '10mb' }));
+adminApp.use(Express.json());
 adminApp.use(ExpressLayouts);
 adminApp.use(
   "/product_images",

@@ -64,6 +64,8 @@ app.put('/user_data/update', auth.mustLoginAsUserAPI, users.updateUserDataAPI);
 app.delete('/orders/failed/:id', auth.mustLoginAsUserAPI, users.failedOrders);
 // api for adding product to wishlist
 app.post('/wishlist/:id', auth.mustLoginAsUserAPI, users.addToWishListAPI);
+// api for deleteing from wishlist
+app.delete('/wishlist/:id', auth.mustLoginAsUserAPI, users.deleteFromWishListAPI);
 
 // api for create user using referal codes
 app.get('/referal_', users.referalInit);

@@ -15,6 +15,12 @@
             <span class="ml-2">Account</span>
           </div>
         </li>
+        <li class="p-3 card mt-2 d-flex  <%= locals?.currentPage == 'dashboard'?'bg-light':'' %>" onclick="window.location.href='/wishlist'">
+          <div>
+            <i class="fa-solid fa-heart"></i>
+            <span class="ml-2">Wishlist</span>
+          </div>
+        </li>
         <li class="p-3 card mt-2 d-flex  <%= locals?.currentPage == 'orders'?'bg-light':'' %>" onclick="window.location.href='/dashboard/orders'">
           <div>
             <i class="fa-solid fa-bag-shopping"></i>

@@ -70,7 +70,7 @@
 
   <div class="right-cont">
     <% if(locals.user){ %>
-    <a href="/wishlist"><i class="fa fa-heart"></i> <span>1</span></a>
+    <a href="/wishlist"><i class="fa fa-heart"></i> <span><%= locals.wishlist?wishlist?.length:0 %> </span></a>
     <a href="/cart" class="text-primary"><i class="fa fa-shopping-bag"></i> <span id="cart_total_count"><%=locals?.cartProducts?locals?.cartProducts[0]?locals?.cartProducts[0].totalCount?locals.cartProducts[0].totalCount:0:0:0%> </span></a>
     <a href="/dashboard" class="circle">
       <p class="circle-inner"><%= locals.user.name[0] %> </p>
@@ -87,116 +87,116 @@
 </nav>
 <div class="nav-cancler" style="display: none;" id="search_result_container_bg"></div>
 
-  <nav class="custom-navbar bg-white px-3 d-md-none">
-    <div class="left-cont">
-      <div class="logo ">
-        <a href="/"><img src="/img/logo.png" alt=""></a>
-      </div>
+<nav class="custom-navbar bg-white px-3 d-md-none">
+  <div class="left-cont">
+    <div class="logo ">
+      <a href="/"><img src="/img/logo.png" alt=""></a>
     </div>
-    <div></div>
-    <div></div>
-    <div class="right-cont">
-      <i style="font-size: large;" onclick="siteBase.searchView(true)" class="fa-solid fa-magnifying-glass"></i>
-      <% if(locals.user){ %>
-      <a href="/mb/dashboard" class="circle">
-        <p class="circle-inner"><%= locals.user.name[0] %> </p>
-      </a>
-      <% }else{ %>
+  </div>
+  <div></div>
+  <div></div>
+  <div class="right-cont">
+    <i style="font-size: large;" onclick="siteBase.searchView(true)" class="fa-solid fa-magnifying-glass"></i>
+    <% if(locals.user){ %>
+    <a href="/mb/dashboard" class="circle">
+      <p class="circle-inner"><%= locals.user.name[0] %> </p>
+    </a>
+    <% }else{ %>
 
-      <div class="btn btn-dark" onclick="window.location.href='/user_signin'">
-        Login
-      </div>
-      <% } %>
+    <div class="btn btn-dark" onclick="window.location.href='/user_signin'">
+      Login
     </div>
+    <% } %>
+  </div>
 
-    <div class="searchBoxCont" id="PG_searCont" style="display: none;">
-      <div class="ic" onclick="siteBase.searchView()">
-        <i class="fa-solid fa-arrow-left"></i>
-      </div>
-      <input type="text" placeholder="Type here to search" id="search_input2">
-      <div class="ic">
-        <i class="fa-solid fa-magnifying-glass"></i>
-      </div>
+  <div class="searchBoxCont" id="PG_searCont" style="display: none;">
+    <div class="ic" onclick="siteBase.searchView()">
+      <i class="fa-solid fa-arrow-left"></i>
     </div>
-    <ul class="search-results container mb bg-white" id="search_result_container1">
-      Type to search
-    </ul>
-  </nav>
-  <div class="nav-cancler" style="display: none;" id="PG_suggestionsSearch" onclick="siteBase.searchView()"></div>
+    <input type="text" placeholder="Type here to search" id="search_input2">
+    <div class="ic">
+      <i class="fa-solid fa-magnifying-glass"></i>
+    </div>
+  </div>
+  <ul class="search-results container mb bg-white" id="search_result_container1">
+    Type to search
+  </ul>
+</nav>
+<div class="nav-cancler" style="display: none;" id="PG_suggestionsSearch" onclick="siteBase.searchView()"></div>
 
-  <script>
-    var siteBase = {
-      searchView: function(viewState) {
-        let inputCont = document.getElementById("PG_searCont");
-        let suggestions = document.getElementById("PG_suggestionsSearch");
-        let result = document.getElementById("search_result_container1");
+<script>
+  var siteBase = {
+    searchView: function(viewState) {
+      let inputCont = document.getElementById("PG_searCont");
+      let suggestions = document.getElementById("PG_suggestionsSearch");
+      let result = document.getElementById("search_result_container1");
 
-        if (viewState) {
-          inputCont.style.display = 'grid';
-          suggestions.style.display = 'initial';
-          result.style.display = 'flex';
-          document.getElementById('search_input2').focus();
-        } else {
-          inputCont.style.display = 'none';
-          suggestions.style.display = 'none';
-          result.style.display = 'none';
-        }
+      if (viewState) {
+        inputCont.style.display = 'grid';
+        suggestions.style.display = 'initial';
+        result.style.display = 'flex';
+        document.getElementById('search_input2').focus();
+      } else {
+        inputCont.style.display = 'none';
+        suggestions.style.display = 'none';
+        result.style.display = 'none';
       }
     }
-  </script>
+  }
+</script>
 
-  <script>
-    document.getElementById('search_input').addEventListener('keyup', (e) => {
-      search(e.target.value);
-    })
+<script>
+  document.getElementById('search_input').addEventListener('keyup', (e) => {
+    search(e.target.value);
+  })
 
-    document.getElementById('search_input2').addEventListener('keyup', (e) => {
-      search(e.target.value, true);
-    })
+  document.getElementById('search_input2').addEventListener('keyup', (e) => {
+    search(e.target.value, true);
+  })
 
-    document.getElementById('search_input').addEventListener('focus', (e) => {
-      document.getElementById('search_result_container').style.display = 'flex';
-      document.getElementById('search_result_container_bg').style.display = 'flex';
-    })
+  document.getElementById('search_input').addEventListener('focus', (e) => {
+    document.getElementById('search_result_container').style.display = 'flex';
+    document.getElementById('search_result_container_bg').style.display = 'flex';
+  })
 
-    document.getElementById('search_result_container_bg').addEventListener('click', (e) => {
-      document.getElementById('search_result_container').style.display = 'none';
-      document.getElementById('search_result_container_bg').style.display = 'none';
-    });
+  document.getElementById('search_result_container_bg').addEventListener('click', (e) => {
+    document.getElementById('search_result_container').style.display = 'none';
+    document.getElementById('search_result_container_bg').style.display = 'none';
+  });
 
-    async function search(query, isMob) {
-      try {
-        const result_cont = isMob ?
-          document.getElementById('search_result_container1') :
-          document.getElementById('search_result_container');
+  async function search(query, isMob) {
+    try {
+      const result_cont = isMob ?
+        document.getElementById('search_result_container1') :
+        document.getElementById('search_result_container');
 
-        result_cont.innerHTML = 'Loading...';
+      result_cont.innerHTML = 'Loading...';
 
-        const data = await fetch(`/api/search?q=${query?.trim()}`, {
-          method: 'GET'
-        });
+      const data = await fetch(`/api/search?q=${query?.trim()}`, {
+        method: 'GET'
+      });
 
-        const res = await data.json();
+      const res = await data.json();
 
-        if (res.status == 'error') throw res.message;
+      if (res.status == 'error') throw res.message;
 
-        const searchResult = res.message;
+      const searchResult = res.message;
 
-        result_cont.innerHTML = '';
+      result_cont.innerHTML = '';
 
-        searchResult.forEach(e => {
-          result_cont.innerHTML += `<li>   <img src="/product_images/${e.PID}1.jpg" alt=""> <a class="text-primary limit_lines_css" href="/product/${e.PID}">${e.title}</a> <p class='p-0 m-0'>${e.category}</p> </li>`
-        });
+      searchResult.forEach(e => {
+        result_cont.innerHTML += `<li>   <img src="/product_images/${e.PID}1.jpg" alt=""> <a class="text-primary limit_lines_css" href="/product/${e.PID}">${e.title}</a> <p class='p-0 m-0'>${e.category}</p> </li>`
+      });
 
-        if (!searchResult?.length || searchResult?.length == 0) {
-          result_cont.innerHTML = 'No result found';
-        };
-
-      } catch (error) {
-        notify(error);
+      if (!searchResult?.length || searchResult?.length == 0) {
+        result_cont.innerHTML = 'No result found';
       };
-    }
-  </script>
 
-  <div class="nav-remover" style="margin-top:60px;">
-  </div>
+    } catch (error) {
+      notify(error);
+    };
+  }
+</script>
+
+<div class="nav-remover" style="margin-top:60px;">
+</div>
