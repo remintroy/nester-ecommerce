@@ -12,54 +12,52 @@
     </div>
   </div>
 
+  <style>
+    .bannerID {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: rgb(255, 255, 255);
+      padding: 5px 10px;
+      border-radius: 5px;
+      z-index: 10;
+    }
+  </style>
+
+  <!-- banner cards -->
+  <% locals?.banner?.docs?.forEach(e=>{ %>
   <div class="row">
-
-    <style>
-      .banner-cont {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        padding: 50px;
-        display: flex;
-        align-items: flex-start;
-        justify-content: center;
-        flex-direction: column;
-      }
-      .bannerID {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background-color: rgb(255, 255, 255);
-        padding: 5px 10px;
-        border-radius: 5px;
-        z-index: 10;
-      }
-    </style>
-
-    <!-- banner cards -->
-    <% locals?.banner?.docs?.forEach(e=>{ %>
-    <div class="col-12 col-md-6 grid-margin stretch-card"  id="formCustomForm">
-      <div class="card  border rounded shadow" style="background-color: <%-e.bg%>; min-height:300px;">
-        <div class="bannerID"><%= e.bannerID %> </div>
-        <div class="card-body position-relative">
-          <div class="d-flex justify-content-end">
-            <img src="/banner_images/<%= e.bannerID %>.jpg" style="max-height: 300px;" class="img-fluid" alt="">
+    <% let bannerUse = locals?.banner?.docs[locals?.banner?.docs?.length-1]; %>
+    <section class="col-12 col-md-6 position-relative p-0 rounded shadow" style="overflow: hidden; background-color: <%-bannerUse?.bg%>;">
+      <div class="row">
+        <div class="col-12 col-md-12">
+          <img src="/banner_images/<%= bannerUse?.bannerID %>.jpg" class="img-fluid rounded" alt="">
+        </div>
+        <div class="col-12 d-none col-md-12 d-md-flex justify-content-end p-5 h-100 align-items-center position-absolute">
+          <div>
+            <p style="color: <%-bannerUse?.color%>;" class="sub-top"><%=bannerUse?.titleTop %> </p>
+            <h2 style="color: <%-bannerUse?.color%>;" class="title"><%= bannerUse?.title %> </h2>
+            <h4 style="color: <%-bannerUse?.color%>;"><%= bannerUse?.description %> </h4>
+            <p style="color: <%-bannerUse?.color%>;" class="sub-bottom"><b><%= bannerUse?.titleBottom %></b> </p>
+            <a style="color: <%-bannerUse?.color%>;" class="btn btn-dark" href="<%= bannerUse?.btnAction %>">
+              <%=bannerUse?.btnName%>
+            </a>
           </div>
-          <div class="banner-cont" style="color: <%-e.color%>;">
-            <p class="sub-top"><%=e.titleTop %> </p>
-            <h1 class="title"><%= e.title %> </h1>
-            <h4><%= e.description %> </h4>
-            <p class="sub-bottom"><b><%= e.titleBottom %></b> </p>
-            <a class="btn btn-dark" href="<%= e.btnAction %>">
-              <%=e.btnName%>
+        </div>
+        <div class="col-12 d-md-none col-md-12 d-flex justify-content-end p-5 h-100 align-items-center">
+          <div>
+            <p style="color: <%-bannerUse?.color%>;" class="sub-top"><%=bannerUse?.titleTop %> </p>
+            <h2 style="color: <%-bannerUse?.color%>;" class="title"><%= bannerUse?.title %> </h2>
+            <h4 style="color: <%-bannerUse?.color%>;"><%= bannerUse?.description %> </h4>
+            <p style="color: <%-bannerUse?.color%>;" class="sub-bottom"><b><%= bannerUse?.titleBottom %></b> </p>
+            <a style="color: <%-bannerUse?.color%>;" class="btn btn-dark" href="<%= bannerUse?.btnAction %>">
+              <%=bannerUse?.btnName%>
             </a>
           </div>
         </div>
       </div>
-    </div>
-    <% }); %>
-
+    </section>
   </div>
+  <% }); %>
+
 </div>

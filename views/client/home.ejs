@@ -8,7 +8,7 @@
 <!-- Hero Section Begin -->
 <% let bannerUse = locals?.banner?.docs[locals?.banner?.docs?.length-1]; %>
 
-<section class="container position-relative p-0" style="background-color: <%-bannerUse?.bg%>;">
+<section class="container position-relative p-0" style="overflow: hidden; background-color: <%-bannerUse?.bg%>;">
   <div class="row">
     <div class="col-12 col-md-12">
       <img src="/banner_images/<%= bannerUse?.bannerID %>.jpg" class="img-fluid" alt="">

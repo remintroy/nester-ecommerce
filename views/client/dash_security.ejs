@@ -94,7 +94,7 @@
 
             <li class="p-3 bg-light rounded my-2">
               <% if(e.session.userLogin) {%>
-              <div class="d-flex align-items-center justify-content-between">
+              <div class="d-md-flex align-items-center justify-content-between">
 
                 <div class="d-flex align-items-center">
                   <% if(e.session?.userLogin?.device?.type =='smartphone'){ %>
@@ -107,7 +107,7 @@
                     Logged In from
                     <span style="text-transform: capitalize;"><%= e.session?.userLogin?.device?.type %> </span>
                     at
-                    <span><%= locals?.util?.dateToReadable(e.session?.userLogin?.date) %> </span>
+                    <span style="white-space: nowrap;"><%= locals?.util?.dateToReadable(e.session?.userLogin?.date) %> </span>
                   </span>
                 </div>
 
