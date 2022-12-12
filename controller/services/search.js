@@ -15,15 +15,23 @@ export const search = async (query, pages) => {
         if (query) {
 
             outputData = await db.products.aggregate([
+                // {
+                //     $search: {
+                //         index: 'products_search',
+                //         text: {
+                //             query: query,
+                //             path: {
+                //                 'wildcard': '*'
+                //             }
+                //         }
+                //     }
+                // },
                 {
-                    $search: {
-                        index: 'products_search',
-                        text: {
-                            query: query,
-                            path: {
-                                'wildcard': '*'
-                            }
-                        }
+                    $match: {
+                        $or: [
+                            { title: new RegExp(`^${(query + "").trim()}`, `i`), },
+                            { category: new RegExp(`^${(query + "").trim()}`, `i`), }
+                        ]
                     }
                 },
                 {
