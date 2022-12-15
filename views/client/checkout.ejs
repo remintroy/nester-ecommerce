@@ -160,8 +160,8 @@
               <div class="checkout__order__total">Total <span>₹ <%= locals?.cartProducts[0]?.subTotal?locals?.cartProducts[0]?.subTotal:0  %></span></div>
               <div class="checkout__input__checkbox">
                 <div class="mt-3">
-                  <button type="button" class="btn btn-dark w-100 text-white mb-2" <% if(!locals.wallet.amount>=locals?.cartProducts[0]?.subTotal){ %> disabled <% } %>   onclick="finalSubmit('Wallet')" style="cursor:pointer; font-weight: bold; border-radius: 5px;">
-                    Wallet<small>&nbsp; balance :<%= locals.wallet.amount?locals?.wallet?.amount:0%> Rs </small>
+                  <button type="button" class="btn btn-dark w-100 text-white mb-2" <% if(!locals?.wallet?.amount>=locals?.cartProducts[0]?.subTotal){ %> disabled <% } %> onclick="finalSubmit('Wallet')" style="cursor:pointer; font-weight: bold; border-radius: 5px;">
+                    Wallet<small>&nbsp; balance :<%= locals?.wallet?.amount?locals?.wallet?.amount:0%> Rs </small>
                   </button>
                   <div class="btn btn-dark w-100 text-white mb-2" onclick="finalSubmit('COD')" style="cursor:pointer; font-weight: bold; border-radius: 5px;">
                     COD <small>&nbsp; cash on delevery </small>
