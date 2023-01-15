@@ -60,7 +60,7 @@ The site can be deployed to a variety of hosting platforms, such as Heroku or AW
 - [Node.js](https://nodejs.org/)
 - [MongoDB](https://www.mongodb.com/)
 - [Express](https://expressjs.com/)
-- BCrypt.js
+- [BCrypt.js](https://www.npmjs.com/package/bcryptjs)
 - [Bootstrap](https://getbootstrap.com/)
 
 ### Contributing
