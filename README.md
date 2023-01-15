@@ -14,8 +14,27 @@ These instructions will get you a copy of the project up and running on your loc
 ### Installing
 
 1. Clone the repository: `git clone https://github.com/remindev/Nester-ECommerce.git`
-2. Install the dependencies: `npm install`
-3. Start the development server: `npm start`
+2. Create `.env` and `firebaseConfig.json` file and add necessary configurations
+3. Install the dependencies: `npm install`
+4. Start the development server: `npm start`
+
+**Firebase**   
+You need to create an accound and get admin sdk config file from your app setting's. Then copy the file into cloned folder. Path must me accessable.
+
+The `.env` file
+```ini
+NODE_ENV = development
+SECRET_KEY = <SessionSecret>
+USERDB_URL = <MongoDB connection URL>
+GOOGLE_APPLICATION_CREDENTIALS = <Path to firebase admin sdk config file>
+RAZORPAY_KEY_ID = <Your KEY id for razorpay api>
+RAZPRPAY_KEY_SECRET = <Your SECRET for razorpay api>
+PAYPAL_APP_SECRET = <Your SECRET for paypal api>
+PAYPAL_CLIENT_ID = <Your CLIENT ID for paypal>
+GMAIL_ID = <Gmail id for sending emails to users>
+GMAIL_PASSWORD = <Passowrd of Gmail id>
+```
+You need replace these whith your api keys and secrets to `.env` file
 
 ## Deployment
 
