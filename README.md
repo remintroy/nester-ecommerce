@@ -18,7 +18,7 @@ These instructions will get you a copy of the project up and running on your loc
 3. Install the dependencies: `npm install`
 4. Start the development server: `npm start`
 
-**Firebase**   
+### Firebase  
 You need to create an accound and get admin sdk config file from your app setting's. Then copy the file into cloned folder. Path must me accessable.
 
 The `.env` file
@@ -36,22 +36,18 @@ GMAIL_PASSWORD = <Passowrd of Gmail id>
 ```
 You need replace these whith your api keys and secrets to `.env` file
 
-## Deployment
+### Deployment
 
 The site can be deployed to a variety of hosting platforms, such as Heroku or AWS.
 
-## Built With
+### Built With
 
 - [Node.js](https://nodejs.org/)
 - [MongoDB](https://www.mongodb.com/)
 - [Express](https://expressjs.com/)
 
-## Contributing
+### Contributing
 
 If you would like to contribute to the project, please fork the repository and submit a pull request.
 
-## Authors
-
-- [Remin T Roy](https://github.com/remindev)
-
-
+### The End 
