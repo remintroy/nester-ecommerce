@@ -5,23 +5,27 @@ import ConnectMongoDBSession from "connect-mongodb-session";
 import dotenv from "dotenv";
 import fileUpload from "express-fileupload";
 import Logger from "morgan";
+import cors from 'cors';
 
 import * as auth from "./controller/services/auth.js";
 import usersRoute from "./routes/user.js";
 
 dotenv.config();
 
-const app = Express();
+const app = Express.Router();
+const Server = Express();
 const __dirname = process.cwd();
 export const appConfig = {
   name: "Nester",
   port: process.env.PORT | 8080,
 };
 const mongoDbSesson = new ConnectMongoDBSession(session);
-
+app.use(cors({
+  origin: ['http://localhost:3000', "*"]
+}))
 // -- user -- app
-// app.use(Logger('dev'));
-app.set("view engine", "ejs");
+app.use(Logger('dev'));
+Server.set("view engine", "ejs");
 app.use(
   session({
     saveUninitialized: false,
@@ -62,7 +66,8 @@ app.use((req, res) => {
   res.render("client/404", { message: "404 !" });
 });
 
-app.listen(appConfig.port, 'localhost', () => {
+Server.use("/", app)
+Server.listen(appConfig.port, '0.0.0.0', 'localhost', () => {
   console.log(`[-] User Server started on port : ${appConfig.port}`);
 });
 
@@ -80,7 +85,7 @@ export const AdminAppConfig = {
 const adminApp = Express();
 const mongoDbSesson2 = new ConnectMongoDBSession(session);
 
-// adminApp.use(Logger('dev'));
+adminApp.use(Logger('dev'));
 adminApp.set("view engine", "ejs");
 adminApp.use(
   session({

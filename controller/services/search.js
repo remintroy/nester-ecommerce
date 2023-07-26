@@ -12,20 +12,21 @@ export const search = async (query, pages) => {
 
         let outputData;
 
+        let projection = {
+            _id: 0,
+            views: 0,
+            impressions: 0, addedToCart: 0,
+            interactions: 0,
+            reachedCheckout: 0,
+            purchased: 0,
+            cancelled: 0,
+            productsListingViews: 0,
+            purchaseCompleted: 0,
+        }
+
         if (query) {
 
             outputData = await db.products.aggregate([
-                // {
-                //     $search: {
-                //         index: 'products_search',
-                //         text: {
-                //             query: query,
-                //             path: {
-                //                 'wildcard': '*'
-                //             }
-                //         }
-                //     }
-                // },
                 {
                     $match: {
                         $or: [
@@ -35,20 +36,13 @@ export const search = async (query, pages) => {
                     }
                 },
                 {
-                    $project: {
-                        _id: 0,
-                        views: 0,
-                        impressions: 0, addedToCart: 0,
-                        interactions: 0,
-                        reachedCheckout: 0,
-                        purchased: 0
-                    }
+                    $project: projection
                 }
             ]);
 
         } else {
 
-            outputData = await db.products.find({});
+            outputData = await db.products.find({}, projection);
 
         };
 

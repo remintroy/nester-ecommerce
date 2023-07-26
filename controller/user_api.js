@@ -6,10 +6,13 @@ export const searchAPI = async (req, res) => {
 
         const { q, pages } = req.query;
 
-        const data = await search.search(q, pages);
+        let data = await search.search(q, pages);
 
+        data = data.map(d => {
+
+            return { ...d["_doc"] ? d["_doc"] : d, rating: Math.floor(Math.random() * 5) }
+        })
         res.send({ status: 'good', message: data });
-
     } catch (error) {
         res.send(
             error.message ?
