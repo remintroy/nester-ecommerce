@@ -11,13 +11,13 @@ import {
 
 // config files
 const firebaseConfig = {
-    apiKey: "AIzaSyAwK0KSATNGpMxm8GkPVYOo1HaCHdx60AY",
-    authDomain: "project-dev-h.firebaseapp.com",
-    projectId: "project-dev-h",
-    storageBucket: "project-dev-h.appspot.com",
-    messagingSenderId: "784200160287",
-    appId: "1:784200160287:web:0860b9a855901e79e5f12a",
-    measurementId: "G-SJMKP0EY5K"
+    apiKey: "AIzaSyBfu8Ds3RXiz1fqf_m8PDGjKZhARAtJ4fg",
+    authDomain: "com-project-dev.firebaseapp.com",
+    projectId: "com-project-dev",
+    storageBucket: "com-project-dev.appspot.com",
+    messagingSenderId: "103628091995",
+    appId: "1:103628091995:web:22d39b31b2f4c2d703057e",
+    measurementId: "G-WWGK0DPV5L"
 };
 
 // Initialize Firebase
