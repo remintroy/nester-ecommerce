@@ -23,7 +23,7 @@
     "express-ejs-layouts": "^2.5.1",
     "express-fileupload": "^1.4.0",
     "express-session": "^1.17.3",
-    "firebase-admin": "^11.2.0",
+    "firebase-admin": "^11.10.1",
     "fs-extra": "^10.1.0",
     "html-pdf": "^3.0.1",
     "mongoose": "^6.12.0",
