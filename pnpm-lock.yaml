@@ -66,8 +66,8 @@ dependencies:
     specifier: ^1.4.5-lts.1
     version: 1.4.5-lts.1
   nodemailer:
-    specifier: ^6.8.0
-    version: 6.8.0
+    specifier: ^6.9.9
+    version: 6.9.9
   puppeteer:
     specifier: ^19.3.0
     version: 19.3.0
@@ -4721,8 +4721,8 @@ packages:
       vm-browserify: 1.1.2
     dev: false
 
-  /nodemailer@6.8.0:
-    resolution: {integrity: sha512-EjYvSmHzekz6VNkNd12aUqAco+bOkRe3Of5jVhltqKhEsjw/y0PYPJfp83+s9Wzh1dspYAkUW/YNQ350NATbSQ==}
+  /nodemailer@6.9.9:
+    resolution: {integrity: sha512-dexTll8zqQoVJEZPwQAKzxxtFn0qTnjdQTchoU6Re9BUUGBJiOy3YMn/0ShTW6J5M0dfQ1NeDeRTTl4oIWgQMA==}
     engines: {node: '>=6.0.0'}
     dev: false
 
