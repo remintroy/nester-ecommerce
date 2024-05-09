@@ -18,7 +18,7 @@
     "device-detector-js": "^3.0.3",
     "easy-currencies": "^1.7.0",
     "easyinvoice": "^2.3.3",
-    "ejs": "^3.1.8",
+    "ejs": "^3.1.10",
     "express": "^4.19.2",
     "express-ejs-layouts": "^2.5.1",
     "express-fileupload": "^1.4.0",
