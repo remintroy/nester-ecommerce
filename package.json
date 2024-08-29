@@ -17,7 +17,7 @@
     "crypto": "^1.0.1",
     "device-detector-js": "^3.0.3",
     "easy-currencies": "^1.7.0",
-    "easyinvoice": "^2.3.3",
+    "easyinvoice": "^3.0.47",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
     "express-ejs-layouts": "^2.5.1",
